@@ -35,7 +35,7 @@ ol {
     text-align: center;
     font-size: 29px;
     
-}
+};
 
 .ranking {
     float: left;
@@ -52,7 +52,7 @@ ol {
     text-align: left;
     font-size: 13px;
     
-}
+};
 
 .contador {
     float: left;
@@ -69,7 +69,7 @@ ol {
     text-align: justify;
     
       
-}
+};
 
 .pregunta {
     background-color: rgb(197, 203, 206);
@@ -85,14 +85,14 @@ ol {
     font-size: 18px; 
 
 
-}
+};
 .respuesta {
     margin-top: 25px;
     margin-left: 490px;
     font-size: 20px;
 
       
-}
+};
 
 
 .submit {
@@ -107,7 +107,7 @@ ol {
     border-radius: 12px;
     border-color: rgb(26, 26, 19);
     
-}
+};
 
 .pasa {
     width:140px;
@@ -121,7 +121,7 @@ ol {
     border-radius: 12px;
     border-color: rgb(26, 26, 19);
     
-}
+};
 
 .stop {
     width:100px;
@@ -130,12 +130,12 @@ ol {
     margin-top: 4px;
     font-size:16px;
     font-family: Verdana;
-    border-style: solid;s
+    border-style: solid;
     border-width: 2px;
     border-radius: 12px;
     border-color: rgb(26, 26, 19);
     
-}
+};
 
 .resp {
     background-color: rgb(253, 254, 255);
@@ -152,7 +152,7 @@ ol {
     float: left;
 
 
-}
+};
 
 
 
