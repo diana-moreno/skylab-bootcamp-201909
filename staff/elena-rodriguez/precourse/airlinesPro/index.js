@@ -46,8 +46,9 @@ for (let op = 0; op < flights.length; op ++) {
 
 function lastFlights(flights) {
 console.log('Últimos vuelos del día: ')
-for (let op = 6; op < flights.length; op++) {
-    console.log('Vuelo con origen: ' + flights[op].from + ' y con destino: ' + flights[op].to)}
+var lastFlights = flights.slice(-5)
+for (let op = 0; op < lastFlights.length; op++) {
+    console.log('Vuelo con origen: ' + lastFlights[op].from + ' y con destino: ' + lastFlights[op].to)}
 }
 
 
@@ -176,7 +177,7 @@ function user(flights) {
     else if (question2 === '2') {
     precioMayor(flights)
     comprarVuelos(flights)}
-    else if (question3 === '3') {
+    else if (question2 === '3') {
     precioIgual(flights)
     comprarVuelos(flights)}
 }
