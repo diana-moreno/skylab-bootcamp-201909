@@ -6,18 +6,16 @@
 
 
 // 1.
-
 function welcome() {
     let userName = "";
-    
+
     userName = prompt("Hi, welcome to Skylab Airlines! What's your name?");
-    
-    userName ?  console.log(`Hello, ${userName}!`) : 
-                console.log("Hello!");
 
-    }
+    userName
+        ? console.log(`Hello, ${userName}!`)
+        : console.log("Hello!");
 
-welcome();
+};
 
 var flights = [
     { id: 00, to: 'Bilbao', from: 'Barcelona', cost: 1600, scale: false },
@@ -31,67 +29,67 @@ var flights = [
     { id: 08, to: 'Shangai', from: 'Barcelona', cost: 800, scale: true },
     { id: 09, to: 'Sydney', from: 'Barcelona', cost: 150, scale: true },
     { id: 10, to: 'Tel-Aviv', from: 'Madrid', cost: 150, scale: false }
+  
 ];
 
-
 // 2.
-
-function allFlights(x){
-    for(let i= 0; i < x.length; i++){ 
-        if(x[i].scale){
+function allFlights(x) {
+    for (let i = 0; i < x.length; i++) {
+        if (x[i].scale) {
             connection = "Flight with connection";
-          } else {
+        } else {
             connection = "Direct flight";
-          };
-          console.log(`Flight from ${x[i].from} to ${x[i].to}, with a cost of: ${x[i].cost} dollars. ${connection}.`)
-        }
+        };
+        console.log(
+            `Flight from ${x[i].from} to ${x[i].to}, with a cost of: ${x[i].cost} dollars. ${connection}.`
+        )
     }
-    
-allFlights(flights);
-
+};
 
 // 3.
-
-console.log("");   /* this one is just to give an extra line and read it better*/
 let sum = 0;
-function averageCost(y){
-    for(let i= 0; i < y.length; i++) {
+function averageCost(y) {
+    for (let i = 0; i < y.length; i++) {
         sum += y[i].cost
-        };
-        let average = sum / y.length;
-        
-       console.log(`Today's flights average cost is ${average.toFixed(0)} dollars.`)    
+    };
+    let average = sum / y.length;
 
-}
+    console.log(`Today's flights average cost is ${average.toFixed(0)} dollars.`)
 
-averageCost(flights);
+};
 
+// 4.
+function connectionFlights(z) {
+    for (let i = 0; i < z.length; i++) {
+        if (z[i].scale) {
+            console.log(
+                `Flight from ${z[i].from} to ${z[i].to}, with a cost of: ${z[i].cost} dollars.`
+            );
 
-// 4. 
-
-console.log("");    /* this one is just to give an extra line and read it better*/
-console.log("List of flights with connection:")
-function connectionFlights(z){
-    for(let i= 0; i < z.length; i++){
-  if(z[i].scale){
-    console.log(`Flight from ${z[i].from} to ${z[i].to}, with a cost of: ${z[i].cost} dollars.`);
-  }
-}
-}
-connectionFlights(flights);
-
+        }
+    }
+};
 
 // 5.
+function lastFlights(w) {
+    for (let i = 6; i < w.length; i++) {
+        console.log(`${w[i].to}`);
 
-console.log("");    /* this one is just to give an extra line and read it better*/
-console.log("Last 5 flights final destinations:")
-function lastFlights(w){
-    for(let i= 6; i < w.length; i++){
-         console.log(`${w[i].to}`);
-     
-}
-}
-lastFlights(flights);
+    }
+};
 
+function airlines() {
+    welcome()
+    console.log("");/* this one is just to give an extra line and read it better*/
+    allFlights(flights)
+    console.log("");/* this one is just to give an extra line and read it better*/
+    averageCost(flights)
+    console.log("");/* this one is just to give an extra line and read it better*/
+    console.log("List of flights with connection:")
+    connectionFlights(flights)
+    console.log("");/* this one is just to give an extra line and read it better*/
+    console.log("Last 5 flights final destinations:")
+    lastFlights(flights)
+};
 
-
+airlines();

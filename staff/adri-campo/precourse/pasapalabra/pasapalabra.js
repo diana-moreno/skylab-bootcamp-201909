@@ -32,162 +32,142 @@ var questions = [
     { letter: "z", answer: "zen", status: 0, question: "CON LA Z. Escuela de budismo que busca la experiencia de la sabiduría más allá del discurso racional"},
 ];
 
-function questions(){
+function questions() {
     var initialQuestions = questions[i].question;
 
-     for(let i= 0; i < questions.length; i++){
-     }
+    
 
 };
 
- // ---------------
+// ---------------
 
 function pasapalabra() {
 
-    let userName;             // User that plays the game
+    let userName; // User that plays the game
     var userProfile = [];
-    var pendingLetters = [];  // User pasapalabras counter
+    var pendingLetters = []; // User pasapalabras counter
     var allLetters = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]; // To switch status from 0 to 1/2/3
 
 
  // ---------------
+function welcome() {
+    let userName = prompt("Hi, welcome to Skylab Pasapalabra! What's your name?");
 
-    function welcome() {
-        let userName = "";
-        
-        userName = prompt("Hi, welcome to Skylab Pasapalabra! What's your name?");
-        
-        userName ?  alert(`Hello, ${userName}! Let's start playing!`) : 
-                    alert("Hello! Let's start playing!");
-      
-    
-        game();
-    
-        };
-        
+    userName
+        ? alert(`Hello, ${userName}! Let's start playing!`)
+        : alert("Hello! Let's start playing!");
 
-    welcome();
- 
- // ---------------
-    
+    game();
 
-    function statusAnswer(questions){  // Giving values to each status -> 1:ok, 2:wrong, 3:not answered
-        var correct = 0;
-        var wrong = 0;
-        var notAnswered = 0;
+};
 
-        for(let i= 0; i < questions.length; i++){ 
-          if(questions[i] === 1){
-          correct +=1;
-          }
-          else if(questions[i] === 2){
-          wrong +=1;
-          }
-          else if (questions[i]=== 3){
-          notAnswered +=1;
-          }
-        }
-          
-    }
- 
- // ---------------
-
-    function game(){
-
-        var initalQuestions;
-        var correctAnswers = 0;
-        var pasapalabras = 0;
-        var wrongAnswers = 0;
-        var turns = 27;
-
-
-        while (turns >= 1) { 
-
-         for(var i=0; i<questions.length; i++) {
-
-            if(questions[i].status === 0 || questions[i].status === 3) {
-             var userAnswer = prompt(questions[i].question);
-               
-                if(userAnswer === questions[i].answer) {
-                   correctAnswers += 1;
-                   turns -= 1;
-
-                   questions[i].status = 1;
-                   allLetters.push(1);
-                
-
-                   console.log("CORRECT!!");
-
-            }
-
-            else if (userAnswer === "pasapalabra") {
-                 
-                questions[i].status = 3;
-                allLetters.push(3);
-                pendingLetters.push(questions[i].letter); // to know which letter is missing
-                pasapalabras += 1;
-
-
-                console.log("PASAPALABRA, we will try again later!");
-                
-            }
-
-            else if(userAnswer !== "pasapalabra" || userAnswer !== questions[i].answer){
-                wrongAnswers += 1;
-                turns -= 1;
-
-                questions[i].status = 2;
-                allLetters.push(2);
-                
-                console.log("WRONG answer sorry..");
-
-            };
-        }
-
-      }
-
-    }
-
-    userProfile.push({correct: correctAnswers, wrong: wrongAnswers, noAnswer: pasapalabras});
-    statusAnswer(allLetters);
-
- // ---------------
-
-
- function userScore() {       
-     
-    finalScore = userProfile;
-
-   for (i=0; i < finalScore.length; i++){
-       userFinalScore = ["Your final results: "+ finalScore[i].correct + " correct answers / " + finalScore[i].wrong + " errors / " + finalScore[i].noAnswer + " pasapalabras"]
-       console.log(userFinalScore);
-   }
+welcome();
 
 // ---------------
 
-};
-    function playAgain() {        // function to ask the user to play again and the final score
-         newGame = confirm("Do you want to play again?")
-            if(newGame === true) {
-            welcome();
-            } 
-  
-            else {
-            userScore();
+function statusAnswer(questions) { // Giving values to each status -> 1:ok, 2:wrong, 3:not answered
+    var correct = 0;
+    var wrong = 0;
+    var notAnswered = 0;
+
+    for (let i = 0; i < questions.length; i++) {
+        if (questions[i] === 1) {
+            correct += 1;
+        } else if (questions[i] === 2) {
+            wrong += 1;
+        } else if (questions[i] === 3) {
+            notAnswered += 1;
+        }
+    }
+
+}
+
+// ---------------
+
+function game() {
+
+    var initalQuestions;
+    var correctAnswers = 0;
+    var pasapalabras = 0;
+    var wrongAnswers = 0;
+    var turns = 27;
+
+    while (turns >= 1) {
+
+        for (var i = 0; i < questions.length; i++) {
+
+            if (questions[i].status === 0 || questions[i].status === 3) {
+                var userAnswer = prompt(questions[i].question);
+
+                if (userAnswer === questions[i].answer) {
+                    correctAnswers += 1;
+                    turns -= 1;
+
+                    questions[i].status = 1;
+                    allLetters.push(1);
+
+                    console.log("CORRECT!!");
+
+                } else if (userAnswer === "pasapalabra") {
+
+                    questions[i].status = 3;
+                    allLetters.push(3);
+                    pendingLetters.push(questions[i].letter); // to know which letter is missing
+                    pasapalabras += 1;
+
+                    console.log("PASAPALABRA, we will try again later!");
+
+                } else if (userAnswer !== "pasapalabra" || userAnswer !== questions[i].answer) {
+                    wrongAnswers += 1;
+                    turns -= 1;
+
+                    questions[i].status = 2;
+                    allLetters.push(2);
+
+                    console.log("WRONG answer sorry..");
+
+                };
             }
+
+        }
+
+    }
+
+    userProfile.push(
+        {correct: correctAnswers, wrong: wrongAnswers, noAnswer: pasapalabras}
+    );
+    statusAnswer(allLetters);
+
+    // ---------------
+
+    function userScore() {
+
+        finalScore = userProfile;
+
+        for (i = 0; i < finalScore.length; i++) {
+            userFinalScore = ["Your final results: " + finalScore[i].correct + " correct answers / " +
+                    finalScore[i].wrong + " errors / " + finalScore[i].noAnswer + " pasapalabras"]
+            console.log(userFinalScore);
+        }
+
+        // ---------------
+
     };
-  
- // ---------------
+    function playAgain() { // function to ask the user to play again and the final score
+        newGame = confirm("Do you want to play again?");
+        if (newGame === true) {
+            welcome();
+        } else {
+            userScore();
+        };
+    };
 
+    // ---------------
 
-playAgain();
+    playAgain();
 
 };
 
 };
 
 pasapalabra();
-
-
-
-

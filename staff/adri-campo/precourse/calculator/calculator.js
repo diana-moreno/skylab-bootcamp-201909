@@ -53,7 +53,7 @@ function num(x) {
 
 const sqrt = function(num1) {
     let operation = Math.sqrt(num1);
-    return decimals(operation);
+    return num(operation);
   };
 
 
@@ -100,22 +100,32 @@ console.log(`${num1} / ${num2} = ${resultOperations[3]}`);
 }
 };
 
-
 // 6)
+
+function endGame() {
+  console.log("Thanks for playing, see you next time!");
+
+};
+
+
+// 7)
 
 function recalculate() {
     var message;
     var option = confirm("Click on Accept to continue or Cancel if you want to restart the process");
     if (option = true) {
         message = "OK you can continue";
+        calculator();
+      
     } 
     
     else {
-	     calculator();
+	     endGame();
     }
 }
 
-// 7)
+
+// 8)
 
 function calculator() {
 emptySpace()

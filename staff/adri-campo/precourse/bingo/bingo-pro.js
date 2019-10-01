@@ -1,23 +1,6 @@
 //  BINGO PROJECT
 
-// 1) The program will ask for the name of the user.     
-// 2) During the 1st turn it will show 5 numbers (excluding the 0). 
-// 3) Generation of random number each new turn.  
-// 4) To advance to the next turn the user should confirm and a new number will appear.   
-/* 5) If the number shown match with any of your carton, this number will change for an "x".
-      The carton will be shown at the end of every turn. The program will ask the user at the beginning of each turn if they want to continue. */
-
-// PRO version
-// 6) When a complete line of numbers have changed for "X" the program will show the message: "LINE!", after this the execution of the program will continue. 
-// 7) The program will finish when all the numbers of the carton have changed by "X".
-
-
-
-
-// 1) 
-
-var lastNumber = getNumber(); 
-var bingoNumber = lastNumber;
+// Function to welcome the user
 
 function welcome() {
   let userName = "";
@@ -25,110 +8,123 @@ function welcome() {
   userName = prompt("Hi, welcome to Skylab Bingo! What's your name?");
   
   userName ?  alert(`Hello, ${userName}! Here you have your carton!`) : 
-              alert("Hello! Here you have your carton!");
+              alert("Hello! Here you have your carton!")
 
   };
 
+// Function to get the initial carton
 
-
-// 2)
-
-
-var firstNumbers = [
-    { num: 13, integer: true }, { num: 23, integer: true }, { num: 34, integer: true }, { num: 43, integer: true }, { num: 51, integer: true }, 
-  ];
-
-  function carton(x){
-    console.log("Your carton is:")
-    for(let i= 0; i < x.length; i++){
-      if(x[i].integer){
-        console.log(`${x[i].num}`);
-      }
+function carton() {
+  console.log("Your carton is:")
+  var carton = [];
+  for (i = 0; i < 5; i++) {
+      carton.push(differentNumber());
   }
+  return carton;
 };
 
+// Function to get different random numbers
 
-
-// 3)
-
+var myNumbers = [];
 
 function getNumber() {
-  return Math.floor(Math.random() * 54 + 1)
+  var numberRandom = Math.floor(Math.random() * 19 + 1)
+  return numberRandom
 };
 
-// generar numeros que no sean repetidos..
+function differentNumber() {
+  var number = getNumber();
 
-// 4)
+  while (myNumbers.indexOf(number) > -1) {
+    number = getNumber();
+  }
+ 
+   myNumbers.push(number);
 
-
-function anotherNumber(){       
-var lastNumber = getNumber();          
-var message;
-var option = confirm ("Next number?");
-if (option === true) {
-  alert(`Number: ${lastNumber}`);
-  console.log(`Number generated: ${lastNumber}`)
-  match(firstNumbers, lastNumber);
+   return number;
 }
 
-else { 
-  playAgain();
-}
-
-};
-
-
-
-// 5)
-
-
-function match(firstNumbers, lastNumber) {
-
-    for (let i in firstNumbers){
-    if(firstNumbers[i] === lastNumber) {
-      firstNumbers[i] = "x";
-      alert("We have this number, YEES!!")
-      foundNumber();
-    }
-
-    else {
-      console.log("The number don't match with any of your numbers")
-      anotherNumber();
-    }
-    } 
-};
-
-
-
-
-
-
-// Rest of the program functions
-
+// Full game function 
 
 function bingo() {
-    welcome()
-    carton(firstNumbers)
-    anotherNumber()
-};
+
+var initialCarton = carton();
+myNumbers = [];
+var complete = ["X","X","X","X","X"];
+var numberCounter = 0;
+
+welcome();
+
+console.log(initialCarton.join(' - '));
+
+
+function anotherNumber() {    // function to ask for another number to the user
+  var option = confirm ("Next number?");
+  if (option) {
+    numberCounter++
+    continueGame();
+  }
   
-function foundNumber() {
+  else { 
+    playAgain();
+  }
+  
+  };
 
-  carton(firstNumbers)
-  anotherNumber()
+anotherNumber();
+
+
+function continueGame(){      // function to generate new number each turn and put and X if you already have it
+
+var newNumber = differentNumber();
+myNumbers.push(newNumber);
+window.alert("You've got number " + newNumber)
+
+
+  for (let i = 0; i < initialCarton.length; i++) {
+
+  var match = initialCarton.indexOf(newNumber);
+
+  if (match > -1) {
+    initialCarton[match] = "X";
+      window.alert("We have the number " + newNumber + ", great!");
+      console.log(initialCarton.join(' - '));
+  } else {
+      return anotherNumber();
+  }
+  return fullCarton();
+  }
+
+
+function fullCarton() {        // function to check if all our numbers have changed by X (and how many turns we used)
+  if (initialCarton.toString() === complete.toString()) {
+      window.alert('¡BINGO!\n The game have been completed in ' + numberCounter + ' turns!');
+      return playAgain();
+  } else {
+      return anotherNumber();
+  }
+  }
+
 };
 
-function playAgain() {
-    newGame = confirm("Do you want to play again?")
-    if(newGame === true) {
-    bingo();
+function playAgain() {        // function to ask the user to play again
+  newGame = confirm("Do you want to play again?")
+  if(newGame === true) {
+  bingo();
+  } 
 
-    } 
-    else {
-    alert("Thanks for playing! See you soon!!");
-    }
+  else {
+  endGame();
+  }
+
 };
 
 
+function endGame() {          // function to finish the game
+  window.alert("Thanks for playing, see you soon!");
+  return;
+};
+
+};
 
 bingo();
