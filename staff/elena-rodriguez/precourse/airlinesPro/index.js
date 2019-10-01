@@ -67,40 +67,45 @@ airlinesInfo (flights)
 
 function precioMenor(flights) {
 
-    var question3 = prompt('Introduce el importe')
-    var realImporte = Number(question3)
+    var question3 = prompt('Introduce el importe');
+    var realImporte = Number(question3);
     var contador = 0; 
-    console.log('Estos son los buenos con precio menor a ' + realImporte + '€:')
+    console.log('Estos son los buenos con precio menor a ' + realImporte + '€:');
     for (let op = 0; op < flights.length; op++) {
         if (flights[op].cost < realImporte) {
         console.log(flights[op])
-        contador = contador + 1}
+        contador = contador + 1
+        }
     }
-    if (contador === 0) {alert('No se han encontrado vuelos')}
+    if (contador === 0) {alert('No se han encontrado vuelos');}
  
 }
 
 function precioMayor(flights) {
 
-    var question3 = prompt('Introduce el importe')
-    var realImporte = Number(question3)
+    var question3 = prompt('Introduce el importe');
+    var realImporte = Number(question3);
     var contador = 0; 
     
     for (let op = 0; op < flights.length; op++) {
-        if (flights[op].cost > realImporte) {console.log(flights[op])
-        contador = contador + 1}
+        if (flights[op].cost > realImporte) {
+            console.log(flights[op])
+            contador = contador + 1
+        }
     
     }
     if (contador === 0) {alert('No se han encontrado vuelos')}
 }
 
 function precioIgual(flights) {
-    var question3 = prompt('Introduce el precio del vuelo')
-    var realCost = Number(question3)
+    var question3 = prompt('Introduce el precio del vuelo');
+    var realCost = Number(question3);
     var contador = 0; 
     for (let op = 0; op < flights.length; op++) {
-            if (flights[op].cost === realCost) {console.log(flights[op])
-            contador = contador + 1}
+            if (flights[op].cost === realCost) {
+                console.log(flights[op])
+                contador = contador + 1
+            }
         
     }
     if (contador === 0) {alert('No se han encontrado vuelos')}
@@ -109,12 +114,13 @@ function precioIgual(flights) {
 
 function comprarVuelos(flights) {
 var contador = 0;
-var buyFlight = prompt('Introduce el id del vuelo que deseas comprar')
+var buyFlight = prompt('Introduce el id del vuelo que deseas comprar');
 var numberFlight = Number(buyFlight)
 for (let op = 0; op < flights.length; op ++) {
     if (flights[op].id === numberFlight) {
         console.log('Felicidades! Has comprado billetes para el vuelo con destino: ' + flights[op].to + ' y origen: ' + flights[op].from + ', con precio: ' + flights[op].cost + '€');
-        contador = contador + 1;}
+        contador = contador + 1;
+    }
 }
 if (contador === 0) {console.log('Vuelo no encontrado')}
 }
@@ -123,11 +129,11 @@ function createFlights(flights) {
     do {
     var newFlight = {};
     newFlight.id = flights.length
-    var where = prompt('Destination?')
+    var where = prompt('Destination?');
     newFlight.to = where
-    var origin = prompt('Origin?')
+    var origin = prompt('Origin?');
     newFlight.from = origin
-    var money = prompt('Cost?')
+    var money = prompt('Cost?');
     money = Number(money);
     newFlight.cost = money
     var scale = prompt('Scale? y/n')
@@ -144,7 +150,8 @@ function createFlights(flights) {
         }
         if (flights.length === 15) {
             alert('Not more than 15 flights alowed!');
-            return flights}
+            return flights;
+        }
     
 }    
 
@@ -156,14 +163,14 @@ for (let op = 0; op < flights.length ; op ++) {
             alert('No flights with that id!')
             moreDelete = prompt ('Delete more? y/n')
             while (moreDelete === 'y') {deleteFlights(flights)}
-            return flights
+            return flights;
         }
     
         else if (numId === flights[op].id) {
         {flights.splice(op,1);
         moreDelete = prompt ('Delete more? y/n')}
         while (moreDelete === 'y') {deleteFlights(flights)}
-        return flights
+        return flights;
         }  
     }
 }
@@ -193,7 +200,7 @@ function admin(flights) {
 
 function skylabAirlines (flights) {
 
-    var userAdmin = prompt('Are you user or admin?')
+    var userAdmin = prompt('Are you user or admin?');
     if (userAdmin === 'admin') {admin(flights)}
     else if (userAdmin === 'user') {user(flights)}
     else {alert('Introduce a valid answer!')}
