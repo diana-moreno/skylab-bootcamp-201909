@@ -1,8 +1,10 @@
 // Declaraciones variables globales y funciones
-let User = "";
+let user = "";
 let preguntas;
 let randomNumber;
 let indicePreguntas = 0;
+let totalLetras = 26;
+let vuelta = 0;
 let totalPoints = 0;
 let totalFails = 0;
 let noFin = true;
@@ -169,6 +171,8 @@ function asignarPreguntas() {
 
 function mostrarPrimeraPregunta() {    
      indicePreguntas = 0;
+     totalLetras = 26;
+     vuelta = 0;
      document.getElementById("preguntas").innerHTML = preguntas[indicePreguntas].question;
 };
 
@@ -176,20 +180,11 @@ function MostrarPregunta() {
     document.getElementById("preguntas").innerHTML = preguntas[indicePreguntas].question;
 };
 
-function addRanking(user, points) {
-    let ranking;
-    ranking = { name: user,
-        points: points
-      };
-      userRanking.push(ranking);
- };
-
 function submit() {   
     let respuesta = document.getElementById("frm1").value;
     let i;
 
     respuesta = respuesta.toLocaleLowerCase();
-
 
     if (respuesta != preguntas[indicePreguntas].answer) {
         totalFails += 1;
@@ -197,28 +192,31 @@ function submit() {
         document.getElementById(indicePreguntas).style.background = "rgb(173, 14, 9)";
      } else {
         totalPoints += 1;
-        preguntas[indicePreguntas].status = 1;
-        document.getElementById(indicePreguntas).style.background = "rgb(127, 204, 56)";
-        
-    
+        preguntas[indicePreguntas].status = 98;
+        document.getElementById(indicePreguntas).style.background = "rgb(127, 204, 56)";            
      };
 
      document.getElementById("frm1").value = "";
 
-     if (indicePreguntas > 25) {
+     if (indicePreguntas === totalLetras) {
         indicePreguntas = 0; 
-     }  
-
+        vuelta += 1;
+        for (i = 0; i < preguntas.length ;i++) {
+            if (preguntas[i].status === vuelta) {
+                totalLetras = i;
+            };
+          };
+     };
 
      for (i = indicePreguntas; i < preguntas.length ;i++) {
-        if (preguntas[i].status === 0) {
+        if (preguntas[i].status === vuelta) {
             indicePreguntas = i;
             i = 9999;
         };
       };
 
     for (i = 0; i < preguntas.length ;i++) {
-        if (preguntas[i].status === 0) {
+        if (preguntas[i].status === vuelta) {
             noFin = true;
             i = 9999;
         } else {
@@ -231,34 +229,56 @@ function submit() {
         addRanking(user, totalPoints) 
         mostrarRanking();
         return;
-    }         
+    };      
      document.getElementById("preguntas").innerHTML = preguntas[indicePreguntas].question;
 
 };
 
 function pasa() {  
-     indicePreguntas += 1;
-     document.getElementById("preguntas").innerHTML = preguntas[indicePreguntas].question;  
-     if (indicePreguntas > 25) {
-        indicePreguntas = 0; 
-     }
+   
+    if (indicePreguntas === totalLetras) {
+        preguntas[indicePreguntas].status = vuelta + 1;
+        indicePreguntas = 0;
+        totalLetras = 0;
+        vuelta += 1;
+        for (i = 0; i < preguntas.length ;i++) {
+            if (preguntas[i].status === vuelta) {
+                totalLetras = i;
+            };
+        };
+        for (i = indicePreguntas; i < preguntas.length ;i++) {
+            if (preguntas[i].status === vuelta) {
+                indicePreguntas = i;
+                document.getElementById("preguntas").innerHTML = preguntas[indicePreguntas].question; 
+                i = 9999;
+            };
+        };  
+    } else {
+       preguntas[indicePreguntas].status = vuelta + 1;
+       for (i = indicePreguntas; i < preguntas.length ;i++) {
+           if (preguntas[i].status === vuelta) {
+               indicePreguntas = i;
+               document.getElementById("preguntas").innerHTML = preguntas[indicePreguntas].question; 
+               i = 9999;
+            };
+        };  
+    };
 };
 
-
-
-
-
-
-
-  
-
+function addRanking(user, points) {
+    let ranking;
+    ranking = { name: user,
+        points: points
+      };
+      userRanking.push(ranking);
+ };
 
 // Empezamos proceso
 
 function pasalacabra() {
     let totalPoints = 0;
     let noFin = true;    
-    //pedirUser();
+    pedirUser();
     mostrarRanking();
     asignarPreguntas();
     inicializaStatus();
