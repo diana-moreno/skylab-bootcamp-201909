@@ -93,17 +93,20 @@ function askTurn() {
 
 
 function firstLineWin() {
-    alert('¡LÍNEAAAA!\n¡Felicidades!\nJugaste e hiciste la primera LÍNEA en ' + numberCounter + ' turnos.');
+    if (firstLineEnd === false && secondLineEnd === false && thirdLineEnd === false) {
+    alert('¡LÍNEAAAA!\n¡Felicidades!\nJugaste e hiciste la primera LÍNEA en ' + numberCounter + ' turnos.');}
     firstLineEnd = true;     
 }
 
 function secondLineWin() {
-    alert('¡LÍNEAAAA!\n¡Felicidades!\nJugaste e hiciste la segunda LÍNEA en ' + numberCounter + ' turnos.');
+    if (firstLineEnd === false && secondLineEnd === false && thirdLineEnd === false) {
+    alert('¡LÍNEAAAA!\n¡Felicidades!\nJugaste e hiciste la segunda LÍNEA en ' + numberCounter + ' turnos.');}
     secondLineEnd = true;        
 }
 
 function thirdLineWin() {
-    alert('¡LÍNEAAAA!\n¡Felicidades!\nJugaste e hiciste la tercera LÍNEA en ' + numberCounter + ' turnos.');
+    if (firstLineEnd === false && secondLineEnd === false && thirdLineEnd === false){
+    alert('¡LÍNEAAAA!\n¡Felicidades!\nJugaste e hiciste la tercera LÍNEA en ' + numberCounter + ' turnos.');}
     thirdLineEnd = true;         
 }
 
