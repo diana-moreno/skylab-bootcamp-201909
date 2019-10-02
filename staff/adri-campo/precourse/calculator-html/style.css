@@ -1,0 +1,36 @@
+body {
+    background-color: darkgray;
+    max-width: 250px;
+}
+th {
+    height: 75px;
+    background-color: gray;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 36px;
+    text-align: right;
+    color:whitesmoke;
+    padding-right: 5px;
+}
+td {
+    height: 50px;
+    width: 50px;
+    background-color:mediumturquoise;
+    border:1px darkslategray;
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 20px;
+    color:white;
+    text-align: center;
+}
+td:hover {
+    background-color:darkturquoise;
+    border:1px lightblue;
+    color:whitesmoke
+}
+.operator {
+    background-color: orange;
+    color:white;
+}
+.operator:hover {
+    background-color:darkorange;
+    color:whitesmoke;
+}

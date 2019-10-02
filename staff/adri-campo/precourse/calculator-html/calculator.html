@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Calculator</title>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css" integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="index.css">
+        <script src="index.js"></script> 
+    </head>
+    <body>
+        <table>
+            <tr>
+              <th colspan="4" id="result">0</th>
+            </tr>
+            <tr>
+              <td onclick="reset()" colspan="2" id="reset">AC</td>
+              <td id="delete" onclick="borrar()"><i class="fas fa-arrow-left" style="font-size:24px;color:whitesmoke"></i></td>
+              <td class="operator" id="div" onclick="getOp(this.id)">&#247;</td>
+            </tr>
+            <tr>
+              <td onclick="writeRestult(this.innerHTML)">7</td>
+              <td onclick="writeRestult(this.innerHTML)">8</td>
+              <td onclick="writeRestult(this.innerHTML)">9</td>
+              <td class="operator"id="mult" onclick="getOp(this.id)">x</td>
+            </tr>
+            <tr>
+              <td onclick="writeRestult(this.innerHTML)">4</td>
+              <td onclick="writeRestult(this.innerHTML)">5</td>
+              <td onclick="writeRestult(this.innerHTML)">6</td>
+              <td class="operator" id="sum" onclick="getOp(this.id)">+</td>
+            </tr>
+            <tr>
+              <td onclick="writeRestult(this.innerHTML)">1</td>
+              <td onclick="writeRestult(this.innerHTML)">2</td>
+              <td onclick="writeRestult(this.innerHTML)">3</td>
+              <td class="operator" id="rest" onclick="getOp(this.id)">-</td>
+            </tr>
+            <tr>
+              <td colspan="2" onclick="writeRestult(this.innerHTML)">0</td>
+              <td onclick="writeRestult(this.innerHTML)">.</td>
+              <td class="operator" id="equal" onclick="endOps()">=</td>
+            </tr>
+          </table>
+    </body>
+</html>
