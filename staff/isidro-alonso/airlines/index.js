@@ -85,3 +85,10 @@ function finalDestinations(lastDestinations) {
 }
   
 finalDestinations();
+
+// versión slice sugerida por mi compañero en github
+function finDest() {
+    console.log(flights.slice(6,11));
+}
+
+finDest();
