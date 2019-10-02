@@ -4,7 +4,7 @@
 
 
 var playerCounter = 0;
-var playerS = []
+var playerSbingo = []
 var firstLineEnd = false;
 var secondLineEnd = false;
 var thirdLineEnd = false;
@@ -31,7 +31,8 @@ var bingoCard = [
 function jugador(){
     playerCounter++
     player = prompt('¡Tenemos un nuevo jugador!\n¿Cuál es tu nombre?');
-    playerS.push(player)
+    playerSbingo
+.push(player)
     alert('¡Bienvenido a SkyLab Bingo, ' + player.toUpperCase() + '!' + 
     '\nSu cartón tiene 3 líneas de 5 números cada una con valores entre 0 y 40:\n ' 
     + '\n1a línea: ' + bingoCardMod[0][0] + '-' + bingoCardMod[0][1] + '-' + bingoCardMod[0][2] + '-' + bingoCardMod[0][3] + '-' + bingoCardMod[0][4]
