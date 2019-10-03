@@ -1,5 +1,38 @@
+body {
+    background-color: aquamarine;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+header {
+    background-color: white;
+    position: relative;
+    top: 0%;
+    width: 80%;
+}
+
+article {
+    background-color: white;
+    position: relative;
+    width: 55%;
+    left: 0%;
+}
+
+aside {
+    background-color: white;
+    position: relative;
+    width: 20%;
+    left: 60%;
+}
+
+footer {
+    background-color: white;
+    position: relative;
+    bottom: 100%;
+    width: 80%;
+}
+
 figure {
-    width: 400px;
+    width: 300px;
     height: 100px;
     border: solid 1px;
 }
