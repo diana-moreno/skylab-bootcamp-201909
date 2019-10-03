@@ -1,0 +1,25 @@
+body {
+    background-color: aquamarine;
+}
+
+figure {
+    width: 350px;
+    height: 100px;
+    border: solid 1px;
+}
+
+header {
+    background-color: white;
+}
+
+article {
+    background-color: white;
+}
+
+aside {
+    background-color: white;
+}
+
+footer {
+    background-color: white;
+}
