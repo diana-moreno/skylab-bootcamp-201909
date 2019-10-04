@@ -1,0 +1,18 @@
+.title-landing{
+    text-align: center;
+    font-size: 3em;
+
+}
+.barra-nav > ul {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+
+}
+
+.barra-nav > ul > li {
+
+    border: 1px dotted black;
+
+}
