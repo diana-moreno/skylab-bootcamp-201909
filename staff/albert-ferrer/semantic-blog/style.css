@@ -1,23 +1,45 @@
-main{
-    background-image: url("https://cdn2.lamag.com/wp-content/uploads/sites/6/2019/04/universal-studios-1068x892.jpg");
-}
-
 
 .title-landing{
     text-align: center;
     font-size: 3em;
 
 }
+
+
+
+
+
 .barra-nav > ul {
     display: flex;
+    justify-content: space-around;
     list-style-type: none;
     margin: 0;
     padding: 0;
+    border: 1.5px solid gainsboro;
+    border-radius: 15px;
+
+
+
+    
+}
+#asidetitle{
+
+    display:grid;
+
+    
+    color: whitesmoke;
+    font-family: sans-serif;
+    font-size: 20px;
+    
+    float: right;
+    background-color: grey;
 
 }
 
-.barra-nav > ul > li {
-
-    border: 1px dotted black;
-
+footer > ul {
+    display: flex;
+    justify-content: space-around;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
