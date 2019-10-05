@@ -2,10 +2,9 @@
 .title-landing{
     text-align: center;
     font-size: 3em;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
 
 }
-
-
 
 
 
@@ -17,11 +16,17 @@
     padding: 0;
     border: 1.5px solid gainsboro;
     border-radius: 15px;
-
-
-
     
 }
+
+.seccion {
+
+    display: flex;
+
+    flex-direction: row;
+}
+
+
 #asidetitle{
 
     display:grid;
@@ -36,9 +41,9 @@
 
 }
 
-footer > ul {
+#contact {
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     list-style-type: none;
     margin: 0;
     padding: 0;
