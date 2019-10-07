@@ -5,7 +5,12 @@
 
 /* header */
 .header {
-  color: red;
+  background-color: rgba(154, 205, 50, 0.3);
+}
+
+.header__title {
+  font-family: Impact, Arial, Helvetica, sans-serif;
+  color: brown;
 }
 
 /* product list in main page */

@@ -1,11 +1,15 @@
 /* header */
 
+$color-title: brown;
+$bg-col: rgba($color: yellowgreen, $alpha: .3);;
+
 .header {
-    color: red;
+    background-color: $bg-col;
 }
 
 .header__title {
-
+    font-family: Impact, Arial, Helvetica, sans-serif;
+    color: $color-title;
 }
 
 .header__input {
