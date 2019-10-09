@@ -1,3 +1,10 @@
+/**
+ * returns the value of the first element in the provided array that satisfies the provided testing function.
+ * 
+ * @param {Array} array 
+ * @param {Function} expression 
+ */
+
 
 function find (array, expression) {
     if(!(array instanceof Array)) throw TypeError('no es una array')
@@ -9,4 +16,5 @@ function find (array, expression) {
             return array[i];
         }
     }
+    return undefined;
 }
