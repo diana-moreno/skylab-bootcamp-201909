@@ -1,7 +1,7 @@
 console.log('DEMO every');
 
 
-numbers = [2,4,6,8];
+var numbers = [2,4,6,8];
 
  
 function comprobarPares (n){
