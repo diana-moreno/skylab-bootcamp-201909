@@ -12,6 +12,8 @@
 
 
  function map(array,expression){
+     if (!(array instanceof Array))throw TypeError(array + ' is not an array');
+     if (!(expression instanceof Function))throw TypeError(expression + ' is not a function');
     newAr = [];
 
     for(let i = 0; i < array.length; i++){
