@@ -19,6 +19,20 @@ describe('forEach', function () {
         expect(result).toBe('123');
     });
 
+
+    it('should succeed on correct array and expression, multiplying all numbers by 10', function () {
+        var numbers = [1, 2, 3];
+        var result = [];
+        var multiply = function (number, index) {  result[index] = number * 10; };
+
+        forEach(numbers, multiply);
+
+        expect(result.length).toBe(numbers.length);
+
+        for (var i = 0; i < result.length; i++)
+            expect(result[i]).toBe(numbers[i] * 10);
+    });
+
     it('should fail on undefined array', function () {
         var array; //= [1, 2, 3];
         var expression = console.log;
