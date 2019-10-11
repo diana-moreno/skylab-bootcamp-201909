@@ -153,6 +153,59 @@ Person.call(jd, 'John', 'Doe');
 
 console.log(jd);
 
+// 7
+
+window.name = 'WIndOw';
+
+function salute() {
+	console.log(this.name + ': Hello!');
+}
+
+//salute(); // => window.salute();
+
+var hongda = { name: 'Hongda' }; // => window.hongda
+//hongda.salute = salute;
+//hongda.salute();
+
+//salute();
+
+//console.log(hongda.salute === salute);
+
+//window.salute();
+//window.hongda.salute();
+
+var pepito = { name: 'Pepito' };
+//pepito.salute = salute.bind(hongda);
+
+//window.pepito.salute();
+
+//var salute2 = pepito.salute;
+//window.salute2();
+
+//var salute3 = pepito.salute.bind(window);
+//salute3();
+
+function bind(context, expression) {
+	var binded = function() {
+		return expression.apply(context, arguments);
+    }
+
+	binded.unbind = function() {
+		return expression;
+    };
+
+	return binded;
+}
+
+debugger
+pepito.salute = bind(hongda, salute);
+//console.dir(salute);
+//console.dir(pepito.salute);
+
+var salute4 = pepito.salute.unbind();
+salute4();
+console.log(salute4 === salute);
+
 
 
 

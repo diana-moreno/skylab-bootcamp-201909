@@ -8,10 +8,12 @@ describe('slice', function() {
         expect(result instanceof Array).toBe(true);
 
         var expected = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        expect(numbers.length).toBe(expected.length);
         for (var i = 0; i < expected.length; i++)
             expect(numbers[i]).toBe(expected[i]);
 
-        expected = [4, 5, 6];
+        expected = [4, 5, 6, 7];
+        expect(result.length).toBe(expected.length);
         for (var i = 0; i < expected.length; i++)
             expect(result[i]).toBe(expected[i]);
     });
