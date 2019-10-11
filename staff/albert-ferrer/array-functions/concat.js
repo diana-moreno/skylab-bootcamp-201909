@@ -8,7 +8,7 @@
  * 
  */
 
-function concat(a) {
+function concat(a,b,c,d) {
     var arrays = a;
     var contador = a.length;
     for (let i = 1; i < arguments.length; i++) {

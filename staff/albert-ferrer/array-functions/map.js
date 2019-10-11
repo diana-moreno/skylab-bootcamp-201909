@@ -11,7 +11,7 @@
 
 
 
- function map(array,expression){
+ function map(array,expression){ debugger
      if (!(array instanceof Array))throw TypeError(array + ' is not an array');
      if (!(expression instanceof Function))throw TypeError(expression + ' is not a function');
     newAr = [];

@@ -7,7 +7,7 @@
  */
 
  
-function pop(array) {  
+function pop(array) {  debugger
     var lastItem= array[array.length-1];
     array.lenght=array.length-1;
     return lastItem;
