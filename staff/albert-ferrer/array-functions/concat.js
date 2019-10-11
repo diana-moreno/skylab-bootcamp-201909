@@ -8,7 +8,7 @@
  * 
  */
 
-function concat(a,b,c,d) {
+function concat(a) {
     var arrays = a;
     var contador = a.length;
     for (let i = 1; i < arguments.length; i++) {
@@ -16,7 +16,7 @@ function concat(a,b,c,d) {
             for (let j = 0; j < arguments[i].length; j++) {
                 arrays[contador] = arguments[i][j];
                 contador++;
-            }
+            } 
 
         } else {
             arrays[contador] = arguments[i];
