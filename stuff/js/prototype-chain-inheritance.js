@@ -115,3 +115,65 @@ console.log(jane.reproduce(james));
 
 var child = john.reproduce(jane);
 child instanceof Venus? child.name = 'Venus' : child.name = 'Mars';
+
+// 3
+
+function Person(name) {
+	this.name = name;
+}
+
+Person.prototype.toString = function() { return this.name };
+
+var ruben = {}; // new Object
+//Person.call(ruben, 'Ruben');
+//var initRuben = Person.bind(ruben);
+//initRuben('Ruben');
+
+var ruben = new Person('Ruben');
+
+console.log(ruben);
+console.log(ruben.constructor);
+console.log(ruben.toString());
+
+//Person.prototype.toString = undefined // WARN! this does not eliminates toString from the prototype
+delete Person.prototype.toString;
+
+console.log(ruben.toString());
+
+// 4
+
+function Person(name) {
+	this.name = name;
+}
+
+Person.prototype.toString = function() { return this.name; };
+
+function Venus(name) {
+	Person.call(this, name);
+}
+
+Venus.prototype = Object.create(Person.prototype);
+Venus.constructor = Venus;
+
+Venus.prototype.toString = function() { return this.name + ' (♀)'; };
+
+var noly = new Venus('Noly');
+console.log(noly.toString());
+
+function Mars(name) {
+	Person.call(this, name);
+}
+
+Mars.prototype = Object.create(Person.prototype);
+Mars.constructor = Mars;
+
+Mars.prototype.toString = function() { return this.name + ' (♂)'; };
+
+var albert = new Mars('Albert');
+console.log(albert.toString());
+
+console.log(noly.toString === albert.toString); // toString Venus vs Mars
+console.log(noly.__proto__.toString === albert.__proto__.toString); // toString Venus vs Mars
+console.log(noly.toString === noly.__proto__.toString); // true
+console.log(noly.__proto__.__proto__.toString === albert.__proto__.__proto__.toString); // true
+console.log(noly.__proto__.__proto__.toString()); // WARN! undefined, it applies on the last __proto__ of this chain, not the instance of noly itself!
