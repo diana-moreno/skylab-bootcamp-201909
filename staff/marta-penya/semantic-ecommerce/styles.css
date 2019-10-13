@@ -139,6 +139,7 @@ button:active{
     width: 100%;
     flex-direction: row;
     justify-content: center;
+    padding-bottom: 4%;
     
 }
 
@@ -231,7 +232,51 @@ button:active{
     
 }
 
+/* pay - cart */
 
+
+
+.pay-container{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: space-between;
+    font-size: 30px;
+    height: 60%;
+
+}
+.pay-container label{
+    width: 40%;
+}
+.pay-container select{
+    width: 40%;
+    border-radius: 15px;
+}
+
+/* orders */
+.orders{
+    font-size: 3rem;
+}
+.orders-list{
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.orders-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding-bottom: 4%;
+    
+}
+
+.orders-container img{
+    width: 40%;
+    border-radius: 15px;
+}
 /* --------------footer style --------------*/
 
 footer{
