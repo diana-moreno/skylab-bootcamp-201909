@@ -1,0 +1,72 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.results {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 1rem;
+  margin: 0.5rem;
+  list-style: none;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.results__item {
+  border-radius: 1rem;
+  margin: 1rem;
+  width: 32rem;
+}
+
+.item {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: whitesmoke;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+.item__image {
+  display: block;
+  border-radius: 0.2rem;
+  margin: 0.1rem 0.1rem 0.1rem 0.1rem;
+  max-width: 12rem;
+  min-width: 10rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.item__contdata {
+  padding: 0.2rem;
+}
+.item__contdata-title {
+  color: red;
+}
+.item__contdata-category {
+  color: black;
+}
+.item__contdata-zone {
+  color: black;
+}
+.item__contdata-address {
+  color: black;
+}
+.item__contvotes {
+  padding: 0.3rem;
+}
+.item__contvotes-vote {
+  color: whitesmoke;
+  border: 0.1rem solid black;
+  border-radius: 0.2rem;
+  background-color: green;
+  margin-left: 2.5rem;
+  text-align: center;
+  font-size: 1.5rem;
+}
+.item__contvotes-numvotes {
+  font-size: 0.8rem;
+  margin-left: 2rem;
+  text-align: center;
+}
+
+/*# sourceMappingURL=index.css.map */
