@@ -4,6 +4,7 @@
 }
 
 .header {
+  font-family: helvetica;
   background-color: orange;
   padding: 0.8rem;
 }
@@ -16,6 +17,9 @@
   color: white;
   padding: 0.5rem;
 }
+.header__options-login:hover {
+  color: #822b00;
+}
 .header__options-register {
   text-decoration: none;
   color: white;
@@ -23,11 +27,16 @@
   padding: 0.5rem;
   border-radius: 0.3rem;
 }
+.header__options-register:hover {
+  color: #822b00;
+  border-color: #822b00;
+}
 .header__title {
   text-align: center;
   margin-top: 1rem;
 }
 .header__slogan {
+  font-size: 1rem;
   text-align: center;
   color: white;
 }
