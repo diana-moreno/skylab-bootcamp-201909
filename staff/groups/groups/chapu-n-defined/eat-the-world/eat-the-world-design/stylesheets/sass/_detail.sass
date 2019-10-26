@@ -1,0 +1,56 @@
+.detail
+  display: flex
+  justify-content: center
+  align-items: center
+  flex-direction: column
+
+  &__header-container
+    position: relative
+
+    & > img
+      width: 100%
+
+  &__title
+    text-align: center
+    font-size: 1.2rem
+    color: #686161
+    border-bottom: 1px solid #686161
+
+  &__puntuation
+    position: absolute
+    top: 0
+    right: 0
+    font-size: 2rem
+    padding: 1rem
+    margin: 0
+    background-color: #4CAF50
+    color: #ffffff
+    font-weight: 700
+
+  &__columns-container
+    display: flex
+    justify-content: space-evenly
+    margin-left: 1.5rem
+
+  &__column-container
+    width: 50%
+
+  &__detail-title
+    color: #E91E63
+    font-size: 1.1rem
+
+@media only screen and (min-width: 576px)
+  .detail
+
+    &__title
+      font-size: 2rem
+
+    &__columns-container
+      min-width: 850px
+      margin-left: 0
+
+    &__detail-title
+      font-size: 1.7rem
+
+    &__column-container
+      width: unset
