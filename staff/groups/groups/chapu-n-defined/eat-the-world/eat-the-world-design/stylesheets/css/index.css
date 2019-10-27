@@ -229,6 +229,14 @@ body {
   background-size: cover;
 }
 
+.login-register {
+  letter-spacing: 0.03rem;
+  text-align: center;
+  margin-top: 3%;
+  color: white;
+  font-size: 16px;
+}
+
 .login-form {
   width: 50%;
   border: 3px solid white;
@@ -263,19 +271,20 @@ body {
 .login-form__title {
   text-align: center;
   margin-top: 0;
-  letter-spacing: 0.6rem;
+  letter-spacing: 0.4rem;
   color: white;
   font-size: 2rem;
   margin-bottom: 1%;
 }
 .login-form__petition {
+  letter-spacing: 0.02rem;
   text-align: center;
   margin-top: 6%;
   color: white;
   font-size: 15px;
 }
 .login-form__button {
-  margin-top: 1%;
+  margin-top: 3%;
   background-color: transparent;
   border: 0px;
   cursor: pointer;
@@ -283,10 +292,44 @@ body {
 
 .fa-sign-in-alt {
   color: white;
-  font-size: 20px;
+  font-size: 25px;
 }
 
 .fa-sign-in-alt:hover {
+  color: #ffa250fa;
+}
+
+.link {
+  text-decoration: none;
+  color: white;
+}
+
+.link:hover {
+  color: #ffa250fa;
+}
+
+.go-back {
+  display: inline-flex;
+}
+.go-back__text {
+  text-align: center;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+}
+.go-back__button {
+  margin-top: 1%;
+  background-color: transparent;
+  border: 0px;
+  cursor: pointer;
+}
+
+.fa-arrow-left {
+  color: white;
+  font-size: 20px;
+}
+
+.fa-arrow-left:hover {
   color: #ffa250fa;
 }
 
