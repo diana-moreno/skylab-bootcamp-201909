@@ -230,6 +230,7 @@ body {
 }
 
 .login-form {
+  width: 50%;
   border: 3px solid white;
   padding: 2rem;
   border-radius: 0.8rem;
@@ -239,6 +240,7 @@ body {
   font-size: 1rem;
   padding: 1%;
   width: 80%;
+  max-width: 350px;
   border-radius: 6px;
   border-style: none;
   background: url("https://cdn5.dibujos.net/dibujos/pintar/sobre_2.png") no-repeat scroll 5px 5px;
@@ -250,6 +252,7 @@ body {
   font-size: 1rem;
   padding: 1%;
   width: 80%;
+  max-width: 350px;
   border-radius: 6px;
   border-style: none;
   background: url("http://simpleicon.com/wp-content/uploads/key-4.png") no-repeat scroll 6px 6px;
@@ -285,6 +288,12 @@ body {
 
 .fa-sign-in-alt:hover {
   color: #ffa250fa;
+}
+
+@media only screen and (min-width: 576px) {
+  .login-form__petition {
+    font-size: 20px;
+  }
 }
 
 /*# sourceMappingURL=index.css.map */
