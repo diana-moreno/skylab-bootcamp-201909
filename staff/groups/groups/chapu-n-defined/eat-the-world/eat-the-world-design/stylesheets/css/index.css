@@ -20,7 +20,7 @@ body {
   font-size: 1.3rem;
 }
 .header__options-login:hover {
-  color: #6e7e86;
+  color: #451a00e9;
 }
 .header__options-register {
   text-decoration: none;
@@ -31,14 +31,14 @@ body {
   font-size: 1.3rem;
 }
 .header__options-register:hover {
-  color: #6e7e86;
-  border-color: #6e7e86;
+  color: #451a00e9;
+  border-color: #451a00e9;
 }
 .header__title {
   text-align: center;
   margin-top: 1rem;
   color: white;
-  letter-spacing: 1rem;
+  letter-spacing: 0.8rem;
   font-size: 2.5rem;
 }
 .header__slogan {
@@ -69,6 +69,10 @@ body {
 .fa-utensils {
   font-size: 1.5rem;
   color: white;
+}
+
+.fa-utensils:hover {
+  color: #ffa250fa;
 }
 
 .results {
@@ -210,6 +214,86 @@ body {
   text-align: center;
   color: #686161;
   font-size: 2rem;
+}
+
+.login {
+  padding: 0.8rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  text-align-last: center;
+  background: url("../../images/40312.jpg");
+  background-position: center;
+  background-size: cover;
+}
+
+.login-form {
+  width: 50%;
+  border: 3px solid white;
+  padding: 2rem;
+  border-radius: 0.8rem;
+  background-color: #482d1c6d;
+}
+.login-form__email {
+  font-size: 1rem;
+  padding: 1%;
+  width: 80%;
+  max-width: 350px;
+  border-radius: 6px;
+  border-style: none;
+  background: url("https://cdn5.dibujos.net/dibujos/pintar/sobre_2.png") no-repeat scroll 5px 5px;
+  background-color: #ffffff;
+  background-size: 17px 17px;
+  padding-left: 30px;
+}
+.login-form__password {
+  font-size: 1rem;
+  padding: 1%;
+  width: 80%;
+  max-width: 350px;
+  border-radius: 6px;
+  border-style: none;
+  background: url("http://simpleicon.com/wp-content/uploads/key-4.png") no-repeat scroll 6px 6px;
+  background-color: #ffffff;
+  background-size: 15px 15px;
+  padding-left: 30px;
+}
+.login-form__title {
+  text-align: center;
+  margin-top: 0;
+  letter-spacing: 0.6rem;
+  color: white;
+  font-size: 2rem;
+  margin-bottom: 1%;
+}
+.login-form__petition {
+  text-align: center;
+  margin-top: 6%;
+  color: white;
+  font-size: 15px;
+}
+.login-form__button {
+  margin-top: 1%;
+  background-color: transparent;
+  border: 0px;
+  cursor: pointer;
+}
+
+.fa-sign-in-alt {
+  color: white;
+  font-size: 20px;
+}
+
+.fa-sign-in-alt:hover {
+  color: #ffa250fa;
+}
+
+@media only screen and (min-width: 576px) {
+  .login-form__petition {
+    font-size: 20px;
+  }
 }
 
 /*# sourceMappingURL=index.css.map */
