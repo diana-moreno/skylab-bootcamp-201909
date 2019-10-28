@@ -15,8 +15,15 @@ function searchRestaurants(city, query, callback) {
       console.log(result2)
 
       result2 = result2.restaurants.map(
-        ({restaurant:{ average_cost_for_two, currency, cuisines, highlights, location, name, url, featured_image, timings }})=>
-          ({ average_cost_for_two, currency, cuisines, highlights, location, name, url, featured_image, timings }))
+        ({restaurant:{ id, average_cost_for_two, currency, cuisines, highlights, location, name, url, featured_image, timings }})=>
+          ({ id, average_cost_for_two, currency, cuisines, highlights, location, name, url, featured_image, timings }))
+
+      result2.forEach(result => {
+        let indexDot = result.location.address.indexOf(',')
+        if(indexDot) {
+          result.location.address = result.location.address.slice(0, indexDot)
+        }
+      })
 
       console.log(result2)
       callback(undefined, result2)

@@ -1,7 +1,9 @@
 const { Component } = React
 
 class App extends Component {
-  state = {}
+  state = {
+    restaurants: []
+  }
 
 
   handleRestaurants = (city, query) => {
@@ -10,16 +12,23 @@ class App extends Component {
         console.log(error.message)
       } else {
         results.forEach(elem => console.log(elem))
+        this.setState({
+          ...this.state,
+          restaurants: results
+        })
       }
 
     })
   }
 
   render() {
+
+    const { state: { restaurants }, handleRestaurants } = this
+
     return(
       <>
-        <Search search={this.handleRestaurants}/>
-        <Results />
+        <Search search={handleRestaurants}/>
+        <Results restaurants={restaurants}/>
         <Detail />
       </>
     )
