@@ -80,7 +80,6 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   padding: 1rem;
-  margin: 0.5rem;
   list-style: none;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
@@ -109,38 +108,69 @@ body {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 .item__contdata {
-  padding: 0.2rem;
+  padding-left: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 }
 .item__contdata-title {
   color: red;
+  margin: 0.5rem 0;
 }
 .item__contdata-category {
   color: black;
+  margin: 0;
 }
 .item__contdata-zone {
   color: black;
+  margin: 0;
 }
 .item__contdata-address {
   color: black;
+  margin: 0.3rem 0.2rem;
 }
 .item__contvotes {
   padding: 0.3rem;
+  position: relative;
 }
 .item__contvotes-vote {
-  color: whitesmoke;
-  border: 0.1rem solid black;
-  border-radius: 0.2rem;
-  background-color: green;
-  margin-left: 2.5rem;
-  text-align: center;
+  position: absolute;
+  top: 0;
+  right: 0;
   font-size: 1.5rem;
+  padding: 0.3rem;
+  margin: 0;
+  background-color: #4CAF50;
+  color: #ffffff;
+  font-weight: 700;
 }
 .item__contvotes-numvotes {
   font-size: 0.8rem;
   margin-left: 2rem;
   text-align: center;
+  margin-top: 3rem;
 }
 
+@media only screen and (min-width: 576px) {
+  .item {
+    height: 12rem;
+  }
+  .item__contdata-category {
+    margin: unset;
+  }
+  .item__contdata-title {
+    margin: unset;
+  }
+  .item__contdata-zone {
+    margin: unset;
+  }
+  .item__contdata-address {
+    margin: unset;
+  }
+  .item__contvotes-vote {
+    font-size: 2rem;
+  }
+}
 .detail {
   display: flex;
   justify-content: center;
@@ -183,41 +213,25 @@ body {
   margin-left: 1.5rem;
 }
 .detail__column-container {
-  width: 50%;
+  width: 33.33%;
 }
 .detail__detail-title {
   color: #E91E63;
   font-size: 1.1rem;
+}
+.detail__featured > p {
+  margin: 0;
 }
 
 @media only screen and (min-width: 576px) {
   .detail__title {
     font-size: 2rem;
   }
-  .detail__columns-container {
-    _min-width: 850px;
-    margin-left: 0;
-    width: 38rem;
-    height: 19rem;
-  }
   .detail__detail-title {
     font-size: 1.7rem;
   }
-  .detail__column-container {
-    width: unset;
-  }
 }
-.comments {
-  width: 38rem;
-}
-.comments__title {
-  text-align: center;
-  color: #686161;
-  font-size: 2rem;
-}
-
 .login {
-  padding: 0.8rem;
   display: flex;
   justify-content: center;
   align-items: center;

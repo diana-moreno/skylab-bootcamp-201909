@@ -40,11 +40,16 @@
     margin-left: 1.5rem
 
   &__column-container
-    width: 50%
+    width: 33.33%
 
   &__detail-title
     color: #E91E63
     font-size: 1.1rem
+
+  &__featured
+
+    & >p
+      margin: 0
 
 @media only screen and (min-width: 576px)
   .detail
@@ -52,14 +57,5 @@
     &__title
       font-size: 2rem
 
-    &__columns-container
-      _min-width: 850px
-      margin-left: 0
-      width: 38rem
-      height: 19rem
-
     &__detail-title
       font-size: 1.7rem
-
-    &__column-container
-      width: unset
