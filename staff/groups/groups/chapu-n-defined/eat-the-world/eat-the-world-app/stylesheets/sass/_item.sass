@@ -1,0 +1,79 @@
+.item
+    box-sizing: border-box
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    background-color: whitesmoke
+    text-decoration: none
+    cursor: pointer
+    padding: .5rem
+
+    &__image
+        display: block
+        border-radius: .2rem
+        margin: .1rem .1rem .1rem .1rem
+        max-width: 12rem
+        min-width: 10rem
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)
+
+    &__contdata
+        padding-left: .5rem
+        display: flex
+        flex-direction: column
+        justify-content: space-evenly
+
+    &__contdata-title
+        color: red
+        margin: 0.5rem 0
+
+    &__contdata-category
+        color: black
+        margin: 0
+
+    &__contdata-zone
+        color: black
+        margin: 0
+
+    &__contdata-address
+        color: black
+        margin: 0.3rem 0.2rem
+
+    &__contvotes
+        padding: .3rem
+        position: relative
+
+    &__contvotes-vote
+        position: absolute
+        top: 0
+        right: 0
+        font-size: 1.5rem
+        padding: 0.3rem
+        margin: 0
+        background-color: #4CAF50
+        color: #ffffff
+        font-weight: 700
+
+    &__contvotes-numvotes
+        font-size: .8rem
+        margin-left: 2rem
+        text-align: center
+        margin-top: 3rem
+
+@media only screen and (min-width: 576px)
+    .item
+        height: 12rem
+
+        &__contdata-category
+            margin: unset
+
+        &__contdata-title
+            margin: unset
+
+        &__contdata-zone
+            margin: unset
+
+        &__contdata-address
+            margin: unset
+
+        &__contvotes-vote
+            font-size: 2rem

@@ -1,0 +1,116 @@
+.login
+    display: flex
+    justify-content: center
+    align-items: center
+    flex-direction: column
+    height: 100vh
+    text-align-last: center
+    background: url('../../images/40312.jpg')
+    background-position: center
+    background-size: cover
+
+.login-register
+    letter-spacing: .03rem
+    text-align: center
+    margin-top: 3%
+    color: white
+    font-size: 16px
+
+
+.login-form
+    width: 50%
+    border: 3px solid white
+    padding: 2rem
+    border-radius: .8rem
+    background-color: #482d1c6d
+
+
+
+    &__email
+        font-size: 1rem
+        padding: 1%
+        width: 80%
+        max-width: 350px
+        border-radius: 6px
+        border-style: none
+        background: url("https://cdn5.dibujos.net/dibujos/pintar/sobre_2.png") no-repeat scroll 5px 5px
+        background-color: #ffffff
+        background-size: 17px 17px
+        padding-left: 30px
+
+    &__password
+        font-size: 1rem
+        padding: 1%
+        width: 80%
+        max-width: 350px
+        border-radius: 6px
+        border-style: none
+        background: url("http://simpleicon.com/wp-content/uploads/key-4.png") no-repeat scroll 6px 6px
+        background-color: #ffffff
+        background-size: 15px 15px
+        padding-left: 30px
+
+    &__title
+        text-align: center
+        margin-top: 0
+        letter-spacing: .4rem
+        color: white
+        font-size: 2rem
+        margin-bottom: 1%
+
+    &__petition
+        letter-spacing: .02rem
+        text-align: center
+        margin-top: 6%
+        color: white
+        font-size: 15px
+
+    &__button
+        margin-top: 3%
+        background-color: transparent
+        border: 0px
+        cursor: pointer
+
+
+
+.fa-sign-in-alt
+    color: white
+    font-size: 25px
+
+.fa-sign-in-alt:hover
+  color: #ffa250fa
+
+.link
+    text-decoration: none
+    color: white
+
+.link:hover
+    color: #ffa250fa
+
+.go-back
+    display: inline-flex
+
+    &__text
+        text-align: center
+        color: white
+        font-size: 15px
+        font-weight: bold
+
+    &__button
+        margin-top: 1%
+        background-color: transparent
+        border: 0px
+        cursor: pointer
+
+.fa-arrow-left
+    color: white
+    font-size: 20px
+
+.fa-arrow-left:hover
+    color: #ffa250fa
+
+
+@media only screen and (min-width: 576px)
+    .login-form
+        &__petition
+            font-size: 20px
