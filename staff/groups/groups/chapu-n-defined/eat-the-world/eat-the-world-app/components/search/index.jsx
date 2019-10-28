@@ -1,4 +1,4 @@
-function Search() {
+function Search( {search}) {
   return (
     <header className="header">
       <section className="header__options">
@@ -10,7 +10,12 @@ function Search() {
       <form className="header__form">
         <input type="search" className="header__form-search" name="query" placeholder="introduce a city name"/>
         <button className="header__form-button">
-          <i className="fas fa-utensils"></i>
+          <i
+          onClick={event => {
+            event.preventDefault()
+            search()
+          }}
+          className="fas fa-utensils"></i>
         </button>
       </form>
     </header>
