@@ -51,6 +51,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 .header__form-search {
   font-size: 1rem;
@@ -58,6 +59,8 @@ body {
   width: 20rem;
   border-radius: 6px;
   border-style: none;
+  margin: 0 1rem;
+  margin-bottom: 0.7rem;
 }
 .header__form-button {
   border-style: none;
@@ -66,6 +69,14 @@ body {
   background-color: transparent;
 }
 
+@media only screen and (min-width: 576px) {
+  .header__form {
+    flex-direction: row;
+  }
+  .header__form-search {
+    margin-bottom: unset;
+  }
+}
 .fa-utensils {
   font-size: 1.5rem;
   color: white;

@@ -11,13 +11,11 @@ class App extends Component {
       if(error) {
         console.log(error.message)
       } else {
-        results.forEach(elem => console.log(elem))
         this.setState({
           ...this.state,
           restaurants: results
         })
       }
-
     })
   }
 

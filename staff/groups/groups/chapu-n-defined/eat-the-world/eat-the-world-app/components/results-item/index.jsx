@@ -11,7 +11,7 @@ function ResultsItem({ restaurant }) {
           <h4 className="item__contdata-zone">{restaurant.location.city}</h4>
           <p className="item__contdata-address">{restaurant.location.address}</p>
         </div>
-        <p className="item__contvotes-vote">4.7</p>
+        <p className="item__contvotes-vote">{restaurant.user_rating.aggregate_rating}</p>
       </a>
     </li>
   )
