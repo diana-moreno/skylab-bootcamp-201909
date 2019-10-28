@@ -1,0 +1,356 @@
+body {
+  margin: 0;
+}
+
+.header {
+  font-family: helvetic;
+  padding: 0.8rem;
+  background: url("../../images/40312.jpg");
+  background-position: center;
+  background-size: cover;
+}
+.header__options {
+  text-align: right;
+  margin-top: 0.4rem;
+}
+.header__options-login {
+  text-decoration: none;
+  color: white;
+  padding: 0.5rem;
+  font-size: 1.3rem;
+}
+.header__options-login:hover {
+  color: #451a00e9;
+}
+.header__options-register {
+  text-decoration: none;
+  color: white;
+  border: white solid 0.2rem;
+  padding: 0.5rem;
+  border-radius: 0.3rem;
+  font-size: 1.3rem;
+}
+.header__options-register:hover {
+  color: #451a00e9;
+  border-color: #451a00e9;
+}
+.header__title {
+  text-align: center;
+  margin-top: 1rem;
+  color: white;
+  letter-spacing: 0.8rem;
+  font-size: 2.5rem;
+}
+.header__slogan {
+  font-size: 1.4rem;
+  text-align: center;
+  color: white;
+}
+.header__form {
+  margin: 2rem 0 1rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.header__form-search {
+  font-size: 1rem;
+  padding: 0.5rem;
+  width: 20rem;
+  border-radius: 6px;
+  border-style: none;
+}
+.header__form-button {
+  border-style: none;
+  margin-left: 1rem;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+.fa-utensils {
+  font-size: 1.5rem;
+  color: white;
+}
+
+.fa-utensils:hover {
+  color: #ffa250fa;
+}
+
+.results {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 1rem;
+  list-style: none;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.results__item {
+  border-radius: 1rem;
+  margin: 1rem;
+  width: 32rem;
+}
+
+.item {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: whitesmoke;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+.item__image {
+  display: block;
+  border-radius: 0.2rem;
+  margin: 0.1rem 0.1rem 0.1rem 0.1rem;
+  max-width: 12rem;
+  min-width: 10rem;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.item__contdata {
+  padding-left: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+.item__contdata-title {
+  color: red;
+  margin: 0.5rem 0;
+}
+.item__contdata-category {
+  color: black;
+  margin: 0;
+}
+.item__contdata-zone {
+  color: black;
+  margin: 0;
+}
+.item__contdata-address {
+  color: black;
+  margin: 0.3rem 0.2rem;
+}
+.item__contvotes {
+  padding: 0.3rem;
+  position: relative;
+}
+.item__contvotes-vote {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 1.5rem;
+  padding: 0.3rem;
+  margin: 0;
+  background-color: #4CAF50;
+  color: #ffffff;
+  font-weight: 700;
+}
+.item__contvotes-numvotes {
+  font-size: 0.8rem;
+  margin-left: 2rem;
+  text-align: center;
+  margin-top: 3rem;
+}
+
+@media only screen and (min-width: 576px) {
+  .item {
+    height: 12rem;
+  }
+  .item__contdata-category {
+    margin: unset;
+  }
+  .item__contdata-title {
+    margin: unset;
+  }
+  .item__contdata-zone {
+    margin: unset;
+  }
+  .item__contdata-address {
+    margin: unset;
+  }
+  .item__contvotes-vote {
+    font-size: 2rem;
+  }
+}
+.detail {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: #e5e3dd;
+}
+.detail__header-container {
+  position: relative;
+}
+.detail__header-container > img {
+  width: 100%;
+}
+.detail__title {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #686161;
+  border-bottom: 1px solid #686161;
+}
+.detail__puntuation {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 2rem;
+  padding: 1rem;
+  margin: 0;
+  background-color: #4CAF50;
+  color: #ffffff;
+  font-weight: 700;
+}
+.detail__main-container {
+  border: 7px solid white;
+  margin-top: 1rem;
+  background-color: #ffffffc7;
+  margin-bottom: 4rem;
+}
+.detail__columns-container {
+  display: flex;
+  justify-content: space-evenly;
+  margin-left: 1.5rem;
+}
+.detail__column-container {
+  width: 33.33%;
+}
+.detail__detail-title {
+  color: #E91E63;
+  font-size: 1.1rem;
+}
+.detail__featured > p {
+  margin: 0;
+}
+
+@media only screen and (min-width: 576px) {
+  .detail__title {
+    font-size: 2rem;
+  }
+  .detail__detail-title {
+    font-size: 1.7rem;
+  }
+}
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  text-align-last: center;
+  background: url("../../images/40312.jpg");
+  background-position: center;
+  background-size: cover;
+}
+
+.login-register {
+  letter-spacing: 0.03rem;
+  text-align: center;
+  margin-top: 3%;
+  color: white;
+  font-size: 16px;
+}
+
+.login-form {
+  width: 50%;
+  border: 3px solid white;
+  padding: 2rem;
+  border-radius: 0.8rem;
+  background-color: #482d1c6d;
+}
+.login-form__email {
+  font-size: 1rem;
+  padding: 1%;
+  width: 80%;
+  max-width: 350px;
+  border-radius: 6px;
+  border-style: none;
+  background: url("https://cdn5.dibujos.net/dibujos/pintar/sobre_2.png") no-repeat scroll 5px 5px;
+  background-color: #ffffff;
+  background-size: 17px 17px;
+  padding-left: 30px;
+}
+.login-form__password {
+  font-size: 1rem;
+  padding: 1%;
+  width: 80%;
+  max-width: 350px;
+  border-radius: 6px;
+  border-style: none;
+  background: url("http://simpleicon.com/wp-content/uploads/key-4.png") no-repeat scroll 6px 6px;
+  background-color: #ffffff;
+  background-size: 15px 15px;
+  padding-left: 30px;
+}
+.login-form__title {
+  text-align: center;
+  margin-top: 0;
+  letter-spacing: 0.4rem;
+  color: white;
+  font-size: 2rem;
+  margin-bottom: 1%;
+}
+.login-form__petition {
+  letter-spacing: 0.02rem;
+  text-align: center;
+  margin-top: 6%;
+  color: white;
+  font-size: 15px;
+}
+.login-form__button {
+  margin-top: 3%;
+  background-color: transparent;
+  border: 0px;
+  cursor: pointer;
+}
+
+.fa-sign-in-alt {
+  color: white;
+  font-size: 25px;
+}
+
+.fa-sign-in-alt:hover {
+  color: #ffa250fa;
+}
+
+.link {
+  text-decoration: none;
+  color: white;
+}
+
+.link:hover {
+  color: #ffa250fa;
+}
+
+.go-back {
+  display: inline-flex;
+}
+.go-back__text {
+  text-align: center;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+}
+.go-back__button {
+  margin-top: 1%;
+  background-color: transparent;
+  border: 0px;
+  cursor: pointer;
+}
+
+.fa-arrow-left {
+  color: white;
+  font-size: 20px;
+}
+
+.fa-arrow-left:hover {
+  color: #ffa250fa;
+}
+
+@media only screen and (min-width: 576px) {
+  .login-form__petition {
+    font-size: 20px;
+  }
+}
+
+/*# sourceMappingURL=index.css.map */
