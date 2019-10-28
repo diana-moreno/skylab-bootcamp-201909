@@ -13,7 +13,7 @@ function Search( {search}) {
           <i
           onClick={event => {
             event.preventDefault()
-            search()
+            search('Chicago', 'pizza')
           }}
           className="fas fa-utensils"></i>
         </button>
