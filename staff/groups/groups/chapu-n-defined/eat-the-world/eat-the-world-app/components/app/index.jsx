@@ -1,20 +1,32 @@
 const { Component } = React
 
 class App extends Component {
-  state = {}
+  state = {
+    restaurants: []
+  }
 
 
-  llamada = () => {
-    pruebaCall(result => {
-      console.log(result)
+  handleRestaurants = (city, query) => {
+    searchRestaurants(city, query, (error, results) => {
+      if(error) {
+        console.log(error.message)
+      } else {
+        this.setState({
+          ...this.state,
+          restaurants: results
+        })
+      }
     })
   }
 
   render() {
+
+    const { state: { restaurants }, handleRestaurants } = this
+
     return(
       <>
-        <Search search={this.llamada}/>
-        <Results />
+        <Search search={handleRestaurants}/>
+        <Results restaurants={restaurants}/>
         <Detail />
       </>
     )

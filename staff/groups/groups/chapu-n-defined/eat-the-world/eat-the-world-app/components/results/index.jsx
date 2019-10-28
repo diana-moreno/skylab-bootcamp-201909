@@ -1,8 +1,11 @@
-function Results() {
+function Results({ restaurants }) {
   return(
     <section className="container">
       <ul className="results">
-        <ResultsItem />
+      {restaurants && restaurants.map((restaurant) => (
+        <ResultsItem key={restaurant.id} restaurant={restaurant}/>
+        ))
+      }
       </ul>
     </section>
   )
