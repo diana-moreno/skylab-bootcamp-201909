@@ -18,7 +18,6 @@ function retrieveFavs(id, token, callback) {
           if (result2.error) return callback(error = new Error(result2.error))
 
           favs[i] = result2
-    console.log(favs)
           if (++counter === favs.length) callback(undefined, favs) // this condicional solves to repeat the callback in each iteration
         })
       })

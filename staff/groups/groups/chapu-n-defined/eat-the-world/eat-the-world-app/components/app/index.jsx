@@ -62,7 +62,8 @@ class App extends Component {
   }
 
   handleRestaurants = (city, query) => {
-    searchRestaurants(city, query, (error, results) => {
+    const { id, token } = sessionStorage
+    searchRestaurants(city, query, id, token, (error, results) => {
       if (error) {
         console.log(error.message)
       } else {
@@ -94,7 +95,7 @@ class App extends Component {
     const { id, token } = sessionStorage
     this.paintHeartsFav(idItem)
     toggleFavs(id, token, idItem, (error, result) => {})
-    retrieveFavs(id, token, (error, result) => {})
+    //retrieveFavs(id, token, (error, result) => {})
   }
 
   render() {
