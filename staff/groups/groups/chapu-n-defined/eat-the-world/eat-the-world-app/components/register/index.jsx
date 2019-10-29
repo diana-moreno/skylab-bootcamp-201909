@@ -1,6 +1,6 @@
 function Register ({onRegister, onBack}) {
     return <section className="register">
-        <form onSubmit={function (event) {
+        <form className='register__form' onSubmit={function (event) {
             event.preventDefault()
 
             const { name: { value: name }, surname: { value: surname }, email: { value: email }, password: { value: password } } = event.target
@@ -12,11 +12,14 @@ function Register ({onRegister, onBack}) {
             <input className="register__field" type="text" name="surname" placeholder="surname"/><br />
             <input className="register__field" type="email" name="email" placeholder="e-mail"/><br />
             <input className="register__field" type="password" name="password" placeholder="password"/><br />
-            <div className="register__preferences">
-                <h1 className="register__title">Select your interests:</h1>
-                <br />
-            </div>
             <button className="register__submit">Register</button>
         </form>
+        <section className="goBack">
+            <a className="goBack__button" href="#" onClick={event => {
+                event.preventDefault()
+
+                onBack()
+            }}><i className="fas fa-arrow-left">Back</i></a>
+        </section>
     </section>
 }
