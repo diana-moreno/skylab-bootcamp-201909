@@ -2,6 +2,10 @@ function ResultsItem({ restaurant, handleFavorite }) {
   return(
     <li className="results__item">
       <a href="#" className="item">
+      {/* <a href="#" className="item" onClick={event => {
+        event.preventDefault()
+        {<Detail key={restaurant.id} restaurant={restaurant}/>}
+      }}> */}
       <i className={restaurant.isFav
                     ? "item__favorite fas fa-heart"
                     : 'item__favorite far fa-heart'}

@@ -104,8 +104,7 @@ class App extends Component {
 
     return ( <
       > { view == 'search' && <Search search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/> } { view == 'login' && <Login onLogin={handleLogin} onBack={handleBackToSearch} onRegister={handleGoToRegister}/> } { view == 'register' && <Register onRegister={handleRegister} onBack={handleBackToSearch}/> }
-      <Results restaurants={restaurants} handleFavorite={handleFavorite}/> <
-      Detail / >
+      <Results restaurants={restaurants} handleFavorite={handleFavorite}/> 
       <
       />
     )

@@ -17,8 +17,8 @@ function searchRestaurants(city, query, id, token, callback) {
       if (resultRestaurants.error) return callback(new Error(resultRestaurants.error))
 
       resultRestaurants = resultRestaurants.restaurants.map(
-        ({restaurant:{ id, average_cost_for_two, currency, cuisines, highlights, location, name, url, featured_image, timings, user_rating }})=>
-          ({ id, average_cost_for_two, currency, cuisines, highlights, location, name, url, featured_image, timings, user_rating }))
+        ({restaurant:{ id, average_cost_for_two, currency, cuisines, highlights, location, name, url, featured_image, timings, user_rating, phone_numbers, establishment }})=>
+          ({ id, average_cost_for_two, currency, cuisines, highlights, location, name, url, featured_image, timings, user_rating, phone_numbers, establishment }))
 
       resultRestaurants.forEach(result => {
         let indexDot = result.location.address.indexOf(',')
