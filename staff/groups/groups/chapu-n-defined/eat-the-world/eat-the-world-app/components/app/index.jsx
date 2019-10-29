@@ -1,12 +1,25 @@
 const { Component } = React
 
 class App extends Component {
+<<<<<<< HEAD
   state = {view: 'login'}
+=======
+  state = {
+    restaurants: []
+  }
+>>>>>>> eat-the-world-develop
 
 
-  llamada = () => {
-    pruebaCall(result => {
-      console.log(result)
+  handleRestaurants = (city, query) => {
+    searchRestaurants(city, query, (error, results) => {
+      if(error) {
+        console.log(error.message)
+      } else {
+        this.setState({
+          ...this.state,
+          restaurants: results
+        })
+      }
     })
   }
 
@@ -41,11 +54,22 @@ handleBackToSearch = () => {
 }
 
   render() {
+<<<<<<< HEAD
     const { state: {view}, handleRegister, handleLogin, llamada, handleBackToSearch, handleGoToRegister} = this
     return<>
         {view == 'search' && <Search search={llamada}/>}
         {view == 'login' && <Login onLogin={handleLogin} onBack={handleBackToSearch} onRegister={handleGoToRegister}/>}
         {view == 'register' && <Register onRegister={handleRegister} onBack={handleBackToSearch}/>}
+=======
+
+    const { state: { restaurants }, handleRestaurants } = this
+
+    return(
+      <>
+        <Search search={handleRestaurants}/>
+        <Results restaurants={restaurants}/>
+        <Detail />
+>>>>>>> eat-the-world-develop
       </>
 
   }
