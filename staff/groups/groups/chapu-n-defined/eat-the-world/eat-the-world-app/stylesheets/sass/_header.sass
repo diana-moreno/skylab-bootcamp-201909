@@ -64,6 +64,20 @@
     cursor: pointer
     background-color: transparent
 
+  &--landing
+    display: flex
+    flex-direction: column
+    justify-content: center
+    height: 100vh
+    padding: 0
+
+  &__options--landing
+    position: absolute
+    top: 2rem
+    right: 02rem
+
+  &__title--landing
+    font-size: 3.5rem
 
 @media only screen and (min-width: 576px)
   .header
@@ -73,6 +87,24 @@
 
     &__form-search
       margin-bottom: unset
+
+    &--landing
+      display: flex
+      flex-direction: column
+      justify-content: center
+      height: 100vh
+      padding: 0
+
+    &__options--landing
+      position: absolute
+      top: 2rem
+      right: 02rem
+
+    &__title--landing
+      font-size: 4.5rem
+
+
+
 
 .fa-utensils
   font-size: 1.5rem

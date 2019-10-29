@@ -5,8 +5,10 @@ function ResultsItem({ restaurant, handleFavorite }) {
       {sessionStorage.token&&<i className={restaurant.isFav
                     ? "item__favorite fas fa-heart"
                     : 'item__favorite far fa-heart'}
-        onClick={event =>
-          handleFavorite(restaurant.id)}></i>}
+        onClick={event => {
+          event.preventDefault()
+          handleFavorite(restaurant.id)
+        }}></i>}
         <div>
           <img className="item__image" src={restaurant.featured_image} />
         </div>
