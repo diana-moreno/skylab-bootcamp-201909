@@ -1,4 +1,4 @@
-function toggleFavs(id, token, restaurantId, callback) {
+function toggleFavs(id, token, restaurantId, callback) { debugger
     if (typeof id !== 'string') throw new TypeError(id + ' is not a string')
     if (!id.trim().length) throw new ContentError('id is empty or blank')
     if (typeof token !== 'string') throw new TypeError(token + ' is not a string')
@@ -9,6 +9,7 @@ function toggleFavs(id, token, restaurantId, callback) {
 
 
   call('GET', `https://skylabcoders.herokuapp.com/api/user/${id}`, token, undefined, result => {
+    debugger
 
     if (result.error) return callback(new Error(result.error))
 
@@ -16,8 +17,8 @@ function toggleFavs(id, token, restaurantId, callback) {
     const index = favs.findIndex(fav => fav === restaurantId)
     index > -1 ? favs.splice(index, 1) : favs.push(restaurantId)
 
-    call('PUT', 'https://skylabcoders.herokuapp.com/api/user/' + token, { favs }, result => {
-      result.error ? callback(new Error(result.error)) : callback(undefined, result)
+    call('PUT', `https://skylabcoders.herokuapp.com/api/user/${id}`, token, { favs }, result2 => { debugger
+      result2.error ? callback(new Error(result2.error)) : callback(undefined, result2)
     })
   })
 

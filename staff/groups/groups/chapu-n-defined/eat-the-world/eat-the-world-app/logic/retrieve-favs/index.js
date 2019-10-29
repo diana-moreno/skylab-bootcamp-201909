@@ -14,11 +14,11 @@ function retrieveFavs(id, token, callback) {
 
     if (favs.length) {
       favs.forEach((fav, i) => {
-        call('GET', 'https://duckling-api.herokuapp.com/api/ducks/' + favs[i], undefined, undefined, result2 => {
+        call('GET', `https://developers.zomato.com/api/v2.1/restaurant?res_id=${favs[i]}`, undefined, undefined, result2 => {
           if (result2.error) return callback(error = new Error(result2.error))
 
           favs[i] = result2
-
+    console.log(favs)
           if (++counter === favs.length) callback(undefined, favs) // this condicional solves to repeat the callback in each iteration
         })
       })
