@@ -42,7 +42,7 @@ class App extends Component {
     try {
       registerUser(name, surname, email, password, error => {
         if (error) return this.setState({ error: error.message })
-        this.setState({ view: ‘search’ })
+        this.setState({ view: 'search' })
       })
     } catch (error) {
       this.setState({ error: error.message })
