@@ -1,7 +1,11 @@
-function ResultsItem({ restaurant }) {
+function ResultsItem({ restaurant, handleFavorite }) {
   return(
     <li className="results__item">
       <a href="#" className="item">
+      <i className={restaurant.isFav
+                    ? "item__favorite fas fa-heart"
+                    : 'item__favorite far fa-heart'}
+        onClick={event => handleFavorite(restaurant.id)}></i>
         <div>
           <img className="item__image" src={restaurant.featured_image} />
         </div>
