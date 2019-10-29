@@ -1,13 +1,11 @@
 const { Component } = React
 
 class App extends Component {
-<<<<<<< HEAD
-  state = {view: 'login'}
-=======
   state = {
+    view: 'search',
     restaurants: []
   }
->>>>>>> eat-the-world-develop
+
 
 
   handleRestaurants = (city, query) => {
@@ -23,16 +21,35 @@ class App extends Component {
     })
   }
 
-  handleLogin(email, password) {
+  handleLogin = (email, password) => {
     try {
         authenticateUser(email, password, (error, data) => {
-            if (error) this.setState({ error: error.message })
-            else console.log(data)
+            if (error) return this.setState({ error: error.message })
+            try {
+              const { id, token } = data
+
+              sessionStorage.id = id
+              sessionStorage.token = token
+
+              retrieveUser(id, token, (error, user) => {
+                if (error) return this.setState({ error: error.message })
+
+                const { name } = user
+
+                this.setState({view: 'search', user: name })
+
+              })
+
+            } catch (error) {
+              this.setState({ error: error.message })
+          }
+
         })
-    } catch (error) {
-        this.setState({ error: error.message })
-    }
-}
+      } catch (error) {
+          this.setState({ error: error.message })
+      }
+  }
+
 
 handleRegister(name, surname, email, password) {
   try {
@@ -49,28 +66,24 @@ handleGoToRegister = () => {
   this.setState({view: 'register', error: undefined})
 }
 
+handleGoToLogin = () => {
+  this.setState({view: 'login', error: undefined})
+}
+
 handleBackToSearch = () => {
   this.setState({ view: 'search', error: undefined })
 }
 
   render() {
-<<<<<<< HEAD
-    const { state: {view}, handleRegister, handleLogin, llamada, handleBackToSearch, handleGoToRegister} = this
+    const { state: {view , restaurants}, handleRegister, handleLogin, handleBackToSearch, handleGoToRegister, handleGoToLogin, handleRestaurants} = this
     return<>
-        {view == 'search' && <Search search={llamada}/>}
+        {view == 'search' && <Search search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/>}
         {view == 'login' && <Login onLogin={handleLogin} onBack={handleBackToSearch} onRegister={handleGoToRegister}/>}
         {view == 'register' && <Register onRegister={handleRegister} onBack={handleBackToSearch}/>}
-=======
-
-    const { state: { restaurants }, handleRestaurants } = this
-
-    return(
-      <>
-        <Search search={handleRestaurants}/>
         <Results restaurants={restaurants}/>
         <Detail />
->>>>>>> eat-the-world-develop
-      </>
+        </>
 
+    
   }
 }
