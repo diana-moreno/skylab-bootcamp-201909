@@ -173,6 +173,14 @@ body {
   text-align: center;
   margin-top: 3rem;
 }
+.item__favorite {
+  position: absolute;
+  color: #ec3e3e;
+  font-size: 1.4rem;
+  color: #ec3e3e;
+  right: 2.3rem;
+  top: 0.2rem;
+}
 
 @media only screen and (min-width: 576px) {
   .item {
@@ -208,6 +216,11 @@ body {
     margin-right: 0.5rem;
     width: 12rem;
     height: 100%;
+  }
+  .item__favorite {
+    font-size: 1.7rem;
+    right: 3rem;
+    top: 0.3rem;
   }
 }
 .detail {
