@@ -2,10 +2,10 @@ const { Component } = React
 
 class App extends Component {
   state = {
-      view: 'search',
-      restaurants: [],
-      restaurant: undefined,
-      favorites: []
+    view: 'search',
+    restaurants: [],
+    restaurant: undefined,
+    favorites: []
   }
 
   handleLogin = (email, password) => {
@@ -38,11 +38,11 @@ class App extends Component {
   }
 
 
-  handleRegister(name, surname, email, password) {
+  handleRegister = (name, surname, email, password) => {
     try {
-      registerUser(name, surname, email, password, (error, data) => {
-        if (error) this.setState({ error: error.message })
-        else console.log(data)
+      registerUser(name, surname, email, password, error => {
+        if (error) return this.setState({ error: error.message })
+        this.setState({ view: ‘search’ })
       })
     } catch (error) {
       this.setState({ error: error.message })
@@ -102,14 +102,12 @@ class App extends Component {
 
     const { state: { view, restaurants }, handleRegister, handleLogin, handleBackToSearch, handleGoToRegister, handleGoToLogin, handleRestaurants, handleFavorite } = this
 
-    return (
-      <>
-        { view == 'search' && <Search search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/> }
-        { view == 'login' && <Login onLogin={handleLogin} onBack={handleBackToSearch} onRegister={handleGoToRegister}/> }
-        { view == 'register' && <Register onRegister={handleRegister} onBack={handleBackToSearch}/> }
-        <Results restaurants={restaurants} handleFavorite={handleFavorite}/>
-        <Detail / >
-      </>
+    return ( <
+      > { view == 'search' && <Search search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/> } { view == 'login' && <Login onLogin={handleLogin} onBack={handleBackToSearch} onRegister={handleGoToRegister}/> } { view == 'register' && <Register onRegister={handleRegister} onBack={handleBackToSearch}/> }
+      <Results restaurants={restaurants} handleFavorite={handleFavorite}/> <
+      Detail / >
+      <
+      />
     )
   }
 }
