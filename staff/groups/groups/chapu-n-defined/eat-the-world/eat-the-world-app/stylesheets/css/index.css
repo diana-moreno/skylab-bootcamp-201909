@@ -68,6 +68,21 @@ body {
   cursor: pointer;
   background-color: transparent;
 }
+.header--landing {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+  padding: 0;
+}
+.header__options--landing {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+}
+.header__title--landing {
+  font-size: 3.5rem;
+}
 
 @media only screen and (min-width: 576px) {
   .header__form {
@@ -75,6 +90,21 @@ body {
   }
   .header__form-search {
     margin-bottom: unset;
+  }
+  .header--landing {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+    padding: 0;
+  }
+  .header__options--landing {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+  }
+  .header__title--landing {
+    font-size: 4.5rem;
   }
 }
 .fa-utensils {

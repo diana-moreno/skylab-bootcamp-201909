@@ -2,10 +2,11 @@ const { Component } = React
 
 class App extends Component {
   state = {
-    view: 'search',
+    view: 'landing',
     restaurants: [],
     restaurant: undefined,
-    favorites: []
+    favorites: [],
+    isLanding: true
   }
 
   handleLogin = (email, password) => {
@@ -23,7 +24,10 @@ class App extends Component {
 
             const { name } = user
 
-            this.setState({ view: 'search', user: name })
+            this.setState({
+              view: this.state.isLanding ? 'landing' : 'search',
+              user: name
+            })
 
           })
 
@@ -42,7 +46,7 @@ class App extends Component {
     try {
       registerUser(name, surname, email, password, error => {
         if (error) return this.setState({ error: error.message })
-        this.setState({ view: 'search' })
+        this.setState({ view: 'login' })
       })
     } catch (error) {
       this.setState({ error: error.message })
@@ -57,8 +61,8 @@ class App extends Component {
     this.setState({ view: 'login', error: undefined })
   }
 
-  handleBackToSearch = () => {
-    this.setState({ view: 'search', error: undefined })
+  handleBackToSearch = () => { //cambiar
+    this.setState({ view: 'landing', error: undefined })
   }
 
   handleRestaurants = (city, query) => {
@@ -69,6 +73,8 @@ class App extends Component {
       } else {
         this.setState({
           ...this.state,
+          isLanding: false,
+          view: 'search',
           restaurants: results
         })
       }
@@ -102,12 +108,15 @@ class App extends Component {
 
     const { state: { view, restaurants }, handleRegister, handleLogin, handleBackToSearch, handleGoToRegister, handleGoToLogin, handleRestaurants, handleFavorite } = this
 
-    return ( <
-      > { view == 'search' && <Search search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/> } { view == 'login' && <Login onLogin={handleLogin} onBack={handleBackToSearch} onRegister={handleGoToRegister}/> } { view == 'register' && <Register onRegister={handleRegister} onBack={handleBackToSearch}/> }
-      <Results restaurants={restaurants} handleFavorite={handleFavorite}/> <
-      Detail / >
-      <
-      />
+    return (
+      <>
+      { view === 'landing' && <Landing search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/>}
+      { view === 'search' && <Search search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/> }
+      { view === 'login' && <Login onLogin={handleLogin} onBack={handleBackToSearch} onRegister={handleGoToRegister}/> }
+      { view === 'register' && <Register onRegister={handleRegister} onBack={handleBackToSearch}/> }
+      { view === 'search' && <Results restaurants={restaurants} handleFavorite={handleFavorite} />}
+      { view === 'detail' && <Detail / > }
+      </>
     )
   }
 }
