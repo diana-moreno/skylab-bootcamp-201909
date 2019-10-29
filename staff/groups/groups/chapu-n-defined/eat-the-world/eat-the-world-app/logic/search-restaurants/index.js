@@ -25,6 +25,7 @@ function searchRestaurants(city, query, id, token, callback) {
         if(indexDot) {
           result.location.address = result.location.address.slice(0, indexDot)
         }
+        result.costcurrency = result.average_cost_for_two + " " + result.currency
       })
 
       call('GET', `https://skylabcoders.herokuapp.com/api/user/${id}`, token, undefined, dataUser => {

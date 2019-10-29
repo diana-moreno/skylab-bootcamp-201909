@@ -1,11 +1,11 @@
-function ResultsItem({ restaurant, handleFavorite }) {
+function ResultsItem({ restaurant, handleFavorite, handleDetail}) {
   return(
     <li className="results__item">
-      <a href="#" className="item">
-      {/* <a href="#" className="item" onClick={event => {
+      {/* <a href="#" className="item"> */}
+      <a href="#" className="item" onClick={event => {
         event.preventDefault()
-        {<Detail key={restaurant.id} restaurant={restaurant}/>}
-      }}> */}
+        handleDetail(restaurant)       
+      }}>
       <i className={restaurant.isFav
                     ? "item__favorite fas fa-heart"
                     : 'item__favorite far fa-heart'}

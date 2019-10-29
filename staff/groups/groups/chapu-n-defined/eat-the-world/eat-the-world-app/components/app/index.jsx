@@ -98,15 +98,22 @@ class App extends Component {
     //retrieveFavs(id, token, (error, result) => {})
   }
 
+  handleDetail = (restaurant) => {   
+    this.setState({ view: 'detail', error: undefined, restaurant })
+  }
+
   render() {
 
-    const { state: { view, restaurants }, handleRegister, handleLogin, handleBackToSearch, handleGoToRegister, handleGoToLogin, handleRestaurants, handleFavorite } = this
+    const { state: { view, restaurants, restaurant }, handleRegister, handleLogin, handleBackToSearch, handleGoToRegister, handleGoToLogin, handleRestaurants, handleFavorite, handleDetail } = this
 
-    return ( <
-      > { view == 'search' && <Search search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/> } { view == 'login' && <Login onLogin={handleLogin} onBack={handleBackToSearch} onRegister={handleGoToRegister}/> } { view == 'register' && <Register onRegister={handleRegister} onBack={handleBackToSearch}/> }
-      <Results restaurants={restaurants} handleFavorite={handleFavorite}/> 
-      <
-      />
+    return ( <> 
+      { view === 'search' && <Search search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/> }
+      { view === 'login' && <Login onLogin={handleLogin} onBack={handleBackToSearch} onRegister={handleGoToRegister}/> } 
+      { view === 'register' && <Register onRegister={handleRegister} onBack={handleBackToSearch}/> }
+      <Results restaurants={restaurants} handleFavorite={handleFavorite} handleDetail={handleDetail}/> 
+      { view === 'detail' && <Detail restaurant={restaurant}/>}
+
+      </>
     )
   }
 }

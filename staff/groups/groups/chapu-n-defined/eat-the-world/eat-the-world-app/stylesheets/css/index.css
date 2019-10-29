@@ -234,7 +234,8 @@ body {
   position: relative;
 }
 .detail__header-container > img {
-  width: 100%;
+  max-width: 100%;
+  max-height: 500px;
 }
 .detail__title {
   text-align: center;
@@ -256,8 +257,9 @@ body {
 .detail__main-container {
   border: 7px solid white;
   margin-top: 1rem;
-  background-color: whitesmoke;
+  background-color: #ffffffc7;
   margin-bottom: 4rem;
+  max-width: 55%;
 }
 .detail__columns-container {
   display: flex;
@@ -268,7 +270,7 @@ body {
   width: 33.33%;
 }
 .detail__detail-title {
-  color: #ec3e3e;
+  color: #E91E63;
   font-size: 1.1rem;
 }
 .detail__featured > p {
