@@ -1,5 +1,5 @@
-function Login ({onLogin, onRegister, onBack}) {
-    return <section className='login'>  
+function Login({ onLogin, onRegister, onBack }) {
+  return <section className='login'>
 
     <form className="login-form" onSubmit={function (event){
         event.preventDefault()
@@ -14,25 +14,20 @@ function Login ({onLogin, onRegister, onBack}) {
         <input className="login-form__email" type="email" name="email" placeholder="hello@gmail.com"/>
         <p className="login-form__petition">Please, enter your <b>password</b></p>
         <input className="login-form__password" type="password" name="password"/>
-        <br/>
-        <button className="login-form__button">
-        <i className="fas fa-sign-in-alt"></i>
-        </button>
+        <button className="login-form__submit">Login</button>
     </form>
     <p className="login-register">Don't have an account? Create one <b><a className="link" href="" onClick={event => {
         event.preventDefault()
 
         onRegister()
     }}>here</a></b></p>
-    <section className="go-back">
-        <a className="go-back__button" href="" onClick={event => {
-                event.preventDefault()
+    <a className="goBack__button" href="#" onClick={event => {
+        event.preventDefault()
 
-                onBack()
-                
-        }}><i className="fas fa-arrow-left">Back</i></a>
-      </section>
-
+        onBack()
+    }}>
+        <i className="fas fa-arrow-left">Go back</i>
+    </a>
 </section>
 
 }

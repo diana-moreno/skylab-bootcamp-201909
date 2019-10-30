@@ -36,10 +36,10 @@ function searchRestaurants(city, query, id, token, callback) {
             elem.isFav = favs.includes(elem.id)
           })
           callback(undefined, resultRestaurants)
-
         })
+      } else  {
+        callback(undefined, resultRestaurants)
       }
-      callback(undefined, resultRestaurants)
     })
   })
 }
