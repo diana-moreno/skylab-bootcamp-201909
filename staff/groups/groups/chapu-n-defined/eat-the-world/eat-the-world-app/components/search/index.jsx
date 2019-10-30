@@ -1,10 +1,11 @@
-function Search( {user, search, onLogin, onRegister, onBack}) {
+function Search( {user, search, onLogin, onRegister, onBack, onFavorites}) {
   return (
     <header className="header">
       {user ?
         <section className="header__options">
            <a className="header__options-login" href="#" onClick={event =>{
               event.preventDefault()
+              onFavorites()
 
             }}>Favorites</a>
             <a className="header__options-register" href="#" onClick={event =>{

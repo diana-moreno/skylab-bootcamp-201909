@@ -139,6 +139,12 @@ body {
   width: 32rem;
 }
 
+.favorites-title {
+  color: #5f5757;
+  font-size: 1.7rem;
+  text-align: center;
+}
+
 @media only screen and (min-width: 576px) {
   .results {
     display: flex;
@@ -177,7 +183,7 @@ body {
   justify-content: space-evenly;
 }
 .item__contdata-title {
-  color: #ec3e3e;
+  color: #bb3c3c;
   margin: 0.5rem 0;
   font-size: 1.1rem;
 }
@@ -202,7 +208,7 @@ body {
   font-size: 1rem;
   padding: 0.3rem;
   margin: 0;
-  background-color: #4CAF50;
+  background-color: #11a583d6;
   color: #ffffff;
   font-weight: 700;
 }
@@ -214,9 +220,8 @@ body {
 }
 .item__favorite {
   position: absolute;
-  color: #ec3e3e;
+  color: #bb3c3c;
   font-size: 1.4rem;
-  color: #ec3e3e;
   right: 2.3rem;
   top: 0.2rem;
 }

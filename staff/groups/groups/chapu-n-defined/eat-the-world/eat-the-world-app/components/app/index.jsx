@@ -114,17 +114,34 @@ class App extends Component {
     this.handleBackToLanding()
   }
 
+  handleFavorites = () => {
+    const { id, token } = sessionStorage
+    try {
+      retrieveFavs(id, token, (error, result) => {
+        if (error) return this.setState({ error: error.message })
+         this.setState({
+          ...this.state,
+          view: 'favorites',
+          favorites: result
+        })
+      })
+    } catch (error) {
+      this.setState({ error: error.message })
+    }
+  }
+
   render() {
 
-    const { state: { view, restaurants, user }, handleRegister, handleLogin, handleBackToLanding, handleGoToRegister, handleGoToLogin, handleRestaurants, handleFavorite, handleLogout } = this
+    const { state: { view, restaurants, user, favorites}, handleRegister, handleLogin, handleBackToLanding, handleGoToRegister, handleGoToLogin, handleRestaurants, handleFavorite, handleLogout, handleFavorites } = this
 
     return (
       <>
-      { view === 'landing' && <Landing onBack={handleLogout} user={user} search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/>}
-      { view === 'search' && <Search onBack={handleLogout} user={user} search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/> }
+      { view === 'landing' && <Landing onBack={handleLogout} user={user} search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites}/>}
+      { (view === 'search' || view === 'favorites') && <Search onBack={handleLogout} user={user} search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites}/> }
       { view === 'login' && <Login onLogin={handleLogin} onBack={handleBackToLanding} onRegister={handleGoToRegister}/> }
       { view === 'register' && <Register onRegister={handleRegister} onBack={handleBackToLanding}/> }
       { view === 'search' && <Results restaurants={restaurants} handleFavorite={handleFavorite} />}
+      { view === 'favorites' && <Results view={view} restaurants={favorites} handleFavorite={handleFavorite} />}
       { view === 'detail' && <Detail / > }
       </>
     )
