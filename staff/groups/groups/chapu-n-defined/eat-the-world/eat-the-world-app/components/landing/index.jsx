@@ -1,11 +1,11 @@
-function Landing({user, search, onLogin, onRegister, onBack}) {
+function Landing({user, search, onLogin, onRegister, onBack, onFavorites}) {
   return (
     <header className="header header--landing">
       {user ?
       <section className="header__options header__options--landing">
          <a className="header__options-login" href="#" onClick={event =>{
             event.preventDefault()
-
+            onFavorites()
           }}>Favorites</a>
           <a className="header__options-register" href="#" onClick={event =>{
             event.preventDefault()

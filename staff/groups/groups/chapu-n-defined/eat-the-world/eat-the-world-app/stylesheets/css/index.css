@@ -139,6 +139,12 @@ body {
   width: 32rem;
 }
 
+.favorites-title {
+  color: #5f5757;
+  font-size: 1.7rem;
+  text-align: center;
+}
+
 @media only screen and (min-width: 576px) {
   .results {
     display: flex;
@@ -177,7 +183,7 @@ body {
   justify-content: space-evenly;
 }
 .item__contdata-title {
-  color: #ec3e3e;
+  color: #bb3c3c;
   margin: 0.5rem 0;
   font-size: 1.1rem;
 }
@@ -202,7 +208,7 @@ body {
   font-size: 1rem;
   padding: 0.3rem;
   margin: 0;
-  background-color: #4CAF50;
+  background-color: #11a583d6;
   color: #ffffff;
   font-weight: 700;
 }
@@ -214,9 +220,8 @@ body {
 }
 .item__favorite {
   position: absolute;
-  color: #ec3e3e;
+  color: #bb3c3c;
   font-size: 1.4rem;
-  color: #ec3e3e;
   right: 2.3rem;
   top: 0.2rem;
 }
@@ -283,11 +288,11 @@ body {
 .detail__title {
   text-align: center;
   font-size: 1.7rem;
-  color: #686161;
+  color: #5f5757;
   border-bottom: 1px solid #686161;
 }
 .detail__detail-title {
-  color: #E91E63;
+  color: #bb3c3c;
   font-size: 0.9rem;
 }
 .detail__puntuation {
@@ -297,7 +302,7 @@ body {
   font-size: 2rem;
   padding: 1rem;
   margin: 0;
-  background-color: #4CAF50;
+  background-color: #11a583d6;
   color: #ffffff;
   font-weight: 700;
 }
@@ -322,8 +327,6 @@ body {
   .detail__main-container {
     max-width: 90%;
     font-size: 1rem;
-    margin-top: 0.4rem;
-    margin-bottom: 1rem;
   }
   .detail__title {
     font-size: 1.8rem;
@@ -338,7 +341,7 @@ body {
 @media only screen and (min-width: 768px) {
   .detail__main-container {
     max-width: 80%;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
   }
   .detail__title {
     font-size: 2rem;
@@ -353,13 +356,13 @@ body {
 @media only screen and (min-width: 1200px) {
   .detail__main-container {
     max-width: 70%;
-    font-size: 1.6rem;
+    font-size: 1.3rem;
   }
   .detail__title {
-    font-size: 2.3rem;
+    font-size: 2rem;
   }
   .detail__detail-title {
-    font-size: 2rem;
+    font-size: 1.6rem;
   }
   .detail__img {
     height: 500px;

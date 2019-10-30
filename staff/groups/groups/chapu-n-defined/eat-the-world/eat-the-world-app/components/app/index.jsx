@@ -118,18 +118,35 @@ class App extends Component {
   handleDetail = (restaurant) => {   
     this.setState({ view: 'detail', error: undefined, restaurant })
   }
+  
+  handleFavorites = () => {
+    const { id, token } = sessionStorage
+    try {
+      retrieveFavs(id, token, (error, result) => {
+        if (error) return this.setState({ error: error.message })
+         this.setState({
+          ...this.state,
+          view: 'favorites',
+          favorites: result
+        })
+      })
+    } catch (error) {
+      this.setState({ error: error.message })
+    }
+  }
 
   render() {
 
-    const { state: { view, restaurants, user, restaurant }, handleRegister, handleLogin, handleBackToLanding, handleGoToRegister, handleGoToLogin, handleRestaurants, handleFavorite, handleLogout, handleDetail } = this
+    const { state: { view, restaurants, user, favorites, restaurant}, handleRegister, handleLogin, handleBackToLanding, handleGoToRegister, handleGoToLogin, handleRestaurants, handleFavorite, handleLogout, handleFavorites, handleDetail } = this
 
     return (
       <>
-      { view === 'landing' && <Landing onBack={handleLogout} user={user} search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/>}
-      { view === 'search' || view === 'detail' && <Search onBack={handleLogout} user={user} search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/> }
+      { view === 'landing' && <Landing onBack={handleLogout} user={user} search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites}/>}
+      { (view === 'search' || view === 'favorites' || view === 'detail') && <Search onBack={handleLogout} user={user} search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites}/> }
       { view === 'login' && <Login onLogin={handleLogin} onBack={handleBackToLanding} onRegister={handleGoToRegister}/> }
       { view === 'register' && <Register onRegister={handleRegister} onBack={handleBackToLanding}/> }
-      { view === 'search' && <Results restaurants={restaurants} handleFavorite={handleFavorite} handleDetail={handleDetail} />}
+      { view === 'search' && <Results restaurants={restaurants} handleFavorite={handleFavorite} handleDetail={handleDetail}/>}
+      { view === 'favorites' && <Results view={view} restaurants={favorites} handleFavorite={handleFavorite} />}
       { view === 'detail' && <Detail restaurant={restaurant}/>}
       </>
     )
