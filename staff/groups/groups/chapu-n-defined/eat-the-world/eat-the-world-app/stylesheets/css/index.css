@@ -224,24 +224,32 @@ body {
   }
 }
 .detail {
-  display: flex;
-  justify-content: center;
   align-items: center;
-  flex-direction: column;
   background-color: #e5e3dd;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.detail__main-container {
+  border: 7px solid white;
+  margin-top: 0.2rem;
+  background-color: #ffffffc7;
+  margin-bottom: 4.6rem;
+  max-width: 100%;
+  font-size: 0.7rem;
 }
 .detail__header-container {
   position: relative;
 }
-.detail__header-container > img {
-  max-width: 100%;
-  max-height: 500px;
-}
 .detail__title {
   text-align: center;
-  font-size: 1.2rem;
+  font-size: 1.7rem;
   color: #686161;
   border-bottom: 1px solid #686161;
+}
+.detail__detail-title {
+  color: #E91E63;
+  font-size: 0.9rem;
 }
 .detail__puntuation {
   position: absolute;
@@ -254,12 +262,10 @@ body {
   color: #ffffff;
   font-weight: 700;
 }
-.detail__main-container {
-  border: 7px solid white;
-  margin-top: 1rem;
-  background-color: #ffffffc7;
-  margin-bottom: 4rem;
-  max-width: 55%;
+.detail__img {
+  width: 100%;
+  height: 270px;
+  object-fit: cover;
 }
 .detail__columns-container {
   display: flex;
@@ -269,20 +275,55 @@ body {
 .detail__column-container {
   width: 33.33%;
 }
-.detail__detail-title {
-  color: #E91E63;
-  font-size: 1.1rem;
-}
 .detail__featured > p {
   margin: 0;
 }
 
 @media only screen and (min-width: 576px) {
+  .detail__main-container {
+    max-width: 90%;
+    font-size: 1rem;
+    margin-top: 0.4rem;
+    margin-bottom: 1rem;
+  }
+  .detail__title {
+    font-size: 1.8rem;
+  }
+  .detail__detail-title {
+    font-size: 1.3rem;
+  }
+  .detail__img {
+    height: 380px;
+  }
+}
+@media only screen and (min-width: 768px) {
+  .detail__main-container {
+    max-width: 80%;
+    font-size: 1.3rem;
+  }
   .detail__title {
     font-size: 2rem;
   }
   .detail__detail-title {
-    font-size: 1.7rem;
+    font-size: 1.5rem;
+  }
+  .detail__img {
+    height: 440px;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .detail__main-container {
+    max-width: 70%;
+    font-size: 1.6rem;
+  }
+  .detail__title {
+    font-size: 2.3rem;
+  }
+  .detail__detail-title {
+    font-size: 2rem;
+  }
+  .detail__img {
+    height: 500px;
   }
 }
 .login {

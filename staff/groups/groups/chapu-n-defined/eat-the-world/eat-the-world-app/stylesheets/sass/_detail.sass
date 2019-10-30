@@ -1,18 +1,30 @@
 .detail
-  display: flex
-  justify-content: center
   align-items: center
-  flex-direction: column
   background-color: #e5e3dd
+  display: flex
+  flex-direction: column
+  justify-content: center
+
+  &__main-container
+    border: 7px solid white
+    margin-top: .2rem
+    background-color: #ffffffc7
+    margin-bottom: 4.6rem
+    max-width: 100%
+    font-size: .7rem
 
   &__header-container
     position: relative
 
   &__title
     text-align: center
-    font-size: 1.2rem
+    font-size: 1.7rem
     color: #686161
     border-bottom: 1px solid #686161
+
+  &__detail-title
+    color: #E91E63
+    font-size: .9rem
 
   &__puntuation
     position: absolute
@@ -25,12 +37,10 @@
     color: #ffffff
     font-weight: 700
 
-  &__main-container
-    border: 7px solid white
-    margin-top: 1rem
-    background-color: #ffffffc7
-    margin-bottom: 4rem
-    max-width: 55%
+  &__img
+    width: 100%
+    height: 270px
+    object-fit: cover
 
   &__columns-container
     display: flex
@@ -40,10 +50,6 @@
   &__column-container
     width: 33.33%
 
-  &__detail-title
-    color: #E91E63
-    font-size: 1.1rem
-
   &__featured
 
     & >p
@@ -51,9 +57,45 @@
 
 @media only screen and (min-width: 576px)
   .detail
+    &__main-container
+      max-width: 90%
+      font-size: 1rem
+
+    &__title
+      font-size: 1.8rem
+
+    &__detail-title
+      font-size: 1.3rem
+
+    &__img
+      height: 380px
+
+@media only screen and (min-width: 768px)
+  .detail
+    &__main-container
+      max-width: 80%
+      font-size: 1.3rem
 
     &__title
       font-size: 2rem
 
     &__detail-title
-      font-size: 1.7rem
+      font-size: 1.5rem
+
+    &__img
+      height: 440px
+
+@media only screen and (min-width: 1200px)
+  .detail
+    &__main-container
+      max-width: 70%
+      font-size: 1.6rem
+
+    &__title
+      font-size: 2.3rem
+
+    &__detail-title
+      font-size: 2rem
+
+    &__img
+      height: 500px
