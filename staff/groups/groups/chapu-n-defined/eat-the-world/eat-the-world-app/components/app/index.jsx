@@ -12,16 +12,18 @@ class App extends Component {
 
   UNSAFE_componentWillMount() {
     const { id, token } = sessionStorage
-    retrieveUser(id, token, (error, user) => {
-      if (error) return this.setState({ error: error.message })
+    if(id && token) {
+      retrieveUser(id, token, (error, user) => {
+        if (error) return this.setState({ error: error.message })
 
-      const { name } = user
+        const { name } = user
 
-      this.setState({
-        user: name
+        this.setState({
+          user: name
+        })
+
       })
-
-    })
+    }
   }
 
   handleLogin = (email, password) => {
