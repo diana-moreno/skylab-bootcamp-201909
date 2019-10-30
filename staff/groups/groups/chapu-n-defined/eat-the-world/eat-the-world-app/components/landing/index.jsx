@@ -1,6 +1,19 @@
-function Landing({search, onLogin, onRegister}) {
+function Landing({user, search, onLogin, onRegister}) {
   return (
     <header className="header header--landing">
+      {user ?
+      <section className="header__options header__options--landing">
+         <a className="header__options-login" href="#" onClick={event =>{
+            event.preventDefault()
+
+          }}>Favorites</a>
+          <a className="header__options-register" href="#" onClick={event =>{
+            event.preventDefault()
+
+          }}>Logout</a>
+        <p className='header__options--greeting'>Hello, {user}!</p>
+      </section>
+      :
       <section className="header__options header__options--landing">
         <a className="header__options-login" href="#" onClick={event =>{
           event.preventDefault()
@@ -11,7 +24,7 @@ function Landing({search, onLogin, onRegister}) {
 
           onRegister()
         }}>Create an account</a>
-      </section>
+      </section> }
       <h1 className="header__title header__title--landing">Eat The World</h1>
       <h2 className="header__slogan">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h2>
       <form onSubmit={event => {

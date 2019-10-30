@@ -6,7 +6,8 @@ class App extends Component {
     restaurants: [],
     restaurant: undefined,
     favorites: [],
-    isLanding: true
+    isLanding: true,
+    user: undefined
   }
 
   handleLogin = (email, password) => {
@@ -104,14 +105,19 @@ class App extends Component {
     //retrieveFavs(id, token, (error, result) => {})
   }
 
+  handleLogout = () => {
+    sessionStorage.clear()
+    this.handleGoToLogin()
+  }
+
   render() {
 
-    const { state: { view, restaurants }, handleRegister, handleLogin, handleBackToSearch, handleGoToRegister, handleGoToLogin, handleRestaurants, handleFavorite } = this
+    const { state: { view, restaurants, user }, handleRegister, handleLogin, handleBackToSearch, handleGoToRegister, handleGoToLogin, handleRestaurants, handleFavorite } = this
 
     return (
       <>
-      { view === 'landing' && <Landing search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/>}
-      { view === 'search' && <Search search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/> }
+      { view === 'landing' && <Landing user={user} search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/>}
+      { view === 'search' && <Search user={user} search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/> }
       { view === 'login' && <Login onLogin={handleLogin} onBack={handleBackToSearch} onRegister={handleGoToRegister}/> }
       { view === 'register' && <Register onRegister={handleRegister} onBack={handleBackToSearch}/> }
       { view === 'search' && <Results restaurants={restaurants} handleFavorite={handleFavorite} />}

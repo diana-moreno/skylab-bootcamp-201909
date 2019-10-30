@@ -17,6 +17,10 @@ body {
   text-align: right;
   margin-top: 0.4rem;
 }
+.header__options--greeting {
+  color: white;
+  font-size: 1.3rem;
+}
 .header__options-login {
   text-decoration: none;
   color: white;
