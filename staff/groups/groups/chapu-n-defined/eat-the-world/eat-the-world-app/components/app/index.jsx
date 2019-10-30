@@ -10,6 +10,20 @@ class App extends Component {
     user: undefined
   }
 
+  UNSAFE_componentWillMount() {
+    const { id, token } = sessionStorage
+    retrieveUser(id, token, (error, user) => {
+      if (error) return this.setState({ error: error.message })
+
+      const { name } = user
+
+      this.setState({
+        user: name
+      })
+
+    })
+  }
+
   handleLogin = (email, password) => {
     try {
       authenticateUser(email, password, (error, data) => {
@@ -115,20 +129,23 @@ class App extends Component {
     this.handleBackToLanding()
   }
 
-  handleDetail = (restaurant) => {   
+  handleDetail = (restaurant) => {
     this.setState({ view: 'detail', error: undefined, restaurant })
   }
-  
+
   handleFavorites = () => {
     const { id, token } = sessionStorage
     try {
-      retrieveFavs(id, token, (error, result) => {
+      retrieveFavs(id, token, (error, favs) => {
         if (error) return this.setState({ error: error.message })
-         this.setState({
-          ...this.state,
-          view: 'favorites',
-          favorites: result
-        })
+          favs.forEach(fav => {
+            fav.isFav = true
+          })
+          this.setState({
+            ...this.state,
+            view: 'favorites',
+            favorites: favs
+          })
       })
     } catch (error) {
       this.setState({ error: error.message })
@@ -146,7 +163,7 @@ class App extends Component {
       { view === 'login' && <Login onLogin={handleLogin} onBack={handleBackToLanding} onRegister={handleGoToRegister}/> }
       { view === 'register' && <Register onRegister={handleRegister} onBack={handleBackToLanding}/> }
       { view === 'search' && <Results restaurants={restaurants} handleFavorite={handleFavorite} handleDetail={handleDetail}/>}
-      { view === 'favorites' && <Results view={view} restaurants={favorites} handleFavorite={handleFavorite} />}
+      { view === 'favorites' && <Results view={view} restaurants={favorites} handleFavorite={handleFavorite} handleDetail={handleDetail} />}
       { view === 'detail' && <Detail restaurant={restaurant}/>}
       </>
     )
