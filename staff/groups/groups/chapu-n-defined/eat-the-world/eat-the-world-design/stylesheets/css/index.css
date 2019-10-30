@@ -186,7 +186,8 @@ body {
   position: relative;
 }
 .detail__header-container > img {
-  width: 100%;
+  max-width: 100%;
+  max-height: 500px;
 }
 .detail__title {
   text-align: center;
@@ -210,6 +211,7 @@ body {
   margin-top: 1rem;
   background-color: #ffffffc7;
   margin-bottom: 4rem;
+  max-width: 55%;
 }
 .detail__columns-container {
   display: flex;

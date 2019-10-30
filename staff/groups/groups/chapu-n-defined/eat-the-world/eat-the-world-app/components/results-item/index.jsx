@@ -1,14 +1,17 @@
-function ResultsItem({ restaurant, handleFavorite }) {
-  return(
+function ResultsItem({ restaurant, handleFavorite, handleDetail }) {
+  return (
     <li className="results__item">
-      <a href="#" className="item">
-      {sessionStorage.token&&<i className={restaurant.isFav
-                    ? "item__favorite fas fa-heart"
-                    : 'item__favorite far fa-heart'}
-        onClick={event => {
-          event.preventDefault()
-          handleFavorite(restaurant.id)
-        }}></i>}
+      <a href="#" className="item" onClick={event => {
+        event.preventDefault()
+        handleDetail(restaurant)
+      }}>
+        {sessionStorage.token && <i className={restaurant.isFav
+          ? "item__favorite fas fa-heart"
+          : 'item__favorite far fa-heart'}
+          onClick={event => {
+            event.preventDefault()
+            handleFavorite(restaurant.id)
+          }}></i>}
         <div>
           <img className="item__image" src={restaurant.featured_image} />
         </div>

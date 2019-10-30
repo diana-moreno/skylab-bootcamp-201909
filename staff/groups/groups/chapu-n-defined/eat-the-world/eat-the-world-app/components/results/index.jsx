@@ -1,4 +1,5 @@
-function Results({ restaurants, handleFavorite, view}) {
+function Results({ restaurants, handleFavorite, view, handleDetail}) {
+
   return(
     <section className="container">
       {view === 'favorites' ?
@@ -6,7 +7,7 @@ function Results({ restaurants, handleFavorite, view}) {
       }
       <ul className="results">
       {restaurants && restaurants.map((restaurant) => (
-        <ResultsItem key={restaurant.id} restaurant={restaurant} handleFavorite={handleFavorite}/>
+        <ResultsItem key={restaurant.id} restaurant={restaurant} handleFavorite={handleFavorite} handleDetail={handleDetail}/>
         ))
       }
       </ul>
