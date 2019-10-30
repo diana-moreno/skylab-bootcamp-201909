@@ -11,9 +11,24 @@ The app is developed with React. The layout has been done with SASS.
 
 ## Functional Description
 
-![Alt text](workflow1.jpg)
+### Use Cases
 
+![Alt text](usecases.jpg)
+
+### Flow Diagram
+
+![Alt text](Diagrama2.jpg)
 
 ## Technical Description
 
-// TODO
+### Block Diagram
+
+![Alt text](Blocks.jpg)
+
+
+## Components
+
+
+![Alt text](components.jpg)
+
+## Code Coverage
