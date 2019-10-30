@@ -9,6 +9,10 @@
     text-align: right
     margin-top: .4rem
 
+    &--greeting
+      color: white
+      font-size: 1.3rem
+
   &__options-login
     text-decoration: none
     color: white
@@ -16,7 +20,7 @@
     font-size: 1.3rem
 
   &__options-login:hover
-    color: #451a00e9
+    color: #ffa250fa
 
   &__options-register
     text-decoration: none
@@ -27,8 +31,8 @@
     font-size: 1.3rem
 
   &__options-register:hover
-    color: #451a00e9
-    border-color: #451a00e9
+    color: #ffa250fa
+    border-color: #ffa250fa
 
   &__title
     text-align: center
@@ -52,7 +56,7 @@
   &__form-search
     font-size: 1rem
     padding: 0.5rem
-    width: 20rem
+    width: 16rem
     border-radius: 6px
     border-style: none
     margin: 0 1rem
@@ -64,6 +68,20 @@
     cursor: pointer
     background-color: transparent
 
+  &--landing
+    display: flex
+    flex-direction: column
+    justify-content: center
+    height: 100vh
+    padding: 0
+
+  &__options--landing
+    position: absolute
+    top: 2rem
+    right: 02rem
+
+  &__title--landing
+    font-size: 3.5rem
 
 @media only screen and (min-width: 576px)
   .header
@@ -73,6 +91,25 @@
 
     &__form-search
       margin-bottom: unset
+      width: 20rem
+
+    &--landing
+      display: flex
+      flex-direction: column
+      justify-content: center
+      height: 100vh
+      padding: 0
+
+    &__options--landing
+      position: absolute
+      top: 2rem
+      right: 02rem
+
+    &__title--landing
+      font-size: 4.5rem
+
+
+
 
 .fa-utensils
   font-size: 1.5rem

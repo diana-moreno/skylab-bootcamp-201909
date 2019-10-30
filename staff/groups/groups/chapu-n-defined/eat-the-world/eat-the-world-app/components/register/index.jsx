@@ -14,12 +14,12 @@ function Register ({onRegister, onBack}) {
             <input className="register__field" type="password" name="password" placeholder="password"/><br />
             <button className="register__submit">Register</button>
         </form>
-        <section className="goBack">
-            <a className="goBack__button" href="#" onClick={event => {
-                event.preventDefault()
+        <a className="go-back__button" href="#" onClick={event => {
+            event.preventDefault()
 
-                onBack()
-            }}><i className="fas fa-arrow-left">Back</i></a>
-        </section>
+            onBack()
+        }}>
+            <i className="fas fa-arrow-left">Go back</i>
+        </a>
     </section>
 }

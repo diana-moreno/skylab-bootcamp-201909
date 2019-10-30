@@ -2,10 +2,12 @@ const { Component } = React
 
 class App extends Component {
   state = {
-    view: 'search',
+    view: 'landing',
     restaurants: [],
     restaurant: undefined,
-    favorites: []
+    favorites: [],
+    isLanding: true,
+    user: undefined
   }
 
   handleLogin = (email, password) => {
@@ -23,7 +25,10 @@ class App extends Component {
 
             const { name } = user
 
-            this.setState({ view: 'search', user: name })
+            this.setState({
+              view: this.state.isLanding ? 'landing' : 'search',
+              user: name
+            })
 
           })
 
@@ -42,7 +47,7 @@ class App extends Component {
     try {
       registerUser(name, surname, email, password, error => {
         if (error) return this.setState({ error: error.message })
-        this.setState({ view: 'search' })
+        this.setState({ view: 'login' })
       })
     } catch (error) {
       this.setState({ error: error.message })
@@ -57,8 +62,8 @@ class App extends Component {
     this.setState({ view: 'login', error: undefined })
   }
 
-  handleBackToSearch = () => {
-    this.setState({ view: 'search', error: undefined })
+  handleBackToLanding = () => { //cambiar
+    this.setState({ view: 'landing', error: undefined })
   }
 
   handleRestaurants = (city, query) => {
@@ -69,6 +74,8 @@ class App extends Component {
       } else {
         this.setState({
           ...this.state,
+          isLanding: false,
+          view: 'search',
           restaurants: results
         })
       }
@@ -98,21 +105,32 @@ class App extends Component {
     //retrieveFavs(id, token, (error, result) => {})
   }
 
+
+  handleLogout = () => {
+    sessionStorage.clear()
+    this.setState({
+      ...this.state,
+      user: undefined
+    })
+    this.handleBackToLanding()
+  }
+
   handleDetail = (restaurant) => {   
     this.setState({ view: 'detail', error: undefined, restaurant })
   }
 
   render() {
 
-    const { state: { view, restaurants, restaurant }, handleRegister, handleLogin, handleBackToSearch, handleGoToRegister, handleGoToLogin, handleRestaurants, handleFavorite, handleDetail } = this
+    const { state: { view, restaurants, user, restaurant }, handleRegister, handleLogin, handleBackToLanding, handleGoToRegister, handleGoToLogin, handleRestaurants, handleFavorite, handleLogout, handleDetail } = this
 
-    return ( <> 
-      { view === 'search' && <Search search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/> }
-      { view === 'login' && <Login onLogin={handleLogin} onBack={handleBackToSearch} onRegister={handleGoToRegister}/> } 
-      { view === 'register' && <Register onRegister={handleRegister} onBack={handleBackToSearch}/> }
-      <Results restaurants={restaurants} handleFavorite={handleFavorite} handleDetail={handleDetail}/> 
+    return (
+      <>
+      { view === 'landing' && <Landing onBack={handleLogout} user={user} search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/>}
+      { view === 'search' || view === 'detail' && <Search onBack={handleLogout} user={user} search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/> }
+      { view === 'login' && <Login onLogin={handleLogin} onBack={handleBackToLanding} onRegister={handleGoToRegister}/> }
+      { view === 'register' && <Register onRegister={handleRegister} onBack={handleBackToLanding}/> }
+      { view === 'search' && <Results restaurants={restaurants} handleFavorite={handleFavorite} handleDetail={handleDetail} />}
       { view === 'detail' && <Detail restaurant={restaurant}/>}
-
       </>
     )
   }

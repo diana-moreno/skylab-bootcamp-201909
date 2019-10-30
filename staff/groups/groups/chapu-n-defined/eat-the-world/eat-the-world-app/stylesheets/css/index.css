@@ -1,3 +1,7 @@
+html, body, #root {
+  height: 100%;
+}
+
 body {
   margin: 0;
 }
@@ -13,6 +17,10 @@ body {
   text-align: right;
   margin-top: 0.4rem;
 }
+.header__options--greeting {
+  color: white;
+  font-size: 1.3rem;
+}
 .header__options-login {
   text-decoration: none;
   color: white;
@@ -20,7 +28,7 @@ body {
   font-size: 1.3rem;
 }
 .header__options-login:hover {
-  color: #451a00e9;
+  color: #ffa250fa;
 }
 .header__options-register {
   text-decoration: none;
@@ -31,8 +39,8 @@ body {
   font-size: 1.3rem;
 }
 .header__options-register:hover {
-  color: #451a00e9;
-  border-color: #451a00e9;
+  color: #ffa250fa;
+  border-color: #ffa250fa;
 }
 .header__title {
   text-align: center;
@@ -56,7 +64,7 @@ body {
 .header__form-search {
   font-size: 1rem;
   padding: 0.5rem;
-  width: 20rem;
+  width: 16rem;
   border-radius: 6px;
   border-style: none;
   margin: 0 1rem;
@@ -68,6 +76,21 @@ body {
   cursor: pointer;
   background-color: transparent;
 }
+.header--landing {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+  padding: 0;
+}
+.header__options--landing {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+}
+.header__title--landing {
+  font-size: 3.5rem;
+}
 
 @media only screen and (min-width: 576px) {
   .header__form {
@@ -75,6 +98,22 @@ body {
   }
   .header__form-search {
     margin-bottom: unset;
+    width: 20rem;
+  }
+  .header--landing {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+    padding: 0;
+  }
+  .header__options--landing {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+  }
+  .header__title--landing {
+    font-size: 4.5rem;
   }
 }
 .fa-utensils {
@@ -343,15 +382,18 @@ body {
   text-align: center;
   margin-top: 3%;
   color: white;
-  font-size: 16px;
+  font-size: 1.3rem;
 }
 
 .login-form {
-  width: 50%;
+  width: 68%;
   border: 3px solid white;
   padding: 2rem;
   border-radius: 0.8rem;
   background-color: #482d1c6d;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .login-form__email {
   font-size: 1rem;
@@ -362,8 +404,9 @@ body {
   border-style: none;
   background: url("https://cdn5.dibujos.net/dibujos/pintar/sobre_2.png") no-repeat scroll 5px 5px;
   background-color: #ffffff;
-  background-size: 17px 17px;
+  background-size: 2rem;
   padding-left: 30px;
+  background-position: left;
 }
 .login-form__password {
   font-size: 1rem;
@@ -374,8 +417,9 @@ body {
   border-style: none;
   background: url("http://simpleicon.com/wp-content/uploads/key-4.png") no-repeat scroll 6px 6px;
   background-color: #ffffff;
-  background-size: 15px 15px;
+  background-size: 1.5rem;
   padding-left: 30px;
+  background-position: left;
 }
 .login-form__title {
   text-align: center;
@@ -387,15 +431,19 @@ body {
 }
 .login-form__petition {
   letter-spacing: 0.02rem;
-  text-align: center;
-  margin-top: 6%;
   color: white;
-  font-size: 15px;
+  font-size: 1.2rem;
 }
-.login-form__button {
+.login-form__submit {
   margin-top: 3%;
+  padding: 1%;
+  font-size: 1.3rem;
+  border-radius: 6px;
   background-color: transparent;
-  border: 0px;
+  border-style: none;
+  color: white;
+  border: 2px solid white;
+  margin: 1rem;
   cursor: pointer;
 }
 
@@ -408,6 +456,10 @@ body {
   color: #ffa250fa;
 }
 
+.login-form-submit:hover {
+  color: #ffa250fa;
+}
+
 .link {
   text-decoration: none;
   color: white;
@@ -417,80 +469,90 @@ body {
   color: #ffa250fa;
 }
 
-.go-back {
-  display: inline-flex;
-}
-.go-back__text {
-  text-align: center;
-  color: white;
-  font-size: 15px;
-  font-weight: bold;
-}
 .go-back__button {
-  margin-top: 1%;
-  background-color: transparent;
-  border: 0px;
-  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration-line: none;
+}
+
+.go-back__button:hover {
+  color: #ffa250fa;
 }
 
 .fa-arrow-left {
+  margin-right: 1rem;
+  text-decoration: none;
+  font-size: 1.5rem;
   color: white;
-  font-size: 20px;
 }
 
 .fa-arrow-left:hover {
   color: #ffa250fa;
 }
 
+.fa-arrow-left:before {
+  margin-right: 1rem;
+}
+
 @media only screen and (min-width: 576px) {
+  .login-form {
+    width: 50%;
+  }
   .login-form__petition {
     font-size: 20px;
   }
 }
 .register {
-  background: url("../../images/40312.jpg");
+  background: url(../../images/40312.jpg);
   background-position: center;
   background-size: cover;
-  padding: 1rem;
-  height: 90vh;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 .register__form {
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 480px;
-  min-width: 100px;
-  background: #482d1c9d;
-  padding: 0.5rem;
-  margin: auto;
-  margin-top: 1rem;
+  width: 68%;
+  background: #482d1c6d;
+  padding: 2rem;
   margin-bottom: 1rem;
   color: white;
   border-radius: 10px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border: 2px solid white;
+  justify-content: center;
 }
 .register__title {
-  font-size: 35px;
-  margin-top: 3%;
+  text-align: center;
+  margin-top: 0;
+  letter-spacing: 0.4rem;
+  color: white;
+  font-size: 2rem;
+  margin-bottom: 1%;
 }
 .register__field {
-  font-size: 18px;
-  padding: 0.5rem;
-  width: 90%;
-  margin-bottom: 1px;
-  border: 1px solid #1f53c5;
-  color: black;
+  font-size: 1rem;
+  padding: 1%;
+  width: 80%;
+  max-width: 350px;
+  border-radius: 6px;
+  border-style: none;
+  padding-left: 30px;
 }
 .register__submit {
-  border-radius: 1px;
-  width: 70%;
-  background: grey;
-  font-size: 21px;
-  padding: 0.7rem;
-  border: none;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  padding: 1%;
+  border-radius: 6px;
+  background-color: transparent;
+  border-style: none;
+  font-size: 1.3rem;
+  color: white;
+  border: 2px solid white;
+  margin: 1rem;
+  cursor: pointer;
 }
 .register__preferences {
   margin-bottom: 10%;
@@ -504,22 +566,12 @@ body {
   margin-left: 3%;
 }
 
-.interest-list {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 8px;
-  list-style: none;
-  padding: 0%;
+.register__submit:hover {
+  color: #ffa250fa;
+  border: 2px solid #ffa250fa;
 }
 
-.goBack {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-@media (max-width: 576px) {
+@media only screen and (min-width: 576px) {
   .register__check {
     padding: 10px;
     transform: scale(1.1);
@@ -527,6 +579,9 @@ body {
   .register__checktext {
     font-size: 24px;
     margin-left: 3%;
+  }
+  .register__form {
+    width: 50%;
   }
 }
 
