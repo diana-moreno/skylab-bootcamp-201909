@@ -62,7 +62,7 @@ class App extends Component {
     this.setState({ view: 'login', error: undefined })
   }
 
-  handleBackToSearch = () => { //cambiar
+  handleBackToLanding = () => { //cambiar
     this.setState({ view: 'landing', error: undefined })
   }
 
@@ -107,19 +107,23 @@ class App extends Component {
 
   handleLogout = () => {
     sessionStorage.clear()
-    this.handleGoToLogin()
+    this.setState({
+      ...this.state,
+      user: undefined
+    })
+    this.handleBackToLanding()
   }
 
   render() {
 
-    const { state: { view, restaurants, user }, handleRegister, handleLogin, handleBackToSearch, handleGoToRegister, handleGoToLogin, handleRestaurants, handleFavorite } = this
+    const { state: { view, restaurants, user }, handleRegister, handleLogin, handleBackToLanding, handleGoToRegister, handleGoToLogin, handleRestaurants, handleFavorite, handleLogout } = this
 
     return (
       <>
-      { view === 'landing' && <Landing user={user} search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/>}
-      { view === 'search' && <Search user={user} search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/> }
-      { view === 'login' && <Login onLogin={handleLogin} onBack={handleBackToSearch} onRegister={handleGoToRegister}/> }
-      { view === 'register' && <Register onRegister={handleRegister} onBack={handleBackToSearch}/> }
+      { view === 'landing' && <Landing onBack={handleLogout} user={user} search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/>}
+      { view === 'search' && <Search onBack={handleLogout} user={user} search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister}/> }
+      { view === 'login' && <Login onLogin={handleLogin} onBack={handleBackToLanding} onRegister={handleGoToRegister}/> }
+      { view === 'register' && <Register onRegister={handleRegister} onBack={handleBackToLanding}/> }
       { view === 'search' && <Results restaurants={restaurants} handleFavorite={handleFavorite} />}
       { view === 'detail' && <Detail / > }
       </>

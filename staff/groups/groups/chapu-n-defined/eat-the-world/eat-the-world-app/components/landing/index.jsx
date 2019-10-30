@@ -1,4 +1,4 @@
-function Landing({user, search, onLogin, onRegister}) {
+function Landing({user, search, onLogin, onRegister, onBack}) {
   return (
     <header className="header header--landing">
       {user ?
@@ -9,7 +9,7 @@ function Landing({user, search, onLogin, onRegister}) {
           }}>Favorites</a>
           <a className="header__options-register" href="#" onClick={event =>{
             event.preventDefault()
-
+            onBack()
           }}>Logout</a>
         <p className='header__options--greeting'>Hello, {user}!</p>
       </section>
