@@ -30,12 +30,12 @@ function Search( {user, search, onLogin, onRegister, onBack, onFavorites, valida
       </section> }
 
       <h1 className="header__title">Eat The World</h1>
-      <h2 className="header__slogan">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h2>
+      <h2 className="header__slogan">One thousand flavours in one search</h2>
       <form onSubmit={event => {
 
         event.preventDefault()
         const { city:{value: city}, criteria:{ value: criteria} } = event.target
-        //search(city, criteria)
+
         validateInputs(city, criteria)
       }}
       className="header__form">
