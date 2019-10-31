@@ -39,4 +39,30 @@ describe('logic - retrieve user', () => {
         })
     })
 
+    it('should fail on incorrect id, token and expression types', () => {       
+        
+        expect(() => { retrieveUser('') }).toThrowError(ContentError, 'id is empty or blank')
+        expect(() => { retrieveUser(1) }).toThrowError(TypeError, '1 is not a string')
+        expect(() => { retrieveUser(true) }).toThrowError(TypeError, 'true is not a string')
+        expect(() => { retrieveUser([]) }).toThrowError(TypeError, ' is not a string')
+        expect(() => { retrieveUser({}) }).toThrowError(TypeError, '[object Object] is not a string')
+        expect(() => { retrieveUser(undefined) }).toThrowError(TypeError, 'undefined is not a string')
+        expect(() => { retrieveUser(null) }).toThrowError(TypeError, 'null is not a string')
+
+        expect(() => { retrieveUser('id','') }).toThrowError(ContentError, 'token is empty or blank')
+        expect(() => { retrieveUser('id',1) }).toThrowError(TypeError, '1 is not a string')
+        expect(() => { retrieveUser('id',true) }).toThrowError(TypeError, 'true is not a string')
+        expect(() => { retrieveUser('id',[]) }).toThrowError(TypeError, ' is not a string')
+        expect(() => { retrieveUser('id',{}) }).toThrowError(TypeError, '[object Object] is not a string')
+        expect(() => { retrieveUser('id',undefined) }).toThrowError(TypeError, 'undefined is not a string')
+        expect(() => { retrieveUser('id',null) }).toThrowError(TypeError, 'null is not a string')
+
+        expect(() => { retrieveUser('id','token', 1) }).toThrowError(TypeError, '1 is not a function')
+        expect(() => { retrieveUser('id','token', true) }).toThrowError(TypeError, 'true is not a function')
+        expect(() => { retrieveUser('id','token', []) }).toThrowError(TypeError, ' is not a function')
+        expect(() => { retrieveUser('id','token', {}) }).toThrowError(TypeError, '[object Object] is not a function')
+        expect(() => { retrieveUser('id','token', undefined) }).toThrowError(TypeError, 'undefined is not a function')
+        expect(() => { retrieveUser('id','token', null) }).toThrowError(TypeError, 'null is not a function')
+    })
+
 })
