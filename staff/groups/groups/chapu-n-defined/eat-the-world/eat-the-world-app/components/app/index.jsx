@@ -9,7 +9,7 @@ class App extends Component {
     isLanding: true,
     isDetail: false,
     user: undefined,
-    error: {}
+    error: { city: false}
   }
 
   UNSAFE_componentWillMount() {
@@ -45,7 +45,8 @@ class App extends Component {
 
             this.setState({
               view: this.state.isLanding ? 'landing' : 'search',
-              user: name
+              user: name,
+              error: { city: false}
             })
 
           })
@@ -65,7 +66,7 @@ class App extends Component {
     try {
       registerUser(name, surname, email, password, error => {
         if (error) return this.setState({ error: error.message })
-        this.setState({ view: 'login' })
+        this.setState({ view: 'login', error: { city: false} })
       })
     } catch (error) {
       this.setState({ error: error.message })
@@ -82,8 +83,10 @@ class App extends Component {
 
   handleBack = () => { //cambiar
     this.setState({
+      ...this.state,
       view: this.state.isLanding ? 'landing' : this.state.isDetail ? 'detail': 'search' ,
-      user: name
+      user: name,
+      error: { city: false}
     })
 
   }
@@ -99,9 +102,7 @@ class App extends Component {
           isLanding: false,
           view: 'search',
           restaurants: results,
-          error: {
-            city: false,
-          }
+          error: { city: false}
         })
       }
     })
@@ -165,7 +166,7 @@ class App extends Component {
     }
   }
 
-  validateInputs = (city, criteria) => { debugger
+  validateInputs = (city, criteria) => {
     if(city === '') {
       this.setState({
         ...this.state,
