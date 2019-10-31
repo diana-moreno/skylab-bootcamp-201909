@@ -35,7 +35,7 @@ function Search( {user, search, onLogin, onRegister, onBack, onFavorites, valida
 
         event.preventDefault()
         const { city:{value: city}, criteria:{ value: criteria} } = event.target
-        //search(city, criteria)
+
         validateInputs(city, criteria)
       }}
       className="header__form">

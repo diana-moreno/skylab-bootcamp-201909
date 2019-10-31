@@ -9,7 +9,7 @@ class App extends Component {
     isLanding: true,
     isDetail: false,
     user: undefined,
-    error: { city: false, noResults: undefined}
+    error: { city: false, noResults: false}
   }
 
   UNSAFE_componentWillMount() {
@@ -21,7 +21,8 @@ class App extends Component {
         const { name } = user
 
         this.setState({
-          user: name
+          user: name,
+          error: { city: false, noResults: false}
         })
 
       })
@@ -46,7 +47,7 @@ class App extends Component {
             this.setState({
               view: this.state.isLanding ? 'landing' : 'results',
               user: name,
-              error: { city: false}
+              error: { city: false, noResults: false}
             })
 
           })
@@ -66,7 +67,7 @@ class App extends Component {
     try {
       registerUser(name, surname, email, password, error => {
         if (error) return this.setState({ error: error.message })
-        this.setState({ view: 'login', error: { city: false} })
+        this.setState({ view: 'login', error: { city: false, noResults: false} })
       })
     } catch (error) {
       this.setState({ error: error.message })
@@ -86,13 +87,13 @@ class App extends Component {
       ...this.state,
       view: this.state.isLanding ? 'landing' : this.state.isDetail ? 'detail': 'results' ,
       user: name,
-      error: { city: false}
+      error: { city: false, noResults: false}
     })
 
   }
 
   handleBackToResult = () => { //cambiar
-    this.setState({ view: 'search', error: undefined, error: { city: false}  })
+    this.setState({ view: 'search', error: { city: false, noResults: false}  })
   }
 
   handleRestaurants = (city, query) => {
@@ -110,7 +111,7 @@ class App extends Component {
           isLanding: false,
           view: results.length !== 0 ? 'results' : 'feedback',
           restaurants: results,
-          error: { city: false}
+          error: { city: false, noResults: false}
         })
       }
     })
@@ -150,12 +151,10 @@ class App extends Component {
   }
 
   handleDetail = (restaurant) => {
-    this.setState({view: 'detail', error: undefined, restaurant, isDetail: true, error: { city: false}})
+    this.setState({view: 'detail', error: undefined, restaurant, isDetail: true, error: { city: false, noResults: false }})
   }
 
   handleFavorites = () => {
-            console.log('pene')
-
     const { id, token } = sessionStorage
     try {
       retrieveFavs(id, token, (error, favs) => {
@@ -189,18 +188,18 @@ class App extends Component {
   }
 
   render() {
-    const { state: { view, restaurants, user, favorites, restaurant, error: {noResults, city } }, handleRegister, handleLogin, handleBack, handleGoToRegister, handleGoToLogin, handleFavorite, handleLogout, handleFavorites, handleDetail, validateInputs, handleBackToResult } = this
+    const { state: { view, restaurants, user, favorites, restaurant }, handleRegister, handleLogin, handleBack, handleGoToRegister, handleGoToLogin, handleFavorite, handleLogout, handleFavorites, handleDetail, validateInputs, handleBackToResult } = this
 
     return (
       <div className='main-container'>
-      { view === 'landing' && <Landing onBack={handleLogout} user={user} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites} validateInputs={validateInputs} error={city}/>}
-      { (view === 'feedback' || view === 'results' || view === 'favorites' || view === 'detail') && <Search onBack={handleLogout} user={user} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites} validateInputs={validateInputs} error={city} /> }
+      { view === 'landing' && <Landing onBack={handleLogout} user={user} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites} validateInputs={validateInputs} error={this.state.error.city}/>}
+      { (view === 'feedback' || view === 'results' || view === 'favorites' || view === 'detail') && <Search onBack={handleLogout} user={user} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites} validateInputs={validateInputs} error={this.state.error.city} /> }
       { view === 'login' && <Login onLogin={handleLogin} onBack={handleBack} onRegister={handleGoToRegister}/> }
       { view === 'register' && <Register onRegister={handleRegister} onBack={handleBack}/> }
       { view === 'results' && <Results restaurants={restaurants} handleFavorite={handleFavorite} handleDetail={handleDetail}/>}
       { view === 'favorites' && <Results view={view} restaurants={favorites} handleFavorite={handleFavorite} handleDetail={handleDetail} />}
       { view === 'detail' && <Detail restaurant={restaurant} handleFavorite={handleFavorite} onBack={handleBackToResult} />}
-      { view === 'feedback' && <Feedback error={noResults}/>}
+      { view === 'feedback' && <Feedback error={this.state.error.noResults}/>}
       { (view !== 'landing' && view !== 'login' && view !== 'register') && <Footer/>}
       </div>
       )
