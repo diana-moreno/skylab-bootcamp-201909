@@ -142,7 +142,7 @@ class App extends Component {
   }
 
   handleDetail = (restaurant) => {
-    this.setState({ view: 'detail', error: undefined, restaurant, isDetail: true })
+    this.setState({view: 'detail', error: undefined, restaurant, isDetail: true, error: { city: false}})
   }
 
   handleFavorites = () => {
