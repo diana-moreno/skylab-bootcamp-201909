@@ -8,7 +8,7 @@ class App extends Component {
     favorites: [],
     isLanding: true,
     isDetail: false,
-    user: undefined
+    user: undefined,
     error: {}
   }
 
@@ -85,7 +85,7 @@ class App extends Component {
       view: this.state.isLanding ? 'landing' : this.state.isDetail ? 'detail': 'search' ,
       user: name
     })
-     
+
   }
 
   handleRestaurants = (city, query) => {
