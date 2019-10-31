@@ -148,6 +148,7 @@ class App extends Component {
       { view === 'search' && <Results restaurants={restaurants} handleFavorite={handleFavorite} handleDetail={handleDetail}/>}
       { view === 'favorites' && <Results view={view} restaurants={favorites} handleFavorite={handleFavorite} />}
       { view === 'detail' && <Detail restaurant={restaurant}/>}
+      { (view !== 'landing' && view !== 'login' && view !== 'register') && <Footer/>}
       </>
     )
   }
