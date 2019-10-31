@@ -7,6 +7,7 @@ function Detail({ restaurant, handleFavorite, onBack }) {
           : 'detail__favorite far fa-heart'}
           onClick={event => {
             event.preventDefault()
+            event.stopPropagation()
             handleFavorite(restaurant.id)
           }}></i>}
         <h1 className='detail__title'>{restaurant.name}</h1>

@@ -295,6 +295,15 @@ body {
 .detail__header-container {
   position: relative;
 }
+.detail__favorite {
+  position: absolute;
+  color: #bb3c3c;
+  font-size: 2rem;
+  right: 0.5rem;
+  top: 0.6rem;
+  cursor: pointer;
+  z-index: 1;
+}
 .detail__title {
   text-align: center;
   font-size: 1.5rem;
@@ -331,15 +340,6 @@ body {
 }
 .detail__featured > p {
   margin: 0;
-}
-.detail__favorite {
-  position: absolute;
-  color: #bb3c3c;
-  font-size: 2rem;
-  right: 0.5rem;
-  top: 0.6rem;
-  cursor: pointer;
-  z-index: 1;
 }
 
 .go-back__button {
