@@ -1,4 +1,4 @@
-function Search( {user, search, onLogin, onRegister, onBack, onFavorites, validateInputs, error}) {
+function Search( {user, onLogin, onRegister, onBack, onFavorites, validateInputs, error}) {
   return (
     <header className="header">
       {(sessionStorage.token && user) ?

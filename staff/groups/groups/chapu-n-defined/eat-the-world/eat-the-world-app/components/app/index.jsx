@@ -119,7 +119,6 @@ class App extends Component {
 
   paintHeartsFav(id) {
     let allRestaurants = [...this.state.restaurants, ...this.state.favorites]
-    if (this.state.restaurant) allRestaurants = [...allRestaurants, this.state.restaurant]
 
     allRestaurants.forEach(restaurant => {
       if (restaurant.id === id && !restaurant.isFav) {
@@ -134,10 +133,10 @@ class App extends Component {
   }
 
   handleFavorite = (idItem) => {
+    debugger
     const { id, token } = sessionStorage
     this.paintHeartsFav(idItem)
     toggleFavs(id, token, idItem, (error, result) => {})
-    //retrieveFavs(id, token, (error, result) => {})
   }
 
 
