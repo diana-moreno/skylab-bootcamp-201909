@@ -6,6 +6,13 @@ body {
   margin: 0;
 }
 
+.main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+}
+
 .header {
   font-family: helvetic;
   padding: 0.8rem;
