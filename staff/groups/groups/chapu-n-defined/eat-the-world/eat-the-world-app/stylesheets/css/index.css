@@ -13,8 +13,12 @@ body {
   height: 100vh;
 }
 
+.container {
+  flex-grow: 1;
+}
+
 .header {
-  font-family: helvetic;
+  font-family: "Sorts Mill Goudy", serif;
   padding: 0.8rem;
   background: url("../../images/40312.jpg");
   background-position: center;
@@ -25,10 +29,12 @@ body {
   margin-top: 0.4rem;
 }
 .header__options--greeting {
+  font-family: "Sorts Mill Goudy", serif;
   color: white;
   font-size: 1.3rem;
 }
 .header__options-login {
+  font-family: "Sorts Mill Goudy", serif;
   text-decoration: none;
   color: white;
   padding: 0.5rem;
@@ -38,6 +44,7 @@ body {
   color: #ffa250fa;
 }
 .header__options-register {
+  font-family: "Sorts Mill Goudy", serif;
   text-decoration: none;
   color: white;
   border: white solid 0.2rem;
@@ -141,6 +148,7 @@ body {
 }
 
 .results {
+  margin: 0;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -293,7 +301,7 @@ body {
   border-radius: 10px;
   margin-top: 4%;
   background-color: whitesmoke;
-  margin-bottom: 4.6rem;
+  margin-bottom: 4%;
   max-width: 98%;
   font-size: 0.7rem;
   position: relative;
@@ -319,7 +327,6 @@ body {
 }
 .detail__detail-title {
   color: #bb3c3c;
-  font-size: 0.9rem;
 }
 .detail__puntuation {
   position: absolute;
@@ -344,6 +351,7 @@ body {
 }
 .detail__column-container {
   width: 33.33%;
+  padding-right: 2rem;
 }
 .detail__featured > p {
   margin: 0;
@@ -356,17 +364,18 @@ body {
   text-decoration-line: none;
   margin-bottom: 4%;
   margin-top: 1%;
+  color: #d71818;
 }
 
 .go-back__button:hover {
   color: #ffa250fa;
 }
 
-.fa-arrow-left {
+.modificate {
   margin-right: 1rem;
   text-decoration: none;
   font-size: 1.5rem;
-  color: white;
+  color: black;
 }
 
 .fa-arrow-left:hover {
@@ -418,11 +427,14 @@ body {
     max-width: 60%;
     font-size: 0.9rem;
   }
+  .detail__columns-container {
+    font-size: 1.5rem;
+  }
   .detail__title {
     font-size: 2rem;
   }
   .detail__detail-title {
-    font-size: 1.1rem;
+    font-size: 1.8rem;
   }
   .detail__img {
     height: 370px;
@@ -550,7 +562,7 @@ body {
   margin-right: 1rem;
   text-decoration: none;
   font-size: 1.5rem;
-  color: black;
+  color: white;
 }
 
 .fa-arrow-left:hover {
@@ -665,6 +677,7 @@ body {
   display: flex;
   justify-content: center;
   height: 10vh;
+  padding: 1rem;
 }
 .footer__signature {
   color: white;
