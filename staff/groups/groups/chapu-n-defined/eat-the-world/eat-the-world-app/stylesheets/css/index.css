@@ -114,6 +114,7 @@ body {
   .header__form-search {
     margin-bottom: unset;
     width: 20rem;
+    padding: 0.7rem;
   }
   .header--landing {
     display: flex;
@@ -132,7 +133,7 @@ body {
   }
 }
 .fa-utensils {
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   color: white;
 }
 
