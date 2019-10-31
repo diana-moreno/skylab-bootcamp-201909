@@ -1,4 +1,4 @@
-function Landing({user, search, onLogin, onRegister, onBack, onFavorites}) {
+function Landing({user, validateInputs, onLogin, onRegister, onBack, onFavorites, error}) {
   return (
     <header className="header header--landing">
       {user ?
@@ -31,10 +31,13 @@ function Landing({user, search, onLogin, onRegister, onBack, onFavorites}) {
               event.preventDefault()
               const city = event.target.city.value
               const criteria = event.target.criteria.value
-              search(city, criteria)
+              validateInputs(city, criteria)
             }}
         className="header__form">
-        <input type="search" className="header__form-search" name="city" placeholder="introduce a city name"/>
+        <input type="search"
+
+        className={error ? 'errorEmptyField header__form-search' : 'header__form-search'}
+        name="city" placeholder="introduce a city name"/>
         <input type="search" className="header__form-search" name="criteria" placeholder="cuisine type or restaurant name"/>
         <button className="header__form-button">
           <i className="fas fa-utensils"></i>
