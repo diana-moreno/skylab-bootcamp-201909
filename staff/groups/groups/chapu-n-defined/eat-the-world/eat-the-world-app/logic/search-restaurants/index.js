@@ -27,7 +27,7 @@ function searchRestaurants(city, query, id, token, callback) {
         }
         result.costcurrency = result.average_cost_for_two + " " + result.currency
       })
-      if (sessionStorage.id && sessionStorage.token) {
+      if (id && token) {
         call('GET', `https://skylabcoders.herokuapp.com/api/user/${id}`, token, undefined, dataUser => {
           if (dataUser.error) return callback(new Error(dataUser.error))
 

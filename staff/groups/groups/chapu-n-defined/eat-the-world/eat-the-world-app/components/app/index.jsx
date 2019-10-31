@@ -9,7 +9,7 @@ class App extends Component {
     isLanding: true,
     isDetail: false,
     user: undefined,
-    error: { city: false}
+    error: { city: false, noResults: undefined}
   }
 
   UNSAFE_componentWillMount() {
@@ -161,8 +161,9 @@ class App extends Component {
           })
           this.setState({
             ...this.state,
-            view: 'favorites',
-            favorites: favs
+            view: favs.length !== 0 ? 'favorites' : 'feedback',
+            favorites: favs,
+            error: { city: false, noResults: 'favorites'}
           })
       })
     } catch (error) {
@@ -184,18 +185,18 @@ class App extends Component {
   }
 
   render() {
-    const { state: { view, restaurants, user, favorites, restaurant }, handleRegister, handleLogin, handleBack, handleGoToRegister, handleGoToLogin, handleFavorite, handleLogout, handleFavorites, handleDetail, validateInputs } = this
+    const { state: { view, restaurants, user, favorites, restaurant, error: {noResults, city } }, handleRegister, handleLogin, handleBack, handleGoToRegister, handleGoToLogin, handleFavorite, handleLogout, handleFavorites, handleDetail, validateInputs } = this
 
     return (
       <div className='main-container'>
-      { view === 'landing' && <Landing onBack={handleLogout} user={user} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites} validateInputs={validateInputs} error={this.state.error.city}/>}
-      { (view === 'feedback' || view === 'results' || view === 'favorites' || view === 'detail') && <Search onBack={handleLogout} user={user} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites} validateInputs={validateInputs} error={this.state.error.city} /> }
+      { view === 'landing' && <Landing onBack={handleLogout} user={user} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites} validateInputs={validateInputs} error={city}/>}
+      { (view === 'feedback' || view === 'results' || view === 'favorites' || view === 'detail') && <Search onBack={handleLogout} user={user} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites} validateInputs={validateInputs} error={city} /> }
       { view === 'login' && <Login onLogin={handleLogin} onBack={handleBack} onRegister={handleGoToRegister}/> }
       { view === 'register' && <Register onRegister={handleRegister} onBack={handleBack}/> }
       { view === 'results' && <Results restaurants={restaurants} handleFavorite={handleFavorite} handleDetail={handleDetail}/>}
       { view === 'favorites' && <Results view={view} restaurants={favorites} handleFavorite={handleFavorite} handleDetail={handleDetail} />}
       { view === 'detail' && <Detail restaurant={restaurant}/>}
-      { view === 'feedback' && <Feedback />}
+      { view === 'feedback' && <Feedback error={noResults}/>}
       { (view !== 'landing' && view !== 'login' && view !== 'register') && <Footer/>}
       </div>
       )
