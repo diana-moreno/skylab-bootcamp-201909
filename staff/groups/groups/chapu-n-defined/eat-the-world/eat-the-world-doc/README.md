@@ -13,7 +13,7 @@ The app is developed with React. The layout has been done with SASS.
 
 ### Use Cases
 
-![Alt text](usecases.jpg)
+![Alt text](usecases1.jpg)
 
 ### Flow Diagram
 
