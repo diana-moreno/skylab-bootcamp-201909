@@ -91,6 +91,10 @@ class App extends Component {
 
   }
 
+  handleBackToResult = () => { //cambiar
+    this.setState({ view: 'search', error: undefined, error: { city: false}  })
+  }
+
   handleRestaurants = (city, query) => {
     const { id, token } = sessionStorage
     searchRestaurants(city, query, id, token, (error, results) => {
@@ -185,7 +189,7 @@ class App extends Component {
   }
 
   render() {
-    const { state: { view, restaurants, user, favorites, restaurant, error: {noResults, city } }, handleRegister, handleLogin, handleBack, handleGoToRegister, handleGoToLogin, handleFavorite, handleLogout, handleFavorites, handleDetail, validateInputs } = this
+    const { state: { view, restaurants, user, favorites, restaurant, error: {noResults, city } }, handleRegister, handleLogin, handleBack, handleGoToRegister, handleGoToLogin, handleFavorite, handleLogout, handleFavorites, handleDetail, validateInputs, handleBackToResult } = this
 
     return (
       <div className='main-container'>
@@ -195,7 +199,7 @@ class App extends Component {
       { view === 'register' && <Register onRegister={handleRegister} onBack={handleBack}/> }
       { view === 'results' && <Results restaurants={restaurants} handleFavorite={handleFavorite} handleDetail={handleDetail}/>}
       { view === 'favorites' && <Results view={view} restaurants={favorites} handleFavorite={handleFavorite} handleDetail={handleDetail} />}
-      { view === 'detail' && <Detail restaurant={restaurant}/>}
+      { view === 'detail' && <Detail restaurant={restaurant} handleFavorite={handleFavorite} onBack={handleBackToResult} />}
       { view === 'feedback' && <Feedback error={noResults}/>}
       { (view !== 'landing' && view !== 'login' && view !== 'register') && <Footer/>}
       </div>
