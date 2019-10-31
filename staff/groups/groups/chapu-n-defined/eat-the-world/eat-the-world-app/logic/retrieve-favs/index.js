@@ -1,9 +1,9 @@
 function retrieveFavs(id, token, callback) {
-/*  validate.string(id)
-  validate.string.notVoid('id', id)
-  validate.string(token)
-  validate.string.notVoid('token', token)
-  validate.function(callback)*/
+  if (typeof id !== 'string') throw new TypeError(id + ' is not a string')
+  if (!id.trim().length) throw new ContentError('id is empty or blank')
+  if (typeof token !== 'string') throw new TypeError(token + ' is not a string')
+  if (!token.trim().length) throw new ContentError('token is empty or blank')
+  if (typeof callback !== 'function') throw new TypeError(callback +  ' is not a function')
 
   call('GET', 'https://skylabcoders.herokuapp.com/api/user/' + id, token, undefined, result => {
 

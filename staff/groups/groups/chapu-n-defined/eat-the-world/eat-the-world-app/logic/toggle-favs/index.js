@@ -4,7 +4,7 @@ function toggleFavs(id, token, restaurantId, callback) {
     if (typeof token !== 'string') throw new TypeError(token + ' is not a string')
     if (!token.trim().length) throw new ContentError('token is empty or blank')
     if (typeof restaurantId !== 'string') throw new TypeError(restaurantId + ' is not a string')
-    if (!restaurantId.trim().length) throw new ContentError('duck id is empty or blank')
+    if (!restaurantId.trim().length) throw new ContentError('restaurantId id is empty or blank')
     if (typeof callback !== 'function') throw new TypeError(callback + ' is not a function')
 
 
