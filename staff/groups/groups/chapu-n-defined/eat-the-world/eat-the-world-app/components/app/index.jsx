@@ -150,7 +150,6 @@ class App extends Component {
       ...this.state,
       user: undefined
     })
-    this.handleBack()
   }
 
   handleDetail = (restaurant) => {
