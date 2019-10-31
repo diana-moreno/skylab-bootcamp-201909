@@ -24,8 +24,8 @@ class App extends Component {
           user: name,
           error: { city: false, noResults: false}
         })
-
       })
+
     }
   }
 
@@ -67,7 +67,11 @@ class App extends Component {
     try {
       registerUser(name, surname, email, password, error => {
         if (error) return this.setState({ error: error.message })
-        this.setState({ view: 'login', error: { city: false, noResults: false} })
+        this.setState({
+          view: 'RegisterSuccess',
+          error: { city: false, noResults: false},
+          user: name
+          })
       })
     } catch (error) {
       this.setState({ error: error.message })
@@ -191,6 +195,7 @@ class App extends Component {
 
     return (
       <div className='main-container'>
+      { view === 'RegisterSuccess' && <RegisterSuccess user={user} onLogin={handleGoToLogin}/> }
       { view === 'landing' && <Landing onBack={handleLogout} user={user} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites} validateInputs={validateInputs} error={this.state.error.city}/>}
       { (view === 'feedback' || view === 'results' || view === 'favorites' || view === 'detail') && <Search onBack={handleLogout} user={user} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites} validateInputs={validateInputs} error={this.state.error.city} /> }
       { view === 'login' && <Login onLogin={handleLogin} onBack={handleBack} onRegister={handleGoToRegister}/> }
@@ -199,7 +204,7 @@ class App extends Component {
       { view === 'favorites' && <Results view={view} restaurants={favorites} handleFavorite={handleFavorite} handleDetail={handleDetail} />}
       { view === 'detail' && <Detail restaurant={restaurant} handleFavorite={handleFavorite} onBack={handleBackToResult} />}
       { view === 'feedback' && <Feedback error={this.state.error.noResults}/>}
-      { (view !== 'landing' && view !== 'login' && view !== 'register') && <Footer/>}
+      { (view !== 'landing' && view !== 'login' && view !== 'register' && view !== 'RegisterSuccess') && <Footer/>}
       </div>
       )
   }
