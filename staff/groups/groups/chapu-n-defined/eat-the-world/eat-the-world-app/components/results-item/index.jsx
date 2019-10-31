@@ -9,7 +9,7 @@ function ResultsItem({ restaurant, handleFavorite, handleDetail }) {
           ? "item__favorite fas fa-heart"
           : 'item__favorite far fa-heart'}
           onClick={event => {
-            event.preventDefault()
+            event.stopPropagation()
             handleFavorite(restaurant.id)
           }}></i>}
         <div>

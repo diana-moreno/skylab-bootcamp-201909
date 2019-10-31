@@ -7,7 +7,24 @@ class App extends Component {
     restaurant: undefined,
     favorites: [],
     isLanding: true,
-    user: undefined
+    user: undefined,
+    error: {}
+  }
+
+  UNSAFE_componentWillMount() {
+    const { id, token } = sessionStorage
+    if(id && token) {
+      retrieveUser(id, token, (error, user) => {
+        if (error) return this.setState({ error: error.message })
+
+        const { name } = user
+
+        this.setState({
+          user: name
+        })
+
+      })
+    }
   }
 
   handleLogin = (email, password) => {
@@ -80,7 +97,10 @@ class App extends Component {
           ...this.state,
           isLanding: false,
           view: 'search',
-          restaurants: results
+          restaurants: results,
+          error: {
+            city: false,
+          }
         })
       }
     })
@@ -119,39 +139,58 @@ class App extends Component {
     this.handleBackToLanding()
   }
 
-  handleDetail = (restaurant) => {   
+  handleDetail = (restaurant) => {
     this.setState({ view: 'detail', error: undefined, restaurant })
   }
-  
+
   handleFavorites = () => {
+            console.log('pene')
+
     const { id, token } = sessionStorage
     try {
-      retrieveFavs(id, token, (error, result) => {
+      retrieveFavs(id, token, (error, favs) => {
         if (error) return this.setState({ error: error.message })
-         this.setState({
-          ...this.state,
-          view: 'favorites',
-          favorites: result
-        })
+          favs.forEach(fav => {
+            fav.isFav = true
+          })
+          this.setState({
+            ...this.state,
+            view: 'favorites',
+            favorites: favs
+          })
       })
     } catch (error) {
       this.setState({ error: error.message })
     }
   }
 
+  validateInputs = (city, criteria) => { debugger
+    if(city === '') {
+      this.setState({
+        ...this.state,
+        error: {
+          city: city === '' ? true : false,
+        }
+      })
+    } else {
+      this.handleRestaurants(city, criteria)
+    }
+  }
+
   render() {
 
-    const { state: { view, restaurants, user, favorites, restaurant}, handleRegister, handleLogin, handleBackToLanding, handleGoToRegister, handleGoToLogin, handleRestaurants, handleFavorite, handleLogout, handleFavorites, handleDetail, handleBackToSearch } = this
+    const { state: { view, restaurants, user, favorites, restaurant, error}, handleRegister, handleLogin, handleBackToLanding, handleGoToRegister, handleGoToLogin, handleRestaurants, handleFavorite, handleLogout, handleFavorites, handleDetail, validateInputs, handleBackToSearch } = this
 
     return (
       <>
-      { view === 'landing' && <Landing onBack={handleLogout} user={user} search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites}/>}
-      { (view === 'search' || view === 'favorites' || view === 'detail') && <Search onBack={handleLogout} user={user} search={handleRestaurants} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites}/> }
+      { view === 'landing' && <Landing onBack={handleLogout} user={user} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites} validateInputs={validateInputs} error={error.city}/>}
+      { (view === 'search' || view === 'favorites' || view === 'detail') && <Search onBack={handleLogout} user={user} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites} validateInputs={validateInputs} error={error.city} /> }
       { view === 'login' && <Login onLogin={handleLogin} onBack={handleBackToLanding} onRegister={handleGoToRegister}/> }
       { view === 'register' && <Register onRegister={handleRegister} onBack={handleBackToLanding}/> }
       { view === 'search' && <Results restaurants={restaurants} handleFavorite={handleFavorite} handleDetail={handleDetail}/>}
-      { view === 'favorites' && <Results view={view} restaurants={favorites} handleFavorite={handleFavorite} />}
-      { view === 'detail' && <Detail restaurant={restaurant} handleFavorite={handleFavorite} onBack={handleBackToSearch}/>}
+      { view === 'favorites' && <Results view={view} restaurants={favorites} handleFavorite={handleFavorite} handleDetail={handleDetail} />}
+      { view === 'detail' && <Detail restaurant={restaurant} handleFavorite={handleFavorite} onBack={handleBackToSearch} />}
+      { (view !== 'landing' && view !== 'login' && view !== 'register') && <Footer/>}
       </>
     )
   }

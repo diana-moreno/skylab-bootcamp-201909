@@ -1,7 +1,8 @@
-function Search( {user, search, onLogin, onRegister, onBack, onFavorites}) {
+function Search( {user, search, onLogin, onRegister, onBack, onFavorites, validateInputs, error}) {
   return (
     <header className="header">
-      {user ?
+      {(sessionStorage.token && user) ?
+
         <section className="header__options">
            <a className="header__options-login" href="#" onClick={event =>{
               event.preventDefault()
@@ -15,6 +16,7 @@ function Search( {user, search, onLogin, onRegister, onBack, onFavorites}) {
           <p className='header__options--greeting'>Hello, {user}!</p>
         </section>
         :
+
       <section className="header__options">
         <a className="header__options-login" href="#" onClick={event =>{
           event.preventDefault()
@@ -26,17 +28,22 @@ function Search( {user, search, onLogin, onRegister, onBack, onFavorites}) {
           onRegister()
         }}>Create an account</a>
       </section> }
+
       <h1 className="header__title">Eat The World</h1>
       <h2 className="header__slogan">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h2>
       <form onSubmit={event => {
-              event.preventDefault()
-              const city = event.target.city.value
-              const criteria = event.target.criteria.value
-              search(city, criteria)
-            }}
-        className="header__form">
-        <input type="search" className="header__form-search" name="city" placeholder="introduce a city name"/>
-        <input type="search" className="header__form-search" name="criteria" placeholder="cuisine type or restaurant name"/>
+
+        event.preventDefault()
+        const { city:{value: city}, criteria:{ value: criteria} } = event.target
+        //search(city, criteria)
+        validateInputs(city, criteria)
+      }}
+      className="header__form">
+        <input type="text"
+        className={error ? 'errorEmptyField header__form-search' : 'header__form-search'}
+
+        name="city" placeholder="introduce a city name"/>
+        <input type="text" className="header__form-search" name="criteria" placeholder="cuisine type or restaurant name"/>
         <button className="header__form-button">
           <i className="fas fa-utensils"></i>
         </button>

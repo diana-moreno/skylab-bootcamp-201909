@@ -125,6 +125,14 @@ body {
   color: #ffa250fa;
 }
 
+.errorEmptyField::placeholder {
+  color: red;
+}
+
+.errorEmptyField {
+  border: 2px solid red;
+}
+
 .results {
   display: flex;
   flex-wrap: wrap;
@@ -634,6 +642,16 @@ body {
   .register__form {
     width: 50%;
   }
+}
+.footer {
+  background-color: #422212a6;
+  display: flex;
+  justify-content: center;
+  height: 10vh;
+}
+.footer__signature {
+  color: white;
+  font-size: 1.2rem;
 }
 
 /*# sourceMappingURL=index.css.map */
