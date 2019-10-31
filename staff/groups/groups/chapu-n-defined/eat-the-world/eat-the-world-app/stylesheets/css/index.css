@@ -275,19 +275,21 @@ body {
   justify-content: center;
 }
 .detail__main-container {
-  border: 7px solid white;
-  margin-top: 0.2rem;
-  background-color: #ffffffc7;
+  border-radius: 10px;
+  margin-top: 4%;
+  background-color: whitesmoke;
   margin-bottom: 4.6rem;
-  max-width: 100%;
+  max-width: 98%;
   font-size: 0.7rem;
+  position: relative;
+  box-shadow: 0 4px 48px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.685);
 }
 .detail__header-container {
   position: relative;
 }
 .detail__title {
   text-align: center;
-  font-size: 1.7rem;
+  font-size: 1.5rem;
   color: #5f5757;
   border-bottom: 1px solid #686161;
 }
@@ -322,50 +324,96 @@ body {
 .detail__featured > p {
   margin: 0;
 }
+.detail__favorite {
+  position: absolute;
+  color: #bb3c3c;
+  font-size: 2rem;
+  right: 0.5rem;
+  top: 0.6rem;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.go-back__button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration-line: none;
+  margin-bottom: 4%;
+  margin-top: 1%;
+}
+
+.go-back__button:hover {
+  color: #ffa250fa;
+}
+
+.fa-arrow-left {
+  margin-right: 1rem;
+  text-decoration: none;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.fa-arrow-left:hover {
+  color: #ffa250fa;
+}
+
+.fa-arrow-left:before {
+  margin-right: 1rem;
+}
 
 @media only screen and (min-width: 576px) {
   .detail__main-container {
-    max-width: 90%;
-    font-size: 1rem;
+    max-width: 80%;
+    font-size: 0.9rem;
   }
   .detail__title {
     font-size: 1.8rem;
   }
   .detail__detail-title {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
   }
   .detail__img {
-    height: 380px;
+    height: 300px;
+  }
+  .detail__favorite {
+    font-size: 2.4rem;
   }
 }
 @media only screen and (min-width: 768px) {
   .detail__main-container {
-    max-width: 80%;
-    font-size: 1.2rem;
+    max-width: 70%;
+    font-size: 0.9rem;
   }
   .detail__title {
     font-size: 2rem;
   }
   .detail__detail-title {
-    font-size: 1.5rem;
+    font-size: 1.1rem;
   }
   .detail__img {
-    height: 440px;
+    height: 320px;
+  }
+  .detail__favorite {
+    font-size: 2.8rem;
   }
 }
 @media only screen and (min-width: 1200px) {
   .detail__main-container {
-    max-width: 70%;
-    font-size: 1.3rem;
+    max-width: 60%;
+    font-size: 0.9rem;
   }
   .detail__title {
     font-size: 2rem;
   }
   .detail__detail-title {
-    font-size: 1.6rem;
+    font-size: 1.1rem;
   }
   .detail__img {
-    height: 500px;
+    height: 370px;
+  }
+  .detail__favorite {
+    font-size: 3.2rem;
   }
 }
 .login {
@@ -487,7 +535,7 @@ body {
   margin-right: 1rem;
   text-decoration: none;
   font-size: 1.5rem;
-  color: white;
+  color: black;
 }
 
 .fa-arrow-left:hover {

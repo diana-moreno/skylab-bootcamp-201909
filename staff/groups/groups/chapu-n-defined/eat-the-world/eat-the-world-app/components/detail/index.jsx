@@ -1,10 +1,17 @@
-function Detail({ restaurant }) { 
+function Detail({ restaurant, handleFavorite, onBack }) {
   return (
     <section className='detail'>
       <div className='detail__main-container'>
+        {sessionStorage.token && <i className={restaurant.isFav
+          ? "detail__favorite fas fa-heart"
+          : 'detail__favorite far fa-heart'}
+          onClick={event => {
+            event.preventDefault()
+            handleFavorite(restaurant.id)
+          }}></i>}
         <h1 className='detail__title'>{restaurant.name}</h1>
         <div className='detail__header-container'>
-          <img className = "detail__img" src={restaurant.featured_image}/>
+          <img className="detail__img" src={restaurant.featured_image} />
           <p className='detail__puntuation'>{restaurant.user_rating.aggregate_rating}</p>
         </div>
         <div className='detail__columns-container'>
@@ -27,18 +34,26 @@ function Detail({ restaurant }) {
           </div>
           <div className='detail__column-container detail__featured'>
             <h2 className='detail__detail-title'>Highlights</h2>
-              <p>{restaurant.highlights[0]}</p>
-              <p>{restaurant.highlights[1]}</p>
-              <p>{restaurant.highlights[2]}</p>
-              <p>{restaurant.highlights[3]}</p>
-              <p>{restaurant.highlights[4]}</p>
-              <p>{restaurant.highlights[5]}</p>
-              <p>{restaurant.highlights[6]}</p>
-              <p>{restaurant.highlights[7]}</p>
-              <p>{restaurant.highlights[8]}</p>
+            <p>{restaurant.highlights[0]}</p>
+            <p>{restaurant.highlights[1]}</p>
+            <p>{restaurant.highlights[2]}</p>
+            <p>{restaurant.highlights[3]}</p>
+            <p>{restaurant.highlights[4]}</p>
+            <p>{restaurant.highlights[5]}</p>
+            <p>{restaurant.highlights[6]}</p>
+            <p>{restaurant.highlights[7]}</p>
+            <p>{restaurant.highlights[8]}</p>
           </div>
         </div>
+        <a className="go-back__button" href="#" onClick={event => {
+          event.preventDefault()
+
+          onBack()
+        }}>
+          <i className="fas fa-arrow-left">Go back</i>
+        </a>
       </div>
+
     </section>
   )
 }

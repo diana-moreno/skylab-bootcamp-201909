@@ -66,6 +66,10 @@ class App extends Component {
     this.setState({ view: 'landing', error: undefined })
   }
 
+  handleBackToSearch = () => { //cambiar
+    this.setState({ view: 'search', error: undefined })
+  }
+
   handleRestaurants = (city, query) => {
     const { id, token } = sessionStorage
     searchRestaurants(city, query, id, token, (error, results) => {
@@ -137,7 +141,7 @@ class App extends Component {
 
   render() {
 
-    const { state: { view, restaurants, user, favorites, restaurant}, handleRegister, handleLogin, handleBackToLanding, handleGoToRegister, handleGoToLogin, handleRestaurants, handleFavorite, handleLogout, handleFavorites, handleDetail } = this
+    const { state: { view, restaurants, user, favorites, restaurant}, handleRegister, handleLogin, handleBackToLanding, handleGoToRegister, handleGoToLogin, handleRestaurants, handleFavorite, handleLogout, handleFavorites, handleDetail, handleBackToSearch } = this
 
     return (
       <>
@@ -147,7 +151,7 @@ class App extends Component {
       { view === 'register' && <Register onRegister={handleRegister} onBack={handleBackToLanding}/> }
       { view === 'search' && <Results restaurants={restaurants} handleFavorite={handleFavorite} handleDetail={handleDetail}/>}
       { view === 'favorites' && <Results view={view} restaurants={favorites} handleFavorite={handleFavorite} />}
-      { view === 'detail' && <Detail restaurant={restaurant}/>}
+      { view === 'detail' && <Detail restaurant={restaurant} handleFavorite={handleFavorite} onBack={handleBackToSearch}/>}
       </>
     )
   }
