@@ -7,6 +7,7 @@ class App extends Component {
     restaurant: undefined,
     favorites: [],
     isLanding: true,
+    isDetail: false,
     user: undefined,
     error: {}
   }
@@ -79,8 +80,12 @@ class App extends Component {
     this.setState({ view: 'login', error: undefined })
   }
 
-  handleBackToLanding = () => { //cambiar
-    this.setState({ view: 'landing', error: undefined })
+  handleBack = () => { //cambiar
+    this.setState({
+      view: this.state.isLanding ? 'landing' : this.state.isDetail ? 'detail': 'search' ,
+      user: name
+    })
+
   }
 
   handleBackToSearch = () => { //cambiar
@@ -136,11 +141,11 @@ class App extends Component {
       ...this.state,
       user: undefined
     })
-    this.handleBackToLanding()
+    this.handleBack()
   }
 
   handleDetail = (restaurant) => {
-    this.setState({ view: 'detail', error: undefined, restaurant })
+    this.setState({ view: 'detail', error: undefined, restaurant, isDetail: true })
   }
 
   handleFavorites = () => {
@@ -178,7 +183,6 @@ class App extends Component {
   }
 
   render() {
-
     const { state: { view, restaurants, user, favorites, restaurant, error}, handleRegister, handleLogin, handleBackToLanding, handleGoToRegister, handleGoToLogin, handleRestaurants, handleFavorite, handleLogout, handleFavorites, handleDetail, validateInputs, handleBackToSearch } = this
 
     return (
