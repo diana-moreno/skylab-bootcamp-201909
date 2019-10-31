@@ -1,4 +1,4 @@
-function Landing({onBack, user, onLogin, onRegister, onFavorites, validateInputs, error}) {
+function Landing({user, validateInputs, onLogin, onRegister, onBack, onFavorites, error}) {
   return (
     <header className="header header--landing">
       {user ?
