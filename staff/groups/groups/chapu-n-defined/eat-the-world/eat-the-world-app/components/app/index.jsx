@@ -43,6 +43,7 @@ class App extends Component {
             const { name } = user
 
             if(!this.state.isFavorite && !this.state.isDetail && !this.state.isLanding) this.handleRestaurants(this.state.city, this.state.query)
+            if(this.state.isDetail) this.handleDetail(this.state.restId)
 
             this.setState({
               view: this.state.isLanding ? 'landing' : this.state.isDetail ? 'detail' : 'results',
@@ -93,9 +94,12 @@ class App extends Component {
   }
 
   handleBackToResult = () => {
-    this.setState({ view: this.state.isFavorite ? 'favorites' : 'results',
-    isDetail: false,
-    error: { city: false, noResults: false}  })
+    this.handleRestaurants(this.state.city, this.state.query)
+    this.setState({
+      view: this.state.isFavorite ? 'favorites' : 'results',
+      isDetail: false,
+      error: { city: false, noResults: false}
+    })
   }
 
   handleRestaurants = (city, query) => {
@@ -124,10 +128,11 @@ class App extends Component {
 
   paintHeartsFav(id) {
     let allRestaurants = [...this.state.restaurants, ...this.state.favorites]
+    if(this.state.restaurant && !allRestaurants.includes(this.state.restaurant)) allRestaurants = [...allRestaurants, this.state.restaurant]
 
     allRestaurants.forEach(restaurant => {
       if (restaurant.id === id && !restaurant.isFav) {
-        restaurant.isFav = true; //true es favorito
+        restaurant.isFav = true;
       } else if (restaurant.id === id && restaurant.isFav) {
         restaurant.isFav = false;
       }
@@ -155,8 +160,16 @@ class App extends Component {
     })
   }
 
-  handleDetail = (restaurant) => {
-    this.setState({view: 'detail', error: undefined, restaurant, isDetail: true, error: { city: false, noResults: false }})
+  handleDetail = (restId) => {
+    retrieveDetail(restId, (error, restaurant) => {
+      this.setState({
+        view: 'detail',
+        restaurant,
+        restId,
+        isDetail: true,
+        error: { city: false, noResults: false }
+      })
+    })
   }
 
   handleRetrieveFavorites = () => {

@@ -3,7 +3,7 @@ function ResultsItem({ restaurant, handleFavorite, handleDetail }) {
     <li className="results__item">
       <a href="#" className="item" onClick={event => {
         event.preventDefault()
-        handleDetail(restaurant)
+        handleDetail(restaurant.id)
       }}>
         {sessionStorage.token && <i className={restaurant.isFav
           ? "item__favorite fas fa-heart"
