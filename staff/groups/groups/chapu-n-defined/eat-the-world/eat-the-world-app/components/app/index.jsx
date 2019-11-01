@@ -8,6 +8,7 @@ class App extends Component {
     favorites: [],
     isLanding: true,
     isDetail: false,
+    isFavorite: false,
     user: undefined,
     error: { city: false, noResults: false}
   }
@@ -78,6 +79,7 @@ class App extends Component {
     this.setState({ view: 'login', error: undefined })
   }
 
+
   handleBack = () => {
     this.setState({
       ...this.state,
@@ -88,7 +90,7 @@ class App extends Component {
   }
 
   handleBackToResult = () => {
-    this.setState({ view: 'search', error: { city: false, noResults: false}  })
+    this.setState({ view: this.state.isFavorite ? 'favorites' : 'results', error: { city: false, noResults: false}  })
   }
 
   handleRestaurants = (city, query) => {
@@ -156,6 +158,7 @@ class App extends Component {
             ...this.state,
             view: favs.length !== 0 ? 'favorites' : 'feedback',
             favorites: favs,
+            isFavorite: true,
             error: { city: false, noResults: 'favorites'}
           })
       })

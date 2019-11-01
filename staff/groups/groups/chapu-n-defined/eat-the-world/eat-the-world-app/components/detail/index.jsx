@@ -45,6 +45,13 @@ function Detail({ restaurant, handleFavorite, onBack }) {
             <p>{restaurant.highlights[8]}</p>
           </div>
         </div>
+        <a className="detail__button" href="#" onClick={event => {
+          event.preventDefault()
+
+          onBack()
+        }}>
+          <i className="fas fa-arrow-left" style={{color: 'black'}}>Go back</i>
+        </a>
       </div>
     </section>
   )
