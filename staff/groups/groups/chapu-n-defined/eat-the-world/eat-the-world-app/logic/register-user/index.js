@@ -1,10 +1,10 @@
 /**
- * [registerUser description]
+ * Makes a call to an API, sending the personal user data like name, surname, email and password, to be saved in the data base.
  * @param  {String}   name     The name introduced by the user
  * @param  {String}   surname  The surname introduced by the user
  * @param  {String}   email    The email introduced by the user
  * @param  {String}   password The password introduced by the user
- * @param  {Function} callback Recibes a callback
+ * @param  {Function} callback Recibes a callback with the responde of the call
  * @throws {TypeError}    If name, surname, email or password is not a string
  * @throws {TypeError}    If callback is not a function
  * @throws {ContentError}    If name, surname, email or password is empty or blank

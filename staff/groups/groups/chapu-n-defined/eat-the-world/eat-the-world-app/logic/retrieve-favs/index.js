@@ -1,3 +1,12 @@
+/**
+ * The function makes a call to the first API to retrieve the favorites id saved in the user account, and makes a second call to Zomato API to retrieve all restaurants that matches with every id saved in the user account.
+ * @param  {String}   id       Receives the user id
+ * @param  {String}   token    Receives the user token
+ * @param  {Function} callback Recibes a callback to retrieve the results of the call to the API (the favorites restaurants returned in an array)
+ * @throws {TypeError}    If id or token is not a string
+ * @throws {TypeError}    If callback is not a function
+ * @throws {ContentError}    If id or token is empty or blank
+ */
 function retrieveFavs(id, token, callback) {
   if(typeof id !== 'string') throw new TypeError(id + ' is not a string')
   if(!id.trim().length) throw new ContentError('id is empty or blank')

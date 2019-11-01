@@ -1,5 +1,5 @@
 /**
- * Makes a call to an API, sending email and password, to retrieve other personal data from the user as id and token
+ * Makes a call to an API, sending email and password and checks if the user exists returning an id and a token
  * @param  {String}   email    Recibes a user email
  * @param  {String}   password Recibes a user password
  * @param  {Function} callback Recibes a callback to retrieve the results of the call to the API
