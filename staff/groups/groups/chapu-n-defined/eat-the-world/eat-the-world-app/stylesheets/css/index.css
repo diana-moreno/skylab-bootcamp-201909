@@ -362,20 +362,17 @@ body {
   justify-content: center;
   align-items: center;
   text-decoration-line: none;
-  margin-bottom: 4%;
-  margin-top: 1%;
-  color: #d71818;
 }
 
 .go-back__button:hover {
   color: #ffa250fa;
 }
 
-.modificate {
+.fa-arrow-left {
   margin-right: 1rem;
   text-decoration: none;
   font-size: 1.5rem;
-  color: black;
+  color: white;
 }
 
 .fa-arrow-left:hover {
@@ -384,6 +381,13 @@ body {
 
 .fa-arrow-left:before {
   margin-right: 1rem;
+}
+
+.modificate {
+  margin-right: 1rem;
+  text-decoration: none;
+  font-size: 1.5rem;
+  color: black;
 }
 
 @media only screen and (min-width: 576px) {
