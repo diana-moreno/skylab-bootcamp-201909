@@ -138,7 +138,8 @@ class App extends Component {
     sessionStorage.clear()
     this.setState({
       ...this.state,
-      user: undefined
+      user: undefined,
+      view: 'landing'
     })
   }
 

@@ -1,3 +1,14 @@
+/**
+ * [registerUser description]
+ * @param  {String}   name     The name introduced by the user
+ * @param  {String}   surname  The surname introduced by the user
+ * @param  {String}   email    The email introduced by the user
+ * @param  {String}   password The password introduced by the user
+ * @param  {Function} callback Recibes a callback
+ * @throws {TypeError}    If name, surname, email or password is not a string
+ * @throws {TypeError}    If callback is not a function
+ * @throws {ContentError}    If name, surname, email or password is empty or blank
+ */
 function registerUser(name, surname, email, password, callback) {
   if(typeof name !== 'string') throw new TypeError(name + ' is not a string')
   if(!name.trim().length) throw new ContentError('name is empty or blank')

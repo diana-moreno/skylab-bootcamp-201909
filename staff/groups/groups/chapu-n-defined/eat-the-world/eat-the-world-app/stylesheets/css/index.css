@@ -374,7 +374,7 @@ body {
 .fa-arrow-left {
   margin-right: 1rem;
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 1.5rem;
   color: white;
 }
 
@@ -387,10 +387,7 @@ body {
 }
 
 .modificate {
-  margin-right: 1rem;
-  text-decoration: none;
-  font-size: 1.5rem;
-  color: black;
+  color: #5f5757;
 }
 
 @media only screen and (min-width: 576px) {
@@ -430,10 +427,6 @@ body {
   }
 }
 @media only screen and (min-width: 1200px) {
-  .fa-arrow-left {
-    font-size: 1.5rem;
-  }
-
   .detail__main-container {
     max-width: 60%;
     font-size: 0.9rem;

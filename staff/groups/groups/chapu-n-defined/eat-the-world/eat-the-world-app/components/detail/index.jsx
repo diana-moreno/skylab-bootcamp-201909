@@ -50,7 +50,7 @@ function Detail({ restaurant, handleFavorite, onBack }) {
 
           onBack()
         }}>
-          <i className="fas fa-arrow-left" style={{color: 'black'}}>Go back</i>
+          <i className="fas fa-arrow-left" style={{color: '#5f5757'}}>Go back</i>
         </a>
       </div>
     </section>
