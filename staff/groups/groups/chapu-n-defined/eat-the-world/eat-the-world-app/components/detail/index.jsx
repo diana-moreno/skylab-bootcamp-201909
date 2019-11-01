@@ -21,7 +21,6 @@ function Detail({ restaurant, handleFavorite, onBack }) {
             <p className='detail__cuisine'>{restaurant.cuisines}</p>
             <h2 className='detail__detail-title'>Adress</h2>
             <p className='detail__direction'>{restaurant.location.address}</p>
-
             <h2 className='detail__detail-title'>Phone</h2>
             <p className='detail__telephone'>{restaurant.phone_numbers}</p>
           </div>
@@ -54,7 +53,6 @@ function Detail({ restaurant, handleFavorite, onBack }) {
           <i className="fas fa-arrow-left" style={{color: 'black'}}>Go back</i>
         </a>
       </div>
-
     </section>
   )
 }
