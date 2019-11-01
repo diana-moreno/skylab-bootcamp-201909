@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -8,76 +9,43 @@
 <script src="https://kit.fontawesome.com/c0a664ee11.js"></script>
 
 <body>
-  <header class="header">
-    <section class="header__options">
-      <a class="header__options-login" href="#">Login</a>
-      <a class="header__options-register" href="#">Create an account</a>
-    </section>
-    <h1 class="header__title">Eat The World</h1>
-    <h2 class="header__slogan">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h2>
-    <form class="header__form">
-      <input type="search" class="header__form-search" name="query" placeholder="introduce a city name">
-      <button class="header__form-button">
-        <i class="fas fa-utensils"></i>
-      </button>
-    </form>
-  </header>
-
-  <main>
     <section class='detail'>
-      <div class='detail__main-container'>
-        <h1 class='detail__title'>NOMBRE DEL RESTAURANTE</h1>
-        <div class='detail__header-container'>
-          <img src="./images/restaurant.png">
-          <p class='detail__puntuation'>4.5</p>
-        </div>
-        <div class='detail__columns-container'>
-          <div class='detail__column-container'>
-            <h2 class='detail__detail-title'>Tipo de cocina</h2>
-            <p class='detail__cuisine'>Maroccan</p>
-            <h2 class='detail__detail-title'>Dirección</h2>
-            <p class='detail__direction'>W 53rd Street & 7th Ave New York, NY 10019</p>
-            <h2 class='detail__detail-title'>Teléfono</h2>
-            <p class='detail__telephone'>(347) 527-1505</p>
+        <div class='detail__main-container'>
+         <i class="detail__favorite fas fa-heart"></i>}
+          <h1 class='detail__title'>The pizza place</h1>
+          <div class='detail__header-container'>
+            <img class="detail__img" src={restaurant.featured_image} />
+            <p class='detail__puntuation'>4.5</p>
           </div>
-          <div class='detail__column-container'>
-            <h2 class='detail__detail-title'>Precio medio</h2>
-            <p class='detail__price'>25$ para dos personas</p>
-            <h2 class='detail__detail-title'>Sitio Web</h2>
-            <a class='detail__web' href="">Sitio Web</a>
-            <h2 class='detail__detail-title'>Horario</h2>
-            <p class='detail__time'>11am a 2am</p>
-          </div>
-          <div class='detail__column-container detail__featured'>
-            <h2 class='detail__detail-title'>Destacados</h2>
-              <p>Dinner</p>
-              <p>Takeaway Available</p>
-              <p>Lunch</p>
-              <p>Serves Alcohol</p>
+          <div class='detail__columns-container'>
+            <div class='detail__column-container'>
+              <h2 class='detail__detail-title'>Cuisine type</h2>
+              <p class='detail__cuisine'>Mediterranean</p>
+              <h2 class='detail__detail-title'>Adress</h2>
+              <p class='detail__direction'>Amherst Street</p>
+              <h2 class='detail__detail-title'>Phone</h2>
+              <p class='detail__telephone'>86567565</p>
+            </div>
+            <div class='detail__column-container'>
+              <h2 class='detail__detail-title'>Average cost for two</h2>
+              <p class='detail__price'>17$</p>
+              <h2 class='detail__detail-title'>Establishment</h2>
+              <p class='detail__web' href="">Casual dining</p>
+              <h2 class='detail__detail-title'>Business hours</h2>
+              <p class='detail__time'>11 AM to 2 AM</p>
+            </div>
+            <div class='detail__column-container detail__featured'>
+              <h2 class='detail__detail-title'>Highlights</h2>
               <p>Cash</p>
               <p>Credit Card</p>
-              <p>Michelin Starred</p>
-              <p>Indoor Seating</p>
-              <p>Table booking recommended</p>
-              <p>Lunch menu</p>
-              <p>Fullbar</p>
+              <p>Take Away available</p>
+              <p>Lunch</p>
+            </div>
           </div>
+          <a class="detail__button" href="#">
+            <i class="fas fa-arrow-left">Go back</i>
+          </a>
         </div>
-      </div>
-    </section>
-</main>
-<!--     <section class='comments'>
-      <div class='comments__container'>
-        <h2 class='comments__title'>Leave a comment</h2>
-        <form class="comments__text">
-          <textarea type="text" name="comment" placeholder="introduce your comment"></textarea>
-          <button class="comments__button">
-            <i class="fas fa-utensils"></i>
-          </button>
-        </form>
-      </div>
-    </section> -->
-
-</body>
-
-</html>
+      </section>
+  </body>
+  </html>
