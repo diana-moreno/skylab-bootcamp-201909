@@ -43,7 +43,7 @@ class App extends Component {
             const { name } = user
             this.handleRestaurants(this.state.city, this.state.query)
             this.setState({
-              view: this.state.isLanding ? 'landing' : 'results',
+              view: this.state.isLanding ? 'landing' : this.state.isDetail ? 'detail' : 'results',
               user: name,
               error: { city: false, noResults: false}
             })
@@ -91,7 +91,9 @@ class App extends Component {
   }
 
   handleBackToResult = () => {
-    this.setState({ view: this.state.isFavorite ? 'favorites' : 'results', error: { city: false, noResults: false}  })
+    this.setState({ view: this.state.isFavorite ? 'favorites' : 'results', 
+    isDetail: false,
+    error: { city: false, noResults: false}  })
   }
 
   handleRestaurants = (city, query) => {
