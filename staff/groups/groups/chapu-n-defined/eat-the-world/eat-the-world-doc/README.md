@@ -17,7 +17,7 @@ The app is developed with React. The layout has been done with SASS.
 
 ### Flow Diagram
 
-![Alt text](Diagrama2.jpg)
+![Alt text](FLOW.jpg)
 
 ## Technical Description
 
@@ -29,6 +29,14 @@ The app is developed with React. The layout has been done with SASS.
 ## Components
 
 ![Alt text](components.jpg)
+
+### Components-React
+
+![Alt text](react-compos.jpg)
+
+### Flow Components-React
+
+![Alt text](Flow-compos.jpg)
 
 ## Code Coverage
 
