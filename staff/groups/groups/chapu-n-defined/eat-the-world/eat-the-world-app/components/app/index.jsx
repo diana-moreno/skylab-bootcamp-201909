@@ -107,6 +107,8 @@ class App extends Component {
           isLanding: false,
           view: results.length !== 0 ? 'results' : 'feedback',
           restaurants: results,
+          isDetail: false,
+          isFavorite: false,
           error: { city: false, noResults: false}
         })
       }
