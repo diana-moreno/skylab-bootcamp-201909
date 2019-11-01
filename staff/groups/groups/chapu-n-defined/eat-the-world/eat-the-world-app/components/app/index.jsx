@@ -41,6 +41,7 @@ class App extends Component {
           retrieveUser(id, token, (error, user) => {
             if (error) return this.setState({ error: error.message })
             const { name } = user
+            this.handleRestaurants(this.state.city, this.state.query)
             this.setState({
               view: this.state.isLanding ? 'landing' : 'results',
               user: name,
@@ -109,7 +110,9 @@ class App extends Component {
           restaurants: results,
           isDetail: false,
           isFavorite: false,
-          error: { city: false, noResults: false}
+          error: { city: false, noResults: false},
+          city,
+          query
         })
       }
     })
