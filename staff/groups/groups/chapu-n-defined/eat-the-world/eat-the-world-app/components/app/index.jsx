@@ -19,13 +19,11 @@ class App extends Component {
         if (error) return this.setState({ error: error.message })
 
         const { name } = user
-
         this.setState({
           user: name,
           error: { city: false, noResults: false}
         })
       })
-
     }
   }
 
@@ -41,27 +39,21 @@ class App extends Component {
 
           retrieveUser(id, token, (error, user) => {
             if (error) return this.setState({ error: error.message })
-
             const { name } = user
-
             this.setState({
               view: this.state.isLanding ? 'landing' : 'results',
               user: name,
               error: { city: false, noResults: false}
             })
-
           })
-
         } catch (error) {
           this.setState({ error: error.message })
         }
-
       })
     } catch (error) {
       this.setState({ error: error.message })
     }
   }
-
 
   handleRegister = (name, surname, email, password) => {
     try {
@@ -86,17 +78,16 @@ class App extends Component {
     this.setState({ view: 'login', error: undefined })
   }
 
-  handleBack = () => { //cambiar
+  handleBack = () => {
     this.setState({
       ...this.state,
       view: this.state.isLanding ? 'landing' : this.state.isDetail ? 'detail': 'results' ,
       user: name,
       error: { city: false, noResults: false}
     })
-
   }
 
-  handleBackToResult = () => { //cambiar
+  handleBackToResult = () => {
     this.setState({ view: 'search', error: { city: false, noResults: false}  })
   }
 
@@ -104,7 +95,6 @@ class App extends Component {
     const { id, token } = sessionStorage
     searchRestaurants(city, query, id, token, (error, results) => {
       if (error) {
-        console.log(error.message)
         this.setState({
           ...this.state,
           view: 'feedback'
@@ -137,12 +127,10 @@ class App extends Component {
   }
 
   handleFavorite = (idItem) => {
-    debugger
     const { id, token } = sessionStorage
     this.paintHeartsFav(idItem)
     toggleFavs(id, token, idItem, (error, result) => {})
   }
-
 
   handleLogout = () => {
     sessionStorage.clear()
@@ -156,7 +144,7 @@ class App extends Component {
     this.setState({view: 'detail', error: undefined, restaurant, isDetail: true, error: { city: false, noResults: false }})
   }
 
-  handleFavorites = () => {
+  handleRetrieveFavorites = () => {
     const { id, token } = sessionStorage
     try {
       retrieveFavs(id, token, (error, favs) => {
@@ -190,13 +178,13 @@ class App extends Component {
   }
 
   render() {
-    const { state: { view, restaurants, user, favorites, restaurant }, handleRegister, handleLogin, handleBack, handleGoToRegister, handleGoToLogin, handleFavorite, handleLogout, handleFavorites, handleDetail, validateInputs, handleBackToResult } = this
+    const { state: { view, restaurants, user, favorites, restaurant }, handleRegister, handleLogin, handleBack, handleGoToRegister, handleGoToLogin, handleFavorite, handleLogout, handleRetrieveFavorites, handleDetail, validateInputs, handleBackToResult } = this
 
     return (
       <div className='main-container'>
       { view === 'RegisterSuccess' && <RegisterSuccess user={user} onLogin={handleGoToLogin}/> }
-      { view === 'landing' && <Landing onBack={handleLogout} user={user} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites} validateInputs={validateInputs} error={this.state.error.city}/>}
-      { (view === 'feedback' || view === 'results' || view === 'favorites' || view === 'detail') && <Search onBack={handleLogout} user={user} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleFavorites} validateInputs={validateInputs} error={this.state.error.city} /> }
+      { view === 'landing' && <Landing onBack={handleLogout} user={user} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleRetrieveFavorites} validateInputs={validateInputs} error={this.state.error.city}/>}
+      { (view === 'feedback' || view === 'results' || view === 'favorites' || view === 'detail') && <Search onBack={handleLogout} user={user} onLogin={handleGoToLogin} onRegister={handleGoToRegister} onFavorites={handleRetrieveFavorites} validateInputs={validateInputs} error={this.state.error.city} /> }
       { view === 'login' && <Login onLogin={handleLogin} onBack={handleBack} onRegister={handleGoToRegister}/> }
       { view === 'register' && <Register onRegister={handleRegister} onBack={handleBack}/> }
       { view === 'results' && <Results restaurants={restaurants} handleFavorite={handleFavorite} handleDetail={handleDetail}/>}
@@ -205,6 +193,6 @@ class App extends Component {
       { view === 'feedback' && <Feedback error={this.state.error.noResults}/>}
       { (view !== 'landing' && view !== 'login' && view !== 'register' && view !== 'RegisterSuccess') && <Footer/>}
       </div>
-      )
+    )
   }
 }

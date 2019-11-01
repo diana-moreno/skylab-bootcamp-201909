@@ -1,6 +1,7 @@
 function Landing({user, validateInputs, onLogin, onRegister, onBack, onFavorites, error}) {
   return (
     <header className="header header--landing">
+
       {user ?
       <section className="header__options header__options--landing">
          <a className="header__options-login" href="#" onClick={event =>{
@@ -21,10 +22,10 @@ function Landing({user, validateInputs, onLogin, onRegister, onBack, onFavorites
           onLogin()}}>Login</a>
         <a className="header__options-register" href="#" onClick={event =>{
           event.preventDefault()
-
           onRegister()
         }}>Create an account</a>
       </section> }
+
       <h1 className="header__title header__title--landing">Eat The World</h1>
       <h2 className="header__slogan">One thousand flavours in one search</h2>
       <form onSubmit={event => {

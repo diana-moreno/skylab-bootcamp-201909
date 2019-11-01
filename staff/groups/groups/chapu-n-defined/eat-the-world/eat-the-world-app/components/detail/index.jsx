@@ -21,7 +21,6 @@ function Detail({ restaurant, handleFavorite, onBack }) {
             <p className='detail__cuisine'>{restaurant.cuisines}</p>
             <h2 className='detail__detail-title'>Adress</h2>
             <p className='detail__direction'>{restaurant.location.address}</p>
-
             <h2 className='detail__detail-title'>Phone</h2>
             <p className='detail__telephone'>{restaurant.phone_numbers}</p>
           </div>
@@ -47,7 +46,6 @@ function Detail({ restaurant, handleFavorite, onBack }) {
           </div>
         </div>
       </div>
-
     </section>
   )
 }

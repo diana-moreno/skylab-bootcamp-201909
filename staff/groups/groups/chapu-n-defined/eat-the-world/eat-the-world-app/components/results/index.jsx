@@ -1,5 +1,4 @@
 function Results({ restaurants, handleFavorite, view, handleDetail}) {
-
   return(
     <section className="container">
       {view === 'favorites' ?

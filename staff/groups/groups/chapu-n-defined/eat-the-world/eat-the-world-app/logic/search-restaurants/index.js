@@ -2,34 +2,36 @@ function searchRestaurants(city, query, id, token, callback) {
   /*  if(typeof id !== 'string') throw new TypeError(id + ' is not a string')
     if(!id.trim().length) throw new ContentError('id is empty or blank')
     if(typeof token !== 'string') throw new TypeError(token + ' is not a string')
-    if(!token.trim().length) throw new ContentError('token is empty or blank')*/  
-  if (typeof city !== 'string') throw new TypeError(city + ' is not a string')
-  if (typeof query !== 'string') throw new TypeError(query + ' is not a string')
-  if (typeof callback !== 'function') throw new TypeError(callback + ' is not a function')
+    if(!token.trim().length) throw new ContentError('token is empty or blank')*/
+  if(typeof city !== 'string') throw new TypeError(city + ' is not a string')
+  if(typeof query !== 'string') throw new TypeError(query + ' is not a string')
+  if(typeof callback !== 'function') throw new TypeError(callback + ' is not a function')
 
   call('GET', "https://developers.zomato.com/api/v2.1/locations?query=" + city, undefined, undefined, resultCity => {
 
-    if (resultCity.error) return callback(new Error(resultCity.error))
+    if(resultCity.error) return callback(new Error(resultCity.error))
     let cityId = resultCity['location_suggestions'][0]['entity_id']
 
     call('GET', `https://developers.zomato.com/api/v2.1/search?cuisines=55&entity_id=${cityId}&entity_type=city&q=${query}`, undefined, undefined, resultRestaurants => {
 
-      if (resultRestaurants.error) return callback(new Error(resultRestaurants.error))
+      if(resultRestaurants.error) return callback(new Error(resultRestaurants.error))
 
       resultRestaurants = resultRestaurants.restaurants.map(
-        ({restaurant:{ id, average_cost_for_two, currency, cuisines, highlights, location, name, url, featured_image, timings, user_rating, phone_numbers, establishment }})=>
-          ({ id, average_cost_for_two, currency, cuisines, highlights, location, name, url, featured_image, timings, user_rating, phone_numbers, establishment }))
+        ({ restaurant: { id, average_cost_for_two, currency, cuisines, highlights, location, name, url, featured_image, timings, user_rating, phone_numbers, establishment } }) =>
+        ({ id, average_cost_for_two, currency, cuisines, highlights, location, name, url, featured_image, timings, user_rating, phone_numbers, establishment }))
 
       resultRestaurants.forEach(result => {
         let indexDot = result.location.address.indexOf(',')
-        if (indexDot) {
+        if(indexDot) {
           result.location.address = result.location.address.slice(0, indexDot)
         }
         result.costcurrency = result.average_cost_for_two + " " + result.currency
+        console.log(result.featured_image)
+        if(!result.featured_image) result.featured_image = 'https://b.zmtcdn.com/data/res_imagery/16733182_RESTAURANT_2317de0909b99bd03f8d4d94cbd3389d_c.jpg'
       })
-      if (id && token) {
+      if(id && token) {
         call('GET', `https://skylabcoders.herokuapp.com/api/user/${id}`, token, undefined, dataUser => {
-          if (dataUser.error) return callback(new Error(dataUser.error))
+          if(dataUser.error) return callback(new Error(dataUser.error))
 
           const { data: { favs = [] } } = dataUser
 
@@ -38,7 +40,7 @@ function searchRestaurants(city, query, id, token, callback) {
           })
           callback(undefined, resultRestaurants)
         })
-      } else  {
+      } else {
         callback(undefined, resultRestaurants)
       }
     })
