@@ -356,12 +356,13 @@ body {
 .detail__featured > p {
   margin: 0;
 }
-
-.go-back__button {
+.detail__button {
   display: flex;
   justify-content: center;
   align-items: center;
   text-decoration-line: none;
+  margin-bottom: 4%;
+  margin-top: 1%;
 }
 
 .go-back__button:hover {
@@ -371,7 +372,7 @@ body {
 .fa-arrow-left {
   margin-right: 1rem;
   text-decoration: none;
-  font-size: 1.5rem;
+  font-size: 1rem;
   color: white;
 }
 
@@ -427,6 +428,10 @@ body {
   }
 }
 @media only screen and (min-width: 1200px) {
+  .fa-arrow-left {
+    font-size: 1.5rem;
+  }
+
   .detail__main-container {
     max-width: 60%;
     font-size: 0.9rem;
