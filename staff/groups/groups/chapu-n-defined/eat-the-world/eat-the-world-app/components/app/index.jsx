@@ -161,7 +161,7 @@ class App extends Component {
   }
 
   handleDetail = (restId) => {
-    retrieveDetail(restId, (error, restaurant) => {
+    searchRestaurantDetail(restId, (error, restaurant) => {
       this.setState({
         view: 'detail',
         restaurant,
