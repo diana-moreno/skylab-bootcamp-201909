@@ -41,7 +41,9 @@ class App extends Component {
           retrieveUser(id, token, (error, user) => {
             if (error) return this.setState({ error: error.message })
             const { name } = user
-            this.handleRestaurants(this.state.city, this.state.query)
+
+            if(!this.state.isFavorite && !this.state.isDetail && !this.state.isLanding) this.handleRestaurants(this.state.city, this.state.query)
+
             this.setState({
               view: this.state.isLanding ? 'landing' : this.state.isDetail ? 'detail' : 'results',
               user: name,
@@ -91,7 +93,7 @@ class App extends Component {
   }
 
   handleBackToResult = () => {
-    this.setState({ view: this.state.isFavorite ? 'favorites' : 'results', 
+    this.setState({ view: this.state.isFavorite ? 'favorites' : 'results',
     isDetail: false,
     error: { city: false, noResults: false}  })
   }
@@ -146,7 +148,10 @@ class App extends Component {
     this.setState({
       ...this.state,
       user: undefined,
-      view: 'landing'
+      view: 'landing',
+      isLanding: true,
+      isDetail: false,
+      isFavorite: false
     })
   }
 
