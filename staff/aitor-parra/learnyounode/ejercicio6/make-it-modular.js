@@ -1,12 +1,29 @@
-const fs = require('fs')
-const path = require('path')
+const filterFunction = require('./mymodule.js')
 
-fs.readdir(process.argv[2], function callback (err, list) { 
-    
-    if(err) throw err
+filterFunction(process.argv[2],process.argv[3], function (err, list) {
 
-    const files = list.filter(file => path.extname(file) === '.md')
-    
-    files.forEach(file => {console.log(file)});
-    
- })
+    if(err) return err
+    list.forEach(function (file) {
+        console.log(file)
+    })
+})
+
+
+
+
+
+
+/*  'use strict'
+   const filterFn = require('./module.index.js')
+   const dir = process.argv[2]
+   const filterStr = process.argv[3]
+   filterFn(dir, filterStr, function (err, list) {
+     if (err) {
+       return console.error('There was an error:', err)
+     }
+     list.forEach(function (file) {
+       console.log(file)
+     })
+   }) */
+
+  // -> node node, pathnode, Path, FileExtension, 
