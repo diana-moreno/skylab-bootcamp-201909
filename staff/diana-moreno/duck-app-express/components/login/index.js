@@ -1,4 +1,6 @@
-module.exports = function() {
+const Feedback = require('../feedback')
+
+module.exports = function({ register }) {
   return (
     `<div class='view view__login'>
       <h1 class='view__login--title'>Duck Store</h1>
@@ -10,11 +12,15 @@ module.exports = function() {
           placeholder="password"/>
         <button type='submit' class='form__button form__button--login'>Login</button>
       </form>
-      <button
-        class='form__button form__button--register'>Create account</button>
-      <div class='feedback'>
+      <a href="${register}">
+        <button class='form__button form__button--register'>Create account
+        </button>
+      </a>
 
+      <div class='feedback'>
+        ${Feedback()}
       </div>
+
       <img  class='view__login--image' src="pato-madre-plano-patitos_23-2148282441.jpg" alt="family-ducks"/>
     </div>`
   )
