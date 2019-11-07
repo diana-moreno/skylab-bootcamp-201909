@@ -1,4 +1,8 @@
-describe('logic - retrieve user', () => {
+const { expect } = require('chai')
+const call = require('../../helpers/call')
+const retrieveUser = require('../retrieve-user')
+
+describe.only('logic - retrieve user', () => {
     let name, surname, email, password, id, token
 
     beforeEach(done => {
@@ -7,10 +11,10 @@ describe('logic - retrieve user', () => {
         email = `email-${Math.random()}@mail.com`
         password = `password-${Math.random()}`
 
-        call('POST', 'https://skylabcoders.herokuapp.com/api/user', undefined, { name, surname, username: email, password }, result => {
+        call('POST', undefined, 'https://skylabcoders.herokuapp.com/api/user', { name, surname, username: email, password }, result => {
             if (result.error) done(new Error(result.error))
             else {
-                call('POST', 'https://skylabcoders.herokuapp.com/api/auth', undefined,{ username: email, password }, result => {
+                call('POST', undefined, 'https://skylabcoders.herokuapp.com/api/auth', { username: email, password }, result => {
                     if (result.error) done(new Error(result.error))
                     else {
                         const { data } = result
@@ -27,13 +31,13 @@ describe('logic - retrieve user', () => {
 
     it('should succeed on correct user data', done => {
         retrieveUser(id, token, (error, data) => {
-            expect(error).toBeUndefined()
+            expect(error).not.to.exist
 
-            expect(data).toBeDefined()
-            expect(data.name).toBe(name)
-            expect(data.surname).toBe(surname)
-            expect(data.username).toBe(email)
-            expect(data.password).toBeUndefined()
+            expect(data).to.exist
+            expect(data.name).to.equal(name)
+            expect(data.surname).to.equal(surname)
+            expect(data.username).to.equal(email)
+            expect(data.password).not.to.exist
 
             done()
         })

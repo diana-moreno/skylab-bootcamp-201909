@@ -1,4 +1,4 @@
-module.exports = function({ name, logout }/*{searchDucks, username, onFavs, logout}*/) {
+module.exports = function({ name, query, path }) {
   return (
     `<header class='header view__header'>
       <div class='nav'>
@@ -13,9 +13,8 @@ module.exports = function({ name, logout }/*{searchDucks, username, onFavs, logo
         <p class='nav__elems'>Hello, ${name}</p>
       </div>
       <h1 class='header__title'>Duck Store</h1>
-      <form
-        class='header__form form'>
-        <input class='form__input' type="text" name="query" placeholder="search..." />
+      <form class='header__form form' method ='get' action='${path}'>
+        <input class='form__input' type="text" name="query" placeholder="search..." ${query? `value=${query}` : '' } />
         <button class='form__button'>
           <i class="fas fa-search"></i>
         </button>

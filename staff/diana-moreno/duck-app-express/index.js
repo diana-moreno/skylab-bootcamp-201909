@@ -1,16 +1,20 @@
 const express = require('express')
+const querystring = require('querystring')
+
 const View = require('./components/view')
 const Login = require('./components/login')
 const Register = require('./components/register')
 const RegisterSucess = require('./components/register-success')
 const Search = require('./components/search')
 
-const querystring = require('querystring')
 const registerUser = require('./logic/register-user')
 const authenticateUser = require('./logic/authenticate-user')
 const retrieveUser = require('./logic/retrieve-user')
+const searchDucks = require('./logic/search-ducks')
 
 const { argv: [, , port = 8080] } = process
+
+let credentials
 
 const app = express()
 
@@ -34,11 +38,11 @@ app.post('/register', (req, res) => {
 
     try {
       registerUser(name, surname, email, password, error => {
-        if (error) res.send('error chungo!')
+        if (error) res.send(error.message)
         else res.send(View({ body: RegisterSucess({ login: '/login' }) }))
       })
     } catch (error) {
-      // TODO handling
+      res.send(error.message)
     }
   })
 })
@@ -51,25 +55,49 @@ app.post('/login', (req, res) => {
     const { username, password } = querystring.parse(content)
 
     try {
-      authenticateUser(username, password, (error, credentials) => {
-        if (error) return res.send('error chungo!') // TODO
-        const { id, token } = credentials
+      authenticateUser(username, password, (error, _credentials) => {
+        if (error) return res.send(error.message)
 
-        res.setHeader('set-cookie', `id=${id}`)
-
-        //res.redirect('/search')
-        retrieveUser(id, token, (error, userData) => {
-          res.send(View({ body: Search({ name: userData.name }) }))
-        })
+        credentials = _credentials
+        res.redirect('/search')
       })
     } catch (error) {
-      // TODO handling
+      res.send(error.message)
     }
   })
 })
 
 app.get('/search', (req, res) => {
-  res.send(View({ body: Search() }))
+
+  // console.log(req)
+  const { query: { query: query } } = req
+
+  try {
+    const { id, token } = credentials
+
+    retrieveUser(id, token, (error, userData) => {
+      if (error) return res.send(error.message)
+      const { name } = userData
+
+      if (!query) res.send(View({ body: Search({ path: '/search', name }) }))
+      else {
+        try {
+          searchDucks(id, token, query, (error, ducks) => {
+            if (error) return res.send(error.message)
+
+            console.log(ducks)
+
+            res.send(View({ body: `${Search({ path: '/search', query, name })} ` })) // TODO ${Results({items: ducks})}
+          })
+        } catch (error) {
+          res.send(error.message)
+
+        }
+      }
+    })
+  } catch (error) {
+      res.send(error.message)
+  }
 })
 
 
