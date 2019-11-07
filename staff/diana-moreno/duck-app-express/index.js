@@ -1,16 +1,8 @@
 const express = require('express')
+const { View, Login, Register, RegisterSuccess, Search } = require('./components')
+const { registerUser, authenticateUser, retrieveUser, searchDucks } = require('./logic')
+const { bodyParser, cookieParser } = require('./utils/middlewares')
 const querystring = require('querystring')
-
-const View = require('./components/view')
-const Login = require('./components/login')
-const Register = require('./components/register')
-const RegisterSucess = require('./components/register-success')
-const Search = require('./components/search')
-
-const registerUser = require('./logic/register-user')
-const authenticateUser = require('./logic/authenticate-user')
-const retrieveUser = require('./logic/retrieve-user')
-const searchDucks = require('./logic/search-ducks')
 
 const { argv: [, , port = 8080] } = process
 
@@ -25,48 +17,40 @@ app.get('/login', (req, res) => {
 })
 
 app.get('/register', (req, res) => {
-  res.send(View({ body: Register({ login: '/login' }) }))
+  res.send(View({ body: Register({ path: '/register', login: '/login' }) }))
 })
 
-app.post('/register', (req, res) => {
-  let content = ''
-
-  req.on('data', chunk => content += chunk)
-
-  req.on('end', () => {
-    const { name, surname, email, password } = querystring.parse(content)
-
-    try {
-      registerUser(name, surname, email, password, error => {
-        if (error) res.send(error.message)
-        else res.send(View({ body: RegisterSucess({ login: '/login' }) }))
-      })
-    } catch (error) {
-      res.send(error.message)
-    }
-  })
+app.get('/register-success', (req, res) => {
+  res.send(View({ body: RegisterSuccess({ login: '/login' }) }))
 })
 
-app.post('/login', (req, res) => {
-  let content = ''
-  req.on('data', chunk => content += chunk)
+app.post('/register', bodyParser, (req, res) => {
+  const { body: { name, surname, email, password } } = req
 
-  req.on('end', () => {
-    const { username, password } = querystring.parse(content)
+  try {
+    registerUser(name, surname, email, password)
+      .then(() => res.redirect('/register-success'))
+      .catch(({ message }) => res.send(View({ body: Register({ path: '/register', login: '/login', error: message }) })))
+  } catch (error) {
+      res.send(View({ body: Register({ path: '/register', error: error.message }) }))
+  }
+})
 
-    try {
-      authenticateUser(username, password, (error, credentials) => {
-        if (error) return res.send(error.message)
+app.post('/login', bodyParser, (req, res) => {
+  const { body: { username, password } } = req
 
-        const { id, token } = credentials
-        sessions[id] = token
-        res.setHeader('set-cookie', `id=${id}`)
-        res.redirect('/search')
-      })
-    } catch (error) {
-      res.send(error.message)
-    }
-  })
+  try {
+    authenticateUser(username, password, (error, credentials) => {
+      if (error) return res.send(error.message) //TODO
+
+      const { id, token } = credentials
+      sessions[id] = token
+      res.setHeader('set-cookie', `id=${id}`)
+      res.redirect('/search')
+    })
+  } catch (error) {
+    res.send(error.message) //TODO
+  }
 })
 
 app.get('/search', (req, res) => {
@@ -101,14 +85,14 @@ app.get('/search', (req, res) => {
       }
     })
   } catch (error) {
-      res.send(error.message)
+    res.send(error.message)
   }
 })
 
 app.post('/logout', (req, res) => {
   console.log('fuera')
-    res.setHeader('set-cookie', 'id=""; expires=Thu, 01 Jan 1970 00:00:00 GMT')
-    res.redirect('/login')
+  res.setHeader('set-cookie', 'id=""; expires=Thu, 01 Jan 1970 00:00:00 GMT')
+  res.redirect('/login')
 })
 
 

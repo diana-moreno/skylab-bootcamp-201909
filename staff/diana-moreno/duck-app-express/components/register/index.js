@@ -1,11 +1,12 @@
 const Feedback = require('../feedback')
 
-module.exports = function( {login}) {
+module.exports = function( {path, login, error}) {
+  console.log(error)
   return(
     `<section class='view view__register'>
       <img class='view__register--image' src="pato-goma-amarillo-plano-brillante_23-2148275403.jpg" alt="" />
       <h2 class='view__register--title'>Please, introduce your details</h2>
-      <form class="form form--login" method="post" action="/register">
+      <form class="form form--login" method="post" action="${path}">
         <input class='form__input' type="text" name="name"
           placeholder="name" />
         <input class='form__input' type="text" name="surname"
@@ -20,7 +21,7 @@ module.exports = function( {login}) {
         <button class='form__button form__button--register-back'>Back to login</button>
       </a>
       <div class='feedback'>
-        ${Feedback()}
+        ${error ? Feedback({ message: error }) : ''}
       </div>
     </section>`
   )

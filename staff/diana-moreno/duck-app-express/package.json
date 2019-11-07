@@ -19,7 +19,7 @@
     "sass": "^1.23.3"
   },
   "devDependencies": {
-    "chai": "^4.2.0",gi
+    "chai": "^4.2.0",
     "mocha": "^6.2.2"
   }
 }
