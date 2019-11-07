@@ -9,6 +9,7 @@ module.exports = function({ body }) {
           <title>Duck App</title>
           <link rel="stylesheet" href="style.css">
           <link rel="shortcut icon" href="icon.png" type="image/x-icon">
+          <script src="https://kit.fontawesome.com/c0a664ee11.js"></script>
       </head>
       <body>
         ${body}

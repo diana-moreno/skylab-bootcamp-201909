@@ -1,4 +1,4 @@
-module.exports = function({ name }/*{searchDucks, username, onFavs, logout}*/) {
+module.exports = function({ name, logout }/*{searchDucks, username, onFavs, logout}*/) {
   return (
     `<header class='header view__header'>
       <div class='nav'>
