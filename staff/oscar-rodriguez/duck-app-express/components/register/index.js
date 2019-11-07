@@ -1,6 +1,6 @@
-module.exports = function () {
+module.exports = function ({path}) {
     return `<section class="view register">
-                <form method="POST" action="/register">
+                <form method="POST" action="${path}">
                     <h1 class="register__title">Register</h1>
                     <input class="register__field" type="text" name="name" placeholder="name">
                     <input class="register__field" type="text" name="surname" placeholder="surname">
