@@ -1,7 +1,5 @@
 const fetch = require('../utils/fetch')
 
-console.log('fetch', fetch)
-
 module.exports = function(method, token, url, body, callback) {
   let headers = {}
   if (token) headers['Authorization'] = `Bearer ${token}`

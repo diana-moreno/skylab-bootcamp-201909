@@ -1,10 +1,9 @@
 const https = require('https')
-require('url')
+const url = require('url')
 
 module.exports = function (method, _url, headers, body, callback) {
 
-    console.log('ENTRA EN FETCH')
-    const { hostname, pathname } = new URL(_url) // por qué _?
+    const { hostname, pathname } = new URL(_url)
 
     const request = https.request({ method, hostname, headers, path: pathname }, callback)
 
