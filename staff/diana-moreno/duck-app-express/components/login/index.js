@@ -1,11 +1,11 @@
 const Feedback = require('../feedback')
 
-module.exports = function({ register }) {
+module.exports = function({ path, register }) {
   return (
     `<div class='view view__login'>
       <h1 class='view__login--title'>Duck Store</h1>
       <form
-        class="form form--login" method="POST">
+        class="form form--login" method="POST" action="${path}">
         <input class='form__input' type="text" name="username"
           placeholder="email"/>
         <input class='form__input' type="password" name="password"
