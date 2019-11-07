@@ -17,7 +17,7 @@ const app = express()
 app.use(express.static('public'))
 
 app.get('/', (req, res) => {
-    res.send(View({ body: Landing({ register: '/register' }), body: Login({ login: '/login' }) })) // TODO
+    res.send(View({ body: Landing({ register: '/register', login: '/login' }) })) // TODO
 })
 
 app.get('/register', (req, res) => {
@@ -34,10 +34,10 @@ app.post('/register', (req, res) => {
         const { name, surname, email, password } = querystring.parse(content)
 
         try {
-            registerUser(name, surname, email, password, (error => {
+            registerUser(name, surname, email, password, error => {
                 if (error) { res.send(View({ body: Feedback() })) }
                 else { res.send(View({ body: Login() })) }
-            }))
+            })
 
         } catch (error) {
             res.send(View({ body: Feedback() }))
@@ -58,13 +58,10 @@ app.post('/login', (req, res) => {
         const { email, password } = querystring.parse(content)
 
         try {
-            retrieveUser(email, password, (error => {
+            authenticateUser(email, password, error => {
                 if (error) res.send(Feedback())
-                else authenticateUser(id, token, (error) => {
-                    if (error) res.send(Feedback())
-                    else res.send('login success!')
-                })
-            }))
+                else res.redirect('/search')
+            })
 
         } catch (error) {
             res.send(View({ body: Feedback() }))
