@@ -3,11 +3,12 @@ const Landing = require('./components/landing')
 const View = require('./components/view')
 const Register = require('./components/register')
 const Login = require('./components/login')
+const Search = require('./components/search')
 const Feedback = require('./components/feedback')
 const querystring = require('querystring')
 const registerUser = require('./logic/register-user')
-const retrieveUser = require('./logic/retrieve-user')
 const authenticateUser = require('./logic/authenticate-user')
+const retrieveUser = require('./logic/retrieve-user')
 
 
 const { argv: [, , port = 8080] } = process
@@ -21,7 +22,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/register', (req, res) => {
-    res.send(View({ body: Register() }))
+    res.send(View({ body: Register({ path: '/register' }) }))
 })
 
 app.post('/register', (req, res) => {
@@ -36,7 +37,7 @@ app.post('/register', (req, res) => {
         try {
             registerUser(name, surname, email, password, error => {
                 if (error) { res.send(View({ body: Feedback() })) }
-                else { res.send(View({ body: Login() })) }
+                else res.redirect('/login') //res.send(View({ body: Login() }))
             })
 
         } catch (error) {
@@ -46,7 +47,7 @@ app.post('/register', (req, res) => {
 })
 
 app.get('/login', (req, res) => {
-    res.send(View({ body: Login() }))
+    res.send(View({ body: Login({ path: '/login'}) }))
 })
 
 app.post('/login', (req, res) => {
@@ -58,18 +59,35 @@ app.post('/login', (req, res) => {
         const { email, password } = querystring.parse(content)
 
         try {
-            authenticateUser(email, password, error => {
-                if (error) res.send(Feedback())
-                else res.redirect('/search')
+            authenticateUser(email, password, (error, credentials) => {
+                if (error) return res.send(Feedback())
+                else res.redirect('NADA')
             })
 
         } catch (error) {
             res.send(View({ body: Feedback() }))
         }
-    }
-    )
+    })
+})
+
+ 
+app.get('/search', (req, res) => {
+    res.send(View({ body: Search({ path: '/search' })}))
+})
+
+app.post('search', (req, res) => {
+    let content = ''
+
+    req.on('data', chunk => { content += chunk })
+
+    req.on('end', () => {
+
+
+        
+    })
 })
 
 
 app.listen(port, () => console.log(`server running on port ${port}`))
 
+ 
