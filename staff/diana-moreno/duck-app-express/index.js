@@ -14,7 +14,7 @@ const searchDucks = require('./logic/search-ducks')
 
 const { argv: [, , port = 8080] } = process
 
-let credentials
+const sessions = {}
 
 const app = express()
 
@@ -55,10 +55,12 @@ app.post('/login', (req, res) => {
     const { username, password } = querystring.parse(content)
 
     try {
-      authenticateUser(username, password, (error, _credentials) => {
+      authenticateUser(username, password, (error, credentials) => {
         if (error) return res.send(error.message)
 
-        credentials = _credentials
+        const { id, token } = credentials
+        sessions[id] = token
+        res.setHeader('set-cookie', `id=${id}`)
         res.redirect('/search')
       })
     } catch (error) {
@@ -68,18 +70,21 @@ app.post('/login', (req, res) => {
 })
 
 app.get('/search', (req, res) => {
-
-  // console.log(req)
-  const { query: { query: query } } = req
-
   try {
-    const { id, token } = credentials
+    const { headers: { cookie } } = req
+    if (!cookie) return res.redirect('/login')
+
+    const [, id] = cookie.split('id=')
+    const token = sessions[id]
+    if (!token) return res.redirect('/login')
 
     retrieveUser(id, token, (error, userData) => {
       if (error) return res.send(error.message)
-      const { name } = userData
 
-      if (!query) res.send(View({ body: Search({ path: '/search', name }) }))
+      const { name } = userData
+      const { query: { query: query } } = req
+
+      if (!query) res.send(View({ body: Search({ path: '/search', name, logout: '/logout' }) }))
       else {
         try {
           searchDucks(id, token, query, (error, ducks) => {
@@ -87,7 +92,7 @@ app.get('/search', (req, res) => {
 
             console.log(ducks)
 
-            res.send(View({ body: `${Search({ path: '/search', query, name })} ` })) // TODO ${Results({items: ducks})}
+            res.send(View({ body: `${Search({ path: '/search', query, name, logout: '/logout' })} ` })) // TODO ${Results({items: ducks})}
           })
         } catch (error) {
           res.send(error.message)
@@ -100,6 +105,11 @@ app.get('/search', (req, res) => {
   }
 })
 
+app.post('/logout', (req, res) => {
+  console.log('fuera')
+    res.setHeader('set-cookie', 'id=""; expires=Thu, 01 Jan 1970 00:00:00 GMT')
+    res.redirect('/login')
+})
 
 
 app.listen(port, () => console.log(`server running on port ${port}`))

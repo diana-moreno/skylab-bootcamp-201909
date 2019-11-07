@@ -7,16 +7,19 @@
     "start": "node .",
     "watch": "npx nodemon .",
     "test": "npx mocha logic/*/*.spec.js",
-    "test-debug": "npx mocha inspect logic/*/*.spec.js"
+    "test-debug": "npx mocha inspect logic/*/*.spec.js",
+    "sass": "node_modules/.bin/sass stylesheets/sass:stylesheets/css",
+    "sass:watch": "npm run sass -- --watch"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "nodemon": "^1.19.4"
+    "nodemon": "^1.19.4",
+    "sass": "^1.23.3"
   },
   "devDependencies": {
-    "chai": "^4.2.0",
+    "chai": "^4.2.0",gi
     "mocha": "^6.2.2"
   }
 }

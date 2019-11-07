@@ -110,6 +110,7 @@ main, html, #root {
 }
 .nav__links-container {
   margin: 0;
+  display: flex;
 }
 .nav__elems {
   margin: 0 1rem;
@@ -117,8 +118,11 @@ main, html, #root {
   color: white;
   margin: 0 1rem;
 }
-.nav__link {
+.nav__button {
   cursor: pointer;
+  background: unset;
+  border: unset;
+  font-family: unset;
 }
 
 @media only screen and (min-width: 768px) {
