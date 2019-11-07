@@ -1,7 +1,6 @@
 const { expect } = require('chai')
 const call = require('../../helpers/call')
 const registerUser = require('../register-user')
-const { ContentError } = require('../../utils/errors')
 
 describe('logic - register user', () => {
     let name, surname, email, password
@@ -24,7 +23,7 @@ describe('logic - register user', () => {
 
     describe('when user already exists', () => {
         beforeEach(done => {
-            call('POST', undefined, 'https://skylabcoders.herokuapp.com/api/user', { name, surname, username: email, password }, result => {
+            call('POST', 'https://skylabcoders.herokuapp.com/api/user', undefined, { name, surname, username: email, password }, result => {
                 if (result.error) done(new Error(result.error))
                 else done()
             })
@@ -53,18 +52,12 @@ describe('logic - register user', () => {
         expect(() => registerUser(undefined)).to.throw(TypeError, 'undefined is not a string')
         expect(() => registerUser(null)).to.throw(TypeError, 'null is not a string')
 
-        expect(() => registerUser('')).to.throw(ContentError, 'name is empty or blank')
-        expect(() => registerUser(' \t\r')).to.throw(ContentError, 'name is empty or blank')
-
         expect(() => registerUser(name, 1)).to.throw(TypeError, '1 is not a string')
         expect(() => registerUser(name, true)).to.throw(TypeError, 'true is not a string')
         expect(() => registerUser(name, [])).to.throw(TypeError, ' is not a string')
         expect(() => registerUser(name, {})).to.throw(TypeError, '[object Object] is not a string')
         expect(() => registerUser(name, undefined)).to.throw(TypeError, 'undefined is not a string')
         expect(() => registerUser(name, null)).to.throw(TypeError, 'null is not a string')
-
-        expect(() => registerUser(name, '')).to.throw(ContentError, 'surname is empty or blank')
-        expect(() => registerUser(name, ' \t\r')).to.throw(ContentError, 'surname is empty or blank')
 
         expect(() => registerUser(name, surname, 1)).to.throw(TypeError, '1 is not a string')
         expect(() => registerUser(name, surname, true)).to.throw(TypeError, 'true is not a string')
@@ -73,18 +66,12 @@ describe('logic - register user', () => {
         expect(() => registerUser(name, surname, undefined)).to.throw(TypeError, 'undefined is not a string')
         expect(() => registerUser(name, surname, null)).to.throw(TypeError, 'null is not a string')
 
-        expect(() => registerUser(name, surname, '')).to.throw(ContentError, 'e-mail is empty or blank')
-        expect(() => registerUser(name, surname, ' \t\r')).to.throw(ContentError, 'e-mail is empty or blank')
-
         expect(() => registerUser(name, surname, email, 1)).to.throw(TypeError, '1 is not a string')
         expect(() => registerUser(name, surname, email, true)).to.throw(TypeError, 'true is not a string')
         expect(() => registerUser(name, surname, email, [])).to.throw(TypeError, ' is not a string')
         expect(() => registerUser(name, surname, email, {})).to.throw(TypeError, '[object Object] is not a string')
         expect(() => registerUser(name, surname, email, undefined)).to.throw(TypeError, 'undefined is not a string')
         expect(() => registerUser(name, surname, email, null)).to.throw(TypeError, 'null is not a string')
-
-        expect(() => registerUser(name, surname, email, '')).to.throw(ContentError, 'password is empty or blank')
-        expect(() => registerUser(name, surname, email, ' \t\r')).to.throw(ContentError, 'password is empty or blank')
 
         expect(() => registerUser(name, surname, email, password, 1)).to.throw(TypeError, '1 is not a function')
         expect(() => registerUser(name, surname, email, password, true)).to.throw(TypeError, 'true is not a function')
