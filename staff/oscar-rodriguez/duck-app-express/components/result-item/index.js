@@ -1,4 +1,4 @@
-module.exports = function () {
+module.exports = function ({item}) {
     return `<li class="results__item">
                 <a href="#" class="item">
                     <h2 class="item__title">This is a Super Duuuuuuuck</h2>

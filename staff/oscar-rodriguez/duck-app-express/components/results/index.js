@@ -1,8 +1,7 @@
 const ResultItem = require ('../result-item')
 
-module.exports = function () {
-    
+module.exports = function ({items}) {
     return `<ul class="results">
-                ${ResultItem()}
+                ${items.map ((item)=> ResultItem({item: item}))}
             </ul>`
 }

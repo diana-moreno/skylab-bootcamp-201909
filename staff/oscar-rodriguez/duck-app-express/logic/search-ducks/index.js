@@ -1,12 +1,14 @@
-const call = require ('../../utils/fetch')
-function searchDucks(id, token, query, callback) {
+const call = require ('../../helpers/call')
+
+
+module.exports = function (id, token, query, callback) {
     if (typeof query !== 'string') throw new TypeError(query +  ' is not a string');
     if (typeof callback !== 'function') throw new TypeError(callback +  ' is not a function');
 
     call('GET', query ? 'https://duckling-api.herokuapp.com/api/search?q=' + query : 'https://duckling-api.herokuapp.com/api/search', undefined, undefined, function(result) {
         if (result.error ) callback(new Error(result.error))
         else {
-            call('GET', 'https://skylabcoders.herokuapp.com/api/user/' + id, undefined, token, user => {
+            call('GET', 'https://skylabcoders.herokuapp.com/api/user/' + id, token, undefined, user => {
                 if (user.error ) callback(new Error(user.error))
                 else {
                     const {favs = []} = user.data
