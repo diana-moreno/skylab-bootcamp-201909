@@ -1,5 +1,5 @@
 const express = require('express')
-const { View, Login, Register, RegisterSuccess, Search } = require('./components')
+const { View, Login, Register, RegisterSuccess, Search, ResultsItem, Result } = require('./components')
 const { registerUser, authenticateUser, retrieveUser, searchDucks } = require('./logic')
 const { bodyParser, cookieParser } = require('./utils/middlewares')
 
@@ -75,14 +75,16 @@ app.get('/search', cookieParser, (req, res) => {
 
     const token = sessions[id]
     if (!token) return res.redirect('/login')
+    let name
 
     retrieveUser(id, token)
       .then(userData => {
-        const { name } = userData
+        name = userData.name
+
         if (!query) return res.send(View({ body: Search({ path: '/search', name, logout: '/logout' }) })) //return???
 
         return searchDucks(id, token, query) // antes con las arrow se producía auto return, ahora no y hay que indicarlo manualmente
-          .then(ducks => console.log(ducks))
+         /* .then(ducks => console.log(ducks))*/
           .then(ducks => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav' }) })))
       })
       .catch(({ message }) => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) })))
