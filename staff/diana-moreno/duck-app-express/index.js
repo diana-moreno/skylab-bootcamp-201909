@@ -53,17 +53,17 @@ app.post('/login', bodyParser, (req, res) => {
   }
 })
 
-app.get('/search', (req, res) => {
+app.get('/search', cookieParser, (req, res) => {
   try {
-    const { headers: { cookie } } = req
-    if (!cookie) return res.redirect('/login')
+    const { cookies: { id } } = req
+    //req.headers.cookies
+    if (!id) return res.redirect('/login')
 
-    const [, id] = cookie.split('id=')
     const token = sessions[id]
     if (!token) return res.redirect('/login')
 
     retrieveUser(id, token, (error, userData) => {
-      if (error) return res.send(error.message)
+      if (error) return res.send(error.message) // TODO
 
       const { name } = userData
       const { query: { query: query } } = req
@@ -72,26 +72,30 @@ app.get('/search', (req, res) => {
       else {
         try {
           searchDucks(id, token, query, (error, ducks) => {
-            if (error) return res.send(error.message)
+            if (error) return res.send(error.message) // TODO
 
             console.log(ducks)
 
             res.send(View({ body: `${Search({ path: '/search', query, name, logout: '/logout' })} ` })) // TODO ${Results({items: ducks})}
           })
         } catch (error) {
-          res.send(error.message)
+          res.send(error.message) // TODO
 
         }
       }
     })
   } catch (error) {
-    res.send(error.message)
+    res.send(error.message) // TODO
   }
 })
 
-app.post('/logout', (req, res) => {
-  console.log('fuera')
+app.post('/logout', cookieParser, (req, res) => {
   res.setHeader('set-cookie', 'id=""; expires=Thu, 01 Jan 1970 00:00:00 GMT')
+
+  const { cookies: { id } } = req
+  if (!id) return res.redirect('/login')
+  delete sessions[id]
+
   res.redirect('/login')
 })
 
