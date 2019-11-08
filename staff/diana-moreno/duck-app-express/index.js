@@ -1,6 +1,6 @@
 const express = require('express')
-const { View, Login, Register, RegisterSuccess, Search, ResultsItem, Result } = require('./components')
-const { registerUser, authenticateUser, retrieveUser, searchDucks } = require('./logic')
+const { View, Login, Register, RegisterSuccess, Search, ResultsItem, Result, Detail } = require('./components')
+const { registerUser, authenticateUser, retrieveUser, searchDucks, retrieveDuck } = require('./logic')
 const { bodyParser, cookieParser } = require('./utils/middlewares')
 
 const { argv: [, , port = 8080] } = process
@@ -84,9 +84,9 @@ app.get('/search', cookieParser, (req, res) => {
 
         if (!query) return res.send(View({ body: Search({ path: '/search', name, logout: '/logout' }) })) //return???
 
-        return searchDucks(id, token, query) // antes con las arrow se producía auto return, ahora no y hay que indicarlo manualmente
-         /* .then(ducks => console.log(ducks))*/
-          .then(ducks => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav' }) })))
+        return searchDucks(id, token, query) // return es necesario si queremos ahorrarnos un catch y dejar que se recoja el valor en el siguiente catch.
+         /* .then(ducks => console.log(ducks)) con el console.log se pierde el rastro de ducks porque no se devuelven*/
+          .then(ducks => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks' }) })))
       })
       .catch(({ message }) => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) })))
   } catch ({ message }) {
@@ -115,6 +115,28 @@ app.post('/fav', cookieParser, bodyParser, (req, res) => {
     res.send(`make fav duck ${duckId}`)
   } catch (error) {
     res.send('kaput')
+  }
+})
+
+app.get('/ducks/:id', cookieParser, (req, res) => {
+  try {
+    const { cookies: { id }, query: { query } } = req
+    const { params: { id: idDuck } } = req
+    if (!id) return res.redirect('/login')
+    const token = sessions[id]
+    if (!token) return res.redirect('/login')
+    let name
+
+    retrieveUser(id, token)
+      .then(userData => {
+        name = userData.name
+
+        return retrieveDuck(id, token, idDuck)
+          .then(duck => res.send(View({ body: Search({ path: '/search', name, logout: '/logout', item: duck, favPath: '/fav' }) })))
+      })
+      .catch(({ message }) => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) })))
+  } catch ({ message }) {
+    res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) }))
   }
 })
 

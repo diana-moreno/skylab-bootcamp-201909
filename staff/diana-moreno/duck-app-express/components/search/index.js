@@ -1,8 +1,9 @@
 const Feedback = require('../feedback')
 const Results = require('../results')
 const ResultsItem = require('../results-item')
+const Detail = require('../detail')
 
-module.exports = function({ name, query, path, logout, error, results, favPath }) {
+module.exports = function({ name, query, path, logout, error, results, favPath, detailPath, item }) {
   return (
     `<header class='header view__header'>
       <div class='nav'>
@@ -26,7 +27,11 @@ module.exports = function({ name, query, path, logout, error, results, favPath }
       </form>
     </header>
 
-    ${results ? Results({ items: results, onItemRender: duck => ResultsItem({ item: duck, favPath }), error }) : Results({ error })}`
+    ${results ? Results({ items: results, onItemRender: duck => ResultsItem({ item: duck, favPath, detailPath }) }) : ''}
+
+    ${error ? Results({ error }) : ''}
+
+    ${item ? Detail({ item }) : ''}` // pasar error
   )
 }
 //query is added to input value to keep the last search printed in input
