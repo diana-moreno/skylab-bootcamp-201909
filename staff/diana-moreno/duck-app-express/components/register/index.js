@@ -1,7 +1,6 @@
 const Feedback = require('../feedback')
 
 module.exports = function( {path, login, error}) {
-  console.log(error)
   return(
     `<section class='view view__register'>
       <img class='view__register--image' src="pato-goma-amarillo-plano-brillante_23-2148275403.jpg" alt="" />
