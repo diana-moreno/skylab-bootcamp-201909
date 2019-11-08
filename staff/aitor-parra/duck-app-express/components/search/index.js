@@ -1,14 +1,13 @@
 
-module.exports = function( path ) {
+module.exports = function ({path, query, name, logout}) {
+    return `<section class="view search">
+        <h1 class="search__title">Search</h1>
+        <h2 class="search__user">${name}</h2><form method="POST" action="${logout}"><button class="search__logout">Logout</button></form>
+        <form class="search__form" method="POST" action="${path}">
+            <span class="search__icon">🐣</span>
+            <input class="search__criteria" type="text" name="q" placeholder="criteria" ${query? `value=${query}` : '' }>
+            <button class="search__submit">🔍</button>
+        </form>
+    </section>
 
-return `<section class="view search _hide">
-<h1 class="search__title">Search</h1>
-<h2 class="search__user">Pepito</h2><button class="search__logout">Logout</button>
-<form class="search__form" method="POST" action="${ path }">
-    <span class="search__icon">🐣</span>
-    <input class="search__criteria" type="text" name="query" placeholder="criteria">
-    <button class="search__submit">🔍</button>
-</form>
-</section>`
-
-}
+`}
