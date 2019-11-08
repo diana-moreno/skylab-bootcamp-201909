@@ -1,7 +1,7 @@
 const Feedback = require('../feedback')
 
 module.exports = function({ items, error, onItemRender }) {
-  return(
+  return (
     `<section class='view'>
       <div class='view__list'>
         <ul class='duck__list'>
@@ -16,3 +16,4 @@ module.exports = function({ items, error, onItemRender }) {
     </section>`
   )
 }
+//join ?? hay que añadir join para transformar el array en string porque sino renderizará el string literal añadiendo las comas de separación.

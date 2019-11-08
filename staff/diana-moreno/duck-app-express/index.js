@@ -38,7 +38,8 @@ app.post('/register', bodyParser, (req, res) => {
 app.post('/login', bodyParser, (req, res) => {
   const { body: { username, password } } = req
 
-  /*  try {
+  /* callback version:
+    try {
       authenticateUser(username, password, (error, credentials) => {
         if (error) return res.send(error.message) //TODO
 

@@ -30,9 +30,3 @@ module.exports = function({ name, query, path, logout, error, results, favPath }
   )
 }
 //query is added to input value to keep the last search printed in input
-//
-//// onItemRender????
-
-{/*    <div class='feedback--search'>
-      ${error ? Feedback({ message: error }) : ''}
-    </div>*/}
