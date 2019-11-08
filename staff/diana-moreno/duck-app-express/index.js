@@ -2,7 +2,6 @@ const express = require('express')
 const { View, Login, Register, RegisterSuccess, Search } = require('./components')
 const { registerUser, authenticateUser, retrieveUser, searchDucks } = require('./logic')
 const { bodyParser, cookieParser } = require('./utils/middlewares')
-const querystring = require('querystring')
 
 const { argv: [, , port = 8080] } = process
 
@@ -31,61 +30,64 @@ app.post('/register', bodyParser, (req, res) => {
     registerUser(name, surname, email, password)
       .then(() => res.redirect('/register-success'))
       .catch(({ message }) => res.send(View({ body: Register({ path: '/register', login: '/login', error: message }) })))
-  } catch (error) {
-      res.send(View({ body: Register({ path: '/register', error: error.message }) }))
+  } catch ({ message }) {
+    res.send(View({ body: Register({ path: '/register', error: message }) }))
   }
 })
 
 app.post('/login', bodyParser, (req, res) => {
   const { body: { username, password } } = req
 
-  try {
-    authenticateUser(username, password, (error, credentials) => {
-      if (error) return res.send(error.message) //TODO
+  /*  try {
+      authenticateUser(username, password, (error, credentials) => {
+        if (error) return res.send(error.message) //TODO
 
-      const { id, token } = credentials
-      sessions[id] = token
-      res.setHeader('set-cookie', `id=${id}`)
-      res.redirect('/search')
-    })
-  } catch (error) {
-    res.send(error.message) //TODO
+        const { id, token } = credentials
+        sessions[id] = token
+        res.setHeader('set-cookie', `id=${id}`)
+        res.redirect('/search')
+      })
+    } catch (error) {
+        res.send(View({ body: Login({ path: '/login', error: error.message }) }))
+    }*/
+
+  try {
+    authenticateUser(username, password)
+      .then(credentials => {
+        const { id, token } = credentials
+        sessions[id] = token
+        res.setHeader('set-cookie', `id=${id}`)
+        res.redirect('/search')
+      })
+      .catch(({ message }) => {
+        res.send(View({ body: Login({ path: '/login', error: message }) }))
+      })
+  } catch ({ message }) {
+    res.send(View({ body: Login({ path: '/login', error: message }) }))
   }
 })
 
 app.get('/search', cookieParser, (req, res) => {
   try {
-    const { cookies: { id } } = req
+    const { cookies: { id }, query: { query } } = req
     //req.headers.cookies
     if (!id) return res.redirect('/login')
 
     const token = sessions[id]
     if (!token) return res.redirect('/login')
 
-    retrieveUser(id, token, (error, userData) => {
-      if (error) return res.send(error.message) // TODO
+    retrieveUser(id, token)
+      .then(userData => {
+        const { name } = userData
+        if (!query) return res.send(View({ body: Search({ path: '/search', name, logout: '/logout' }) })) //return???
 
-      const { name } = userData
-      const { query: { query: query } } = req
-
-      if (!query) res.send(View({ body: Search({ path: '/search', name, logout: '/logout' }) }))
-      else {
-        try {
-          searchDucks(id, token, query, (error, ducks) => {
-            if (error) return res.send(error.message) // TODO
-
-            console.log(ducks)
-
-            res.send(View({ body: `${Search({ path: '/search', query, name, logout: '/logout' })} ` })) // TODO ${Results({items: ducks})}
-          })
-        } catch (error) {
-          res.send(error.message) // TODO
-
-        }
-      }
-    })
-  } catch (error) {
-    res.send(error.message) // TODO
+        return searchDucks(id, token, query) // antes con las arrow se producía auto return, ahora no y hay que indicarlo manualmente
+          .then(ducks => console.log(ducks))
+          .then(ducks => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav' }) })))
+      })
+      .catch(({ message }) => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) })))
+  } catch ({ message }) {
+    res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) }))
   }
 })
 
@@ -97,6 +99,20 @@ app.post('/logout', cookieParser, (req, res) => {
   delete sessions[id]
 
   res.redirect('/login')
+})
+
+app.post('/fav', cookieParser, bodyParser, (req, res) => {
+  try {
+    const { cookies: { id }, body: { id: duckId } } = req
+
+    if (!id) return res.redirect('/login')
+    const token = sessions[id]
+    if (!token) return res.redirect('/login')
+
+    res.send(`make fav duck ${duckId}`)
+  } catch (error) {
+    res.send('kaput')
+  }
 })
 
 
