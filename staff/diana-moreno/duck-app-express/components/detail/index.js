@@ -1,4 +1,4 @@
-module.exports = function({ item }) {
+module.exports = function({ item, path }) {
   return (
     `<div class='duck duck--litle'>
       <i class=${item.isFav
@@ -10,7 +10,9 @@ module.exports = function({ item }) {
       <p class='duck__description duck__description--litle'>${item.description}</p>
       <div class='duck__container-buttons'>
         <p class='duck__button'>${item.price}</p>
-        <button class='duck__button duck__button--back'>◀</button>
+        <a href="${path}">
+          <button class='duck__button duck__button--back'>◀</button>
+        </a>
       </div>
     </div>`
   )

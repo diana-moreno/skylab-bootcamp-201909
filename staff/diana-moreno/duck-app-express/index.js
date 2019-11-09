@@ -56,7 +56,7 @@ app.post('/login', bodyParser, (req, res) => {
     authenticateUser(username, password)
       .then(credentials => {
         const { id, token } = credentials
-        sessions[id] = token
+        sessions[id] = { token }
         res.setHeader('set-cookie', `id=${id}`)
         res.redirect('/search')
       })
@@ -70,12 +70,13 @@ app.post('/login', bodyParser, (req, res) => {
 
 app.get('/search', cookieParser, (req, res) => {
   try {
-    const { cookies: { id }, query: { query } } = req
-    //req.headers.cookies
-    if (!id) return res.redirect('/login')
+    const { cookies: { id } } = req
+    const session = sessions[id]
+    const { token } = session
+    if(!req.query.query && session.query) req.query.query = session.query
+    const { query: { query } } = req
 
-    const token = sessions[id]
-    if (!token) return res.redirect('/login')
+    if (!session || !token || !id) return res.redirect('/login')
     let name
 
     retrieveUser(id, token)
@@ -83,6 +84,8 @@ app.get('/search', cookieParser, (req, res) => {
         name = userData.name
 
         if (!query) return res.send(View({ body: Search({ path: '/search', name, logout: '/logout' }) })) //return???
+
+        session.query = query
 
         return searchDucks(id, token, query) // return es necesario si queremos ahorrarnos un catch y dejar que se recoja el valor en el siguiente catch.
          /* .then(ducks => console.log(ducks)) con el console.log se pierde el rastro de ducks porque no se devuelven*/
@@ -107,10 +110,10 @@ app.post('/logout', cookieParser, (req, res) => {
 app.post('/fav', cookieParser, bodyParser, (req, res) => {
   try {
     const { cookies: { id }, body: { id: duckId } } = req
+    const session = sessions[id]
+    const { token, query } = session
 
-    if (!id) return res.redirect('/login')
-    const token = sessions[id]
-    if (!token) return res.redirect('/login')
+    if (!id || !session || !token) return res.redirect('/login')
 
     res.send(`make fav duck ${duckId}`)
   } catch (error) {
@@ -120,12 +123,13 @@ app.post('/fav', cookieParser, bodyParser, (req, res) => {
 
 app.get('/ducks/:id', cookieParser, (req, res) => {
   try {
-    const { cookies: { id }, query: { query } } = req
-    const { params: { id: idDuck } } = req
-    if (!id) return res.redirect('/login')
-    const token = sessions[id]
-    if (!token) return res.redirect('/login')
+    const { params: { id: idDuck }, cookies: { id }, query: { query }  } = req
+
+    const session = sessions[id]
+    const { token } = session
     let name
+
+    if (!id || !session || !token) return res.redirect('/login')
 
     retrieveUser(id, token)
       .then(userData => {
