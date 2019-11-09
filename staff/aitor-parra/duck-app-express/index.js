@@ -2,15 +2,11 @@ const express = require('express')
 const { Landing, View, Register, Login, Search, Feedback } = require('./components')
 const { registerUser, authenticateUser, retrieveUser, searchDucks} = require('./logic')
 
+const { bodyParser, cookieParser} = require('./utils/middlewares')
 //const querystring = require('querystring')
-
-
-
 const { argv: [, , port = 8080] } = process
-
-const app = express()
-
 const sessions = {}
+const app = express()
 
 app.use(express.static('public'))
 
@@ -23,18 +19,16 @@ app.get('/register', (req, res) => {
 })
 
 app.post('/register', bodyParser, (req, res) => {
-
-
         const { body: {name, surname, email, password} } = req
 
+      
+      
         try {
             registerUser(name, surname, email, password)
-            
-            .then(res.redirect('/login'))
-            .catch(res.send(View({ body: Feedback() })))
-                   
-        } catch (error) {
-            res.send(View({ body: Feedback() }))
+            .then(() => res.redirect('/login'))
+            .catch(({ message }) => res.send(View({ body: Register({ path: '/register', login: '/login', error: message }) }))
+            )} catch ({message}) {
+            res.send(View({ body: Register({ path: '/register', error: message}) }))
         }
     })
 
@@ -43,70 +37,66 @@ app.get('/login', (req, res) => {
 })
 
 app.post('/login', bodyParser, (req, res) => {
-
-        const { body: {email, password } } = req
+        const { body: { email, password } } = req
 
         try {
-            authenticateUser(email, password,(error, credentials) => {
-                if (error) return res.send('TODO error handling')
+            authenticateUser(email, password)
+                .then(credentials => {
+                
                 const { id, token } = credentials
     
-                sessions[id] = token
+                sessions[id] = {token}
     
                 res.setHeader('set-cookie', `id=${id}`)
     
                 res.redirect('/search')
             })
-
-        } catch (error) {
-            res.send(View({ body: Feedback() }))
+            .catch(({ message }) => res.send(View({ body: Register({ path: '/register', login: '/login', error: message }) }))
+            )} catch ({message}) {
+            res.send(View({ body: Login({ path: '/login', error: message})  }))
         }
-    })
+})
 
 app.get('/search', (req, res) => {
     try {        
-        const  { cookies: { id } }  = req 
+        const  { cookies: { id }, query: { q: query } }  = req 
 
         if (!id) return res.redirect('/')
 
-        const token = sessions[id]
+        const session = session[id]
 
+        if(!session) return res.redirect('/')
+             
+        const { token } = session
+        
         if (!token) return res.redirect('/')
 
-        retrieveUser(id, token, (error, user) => {
-            if(error) return res.send(View({ body: Feedback() }))
+        let name
 
-            const { name } = user
+        retrieveUser(id, token)
+            .then(user => {
 
-            const { query: { q: query } } = req
+                name = user.name
 
-            if(!error) res.send(View({ body: Search({ path: '/search', name, logout: '/logout' }) }))
+                if (!query) return res.send(View({ body: Search({ path: '/search', name, logout: '/logout' }) }))
 
-            else { 
-                try {
-                    searchDucks(id, token, query, (error, ducks) => {
-                        if(error) return res.send('gestionar error')
+                session.query = query
 
-                        console.log(ducks)
-
-                        res.send(View({ body: `${ Search({ path: 'search', query, name, logout: '/logout' })}` }))
-                        
-                    })  
+                return searchDucks(id, token, query) 
+                    .then(ducks => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', logout: '/logout', detailPath: '/ducks' })})))
+                })
+                    .catch(({ message }) => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) })))
+            
+            else {  }
                 } catch (error) {
 
                 }
 
-            } 
-
-
-        })
-
-    } catch (error) {
+            } catch (error) {
         // TODO handling
         res.send('un gran error')
     }
 
-})
 
 app.post('/logout', (req, res) => {
     res.setHeader('set-cookie', 'id=""; expires=Thu, 01 Jan 1970 00:00:00 GMT')
