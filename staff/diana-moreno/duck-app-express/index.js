@@ -1,6 +1,6 @@
 const express = require('express')
 const { View, Login, Register, RegisterSuccess, Search, ResultsItem, Result, Detail } = require('./components')
-const { registerUser, authenticateUser, retrieveUser, searchDucks, retrieveDuck } = require('./logic')
+const { registerUser, authenticateUser, retrieveUser, searchDucks, retrieveDuck, toggleFavDuck } = require('./logic')
 const { bodyParser, cookieParser } = require('./utils/middlewares')
 
 const { argv: [, , port = 8080] } = process
@@ -73,6 +73,7 @@ app.get('/search', cookieParser, (req, res) => {
     const { cookies: { id } } = req
     const session = sessions[id]
     const { token } = session
+    // se guarda la query en la req para mantenerla a volver para atrás en el detalle.
     if(!req.query.query && session.query) req.query.query = session.query
     const { query: { query } } = req
 
@@ -115,7 +116,13 @@ app.post('/fav', cookieParser, bodyParser, (req, res) => {
 
     if (!id || !session || !token) return res.redirect('/login')
 
-    res.send(`make fav duck ${duckId}`)
+    toggleFavDuck(id, token, duckId)
+        .then(() => res.redirect(`/search?q=${query}`))
+        .catch(({ message }) => {
+            res.send('TODO error handling')
+        })
+
+    //res.send(`make fav duck ${duckId}`)
   } catch (error) {
     res.send('kaput')
   }

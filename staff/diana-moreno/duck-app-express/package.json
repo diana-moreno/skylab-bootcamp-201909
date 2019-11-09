@@ -8,7 +8,7 @@
     "watch": "npx nodemon .",
     "test": "npx mocha logic/*/*.spec.js",
     "test-debug": "npx mocha inspect logic/*/*.spec.js",
-    "sass": "node_modules/.bin/sass stylesheets/sass:stylesheets/css",
+    "sass": "node_modules/.bin/sass stylesheets/sass:public",
     "sass:watch": "npm run sass -- --watch"
   },
   "author": "",

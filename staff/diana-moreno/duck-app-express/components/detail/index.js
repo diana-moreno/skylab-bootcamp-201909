@@ -17,5 +17,3 @@ module.exports = function({ item, path }) {
     </div>`
   )
 }
-
-/*, onBack, handleFavorite, error */

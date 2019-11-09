@@ -3,5 +3,6 @@ module.exports = {
   registerUser: require('./register-user'),
   retrieveUser: require('./retrieve-user'),
   searchDucks: require('./search-ducks'),
-  retrieveDuck: require('./retrieve-duck')
+  retrieveDuck: require('./retrieve-duck'),
+  toggleFavDuck: require('./toggle-fav-duck')
 }

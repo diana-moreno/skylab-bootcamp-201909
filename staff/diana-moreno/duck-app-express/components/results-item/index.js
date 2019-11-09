@@ -1,10 +1,17 @@
 module.exports = function ({ item: { id, title, imageUrl, price, isFav }, favPath, detailPath }) {
   return(
     `<li class="duck duck--clicked">
-      <i class="${isFav
-        ? 'duck__favorite fas fa-heart'
-        : 'duck__favorite far fa-heart' }">
-      </i>
+
+      <form class='duck__favorite' method="post" action="${favPath}">
+          <input type="hidden" name="id" value="${id}">
+          <button class='duck__favorite' type="submit">
+            <i class="${isFav
+              ? 'fas fa-heart'
+              : 'far fa-heart' }">
+            </i>
+          </button>
+      </form>
+
       <h1 class='duck__title'>${title}</h1>
       <a href="${`${detailPath}/${id}`}">
         <img class='duck__image' src="${imageUrl}"/>
