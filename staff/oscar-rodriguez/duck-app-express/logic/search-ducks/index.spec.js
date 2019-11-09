@@ -1,64 +1,84 @@
+const searchDucks = require ('../search-ducks')
+const {expect} = require('chai')
+
 describe('logic - search ducks', function () {
-    it('should succeed on correct criteria (query)', function (done) {
+    let name, surname, email, password, id, token, duckId = '5c3853aebd1bde8520e66e1b'
+
+    beforeEach(done => {
+        name = `name-${Math.random()}`
+        surname = `surname-${Math.random()}`
+        email = `email-${Math.random()}@mail.com`
+        password = `password-${Math.random()}`
+
+        call('POST', undefined, 'https://skylabcoders.herokuapp.com/api/user', { name, surname, username: email, password }, result => {
+            if (result.error) done(new Error(result.error))
+            else {
+                call('POST', undefined, 'https://skylabcoders.herokuapp.com/api/auth', { username: email, password }, result => {
+                    if (result.error) done(new Error(result.error))
+                    else {
+                        const { data } = result
+
+                        id = data.id
+                        token = data.token
+
+                        done()
+                    }
+                })
+            }
+        })
+    })
+
+    it('should succeed on correct criteria (query)', () => {
         var query = 'blue';
 
-        searchDucks(query, function (error, ducks) {
-            expect(error).toBeUndefined();
+        return searchDucks(id, token, query)
+            .then (ducks => {
 
-            expect(ducks).toBeDefined();
-            expect(ducks.length).toBeGreaterThan(0);
+            expect(ducks).to.exist
+            expect(ducks.length).to.be.greaterThan(0)
 
-            ducks.forEach(function (duck) {
-                expect(duck).toBeDefined();
-                expect(typeof duck.id).toBe('string');
-                expect(duck.id.length).toBeGreaterThan(0);
+            ducks.forEach(duck => {
+                expect(duck).to.exist
+                expect(typeof duck.id).to.equal('string')
+                expect(duck.id.length).to.be.greaterThan(0)
 
-                expect(duck.title).toBeDefined();
-                expect(typeof duck.title).toBe('string');
-                expect(duck.title.length).toBeGreaterThan(0);
+                expect(duck.title).to.exist
+                expect(typeof duck.title).to.equal('string')
+                expect(duck.title.length).to.be.greaterThan(0)
 
-                expect(duck.imageUrl).toBeDefined();
-                expect(typeof duck.imageUrl).toBe('string');
-                expect(duck.imageUrl.length).toBeGreaterThan(0);
+                expect(duck.imageUrl).to.exist
+                expect(typeof duck.imageUrl).to.equal('string')
+                expect(duck.imageUrl.length).to.be.greaterThan(0)
 
-                expect(duck.price).toBeDefined();
-                expect(typeof duck.price).toBe('string');
-                expect(duck.price.length).toBeGreaterThan(0);
-            });
+                expect(duck.price).to.exist
+                expect(typeof duck.price).to.equal('string')
+                expect(duck.price.length).to.be.greaterThan(0)
+            })
 
-            done();
-        });
-    });
+        })
+    })
 
-    it('should fail on incorrect criteria', function (done) {
-        var query = 'asdfljasdf';
+    it('should fail on incorrect criteria', () => {
+        var query = 'asdfljasdf'
 
-        searchDucks(query, function (error, ducks) {
-            expect(ducks).toBeUndefined();
+        return searchDucks (id, token, query)
+        .catch (error => {
 
-            expect(error).toBeDefined();
+            expect(error).to.exist
 
-            expect(error.message).toBeDefined();
-            expect(typeof error.message).toBe('string');
-            expect(error.message.length).toBeGreaterThan(0);
+            expect(error.message).to.exist
+            expect(typeof error.message).to.equal('string')
+            expect(error.message.length).to.be.greaterThan(0)
 
-            done();
-        });
-    });
+        })
+    })
 
     it('should fail on incorrect query or expression types', function() {
-        expect(function() { searchDucks(1); }).toThrowError(TypeError, '1 is not a string');
-        expect(function() { searchDucks(true); }).toThrowError(TypeError, 'true is not a string');
-        expect(function() { searchDucks([]); }).toThrowError(TypeError, ' is not a string');
-        expect(function() { searchDucks({}); }).toThrowError(TypeError, '[object Object] is not a string');
-        expect(function() { searchDucks(undefined); }).toThrowError(TypeError, 'undefined is not a string');
-        expect(function() { searchDucks(null); }).toThrowError(TypeError, 'null is not a string');
-
-        expect(function() { searchDucks('red', 1); }).toThrowError(TypeError, '1 is not a function');
-        expect(function() { searchDucks('red', true); }).toThrowError(TypeError, 'true is not a function');
-        expect(function() { searchDucks('red', []); }).toThrowError(TypeError, ' is not a function');
-        expect(function() { searchDucks('red', {}); }).toThrowError(TypeError, '[object Object] is not a function');
-        expect(function() { searchDucks('red', undefined); }).toThrowError(TypeError, 'undefined is not a function');
-        expect(function() { searchDucks('red', null); }).toThrowError(TypeError, 'null is not a function');
-    });
-});
+        expect(function() { searchDucks(1); }).to.throw(TypeError, '1 is not a string')
+        expect(function() { searchDucks(true); }).to.throw(TypeError, 'true is not a string')
+        expect(function() { searchDucks([]); }).to.throw(TypeError, ' is not a string')
+        expect(function() { searchDucks({}); }).to.throw(TypeError, '[object Object] is not a string')
+        expect(function() { searchDucks(undefined); }).to.throw(TypeError, 'undefined is not a string')
+        expect(function() { searchDucks(null); }).to.throw(TypeError, 'null is not a string')
+    })
+})

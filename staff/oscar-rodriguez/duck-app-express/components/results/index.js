@@ -1,7 +1,5 @@
-const ResultItem = require ('../result-item')
-
-module.exports = function ({items}) {
+module.exports = function ({items, onItemRender}) {
     return `<ul class="results">
-                ${items.map ((item)=> ResultItem({item: item}))}
+                ${items.map ((item)=> onItemRender(item)).join('')}
             </ul>`
 }

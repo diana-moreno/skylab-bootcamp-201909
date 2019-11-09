@@ -30,10 +30,10 @@ app.post('/register', bodyParser, (req,res) => {
     try {
         registerUser (name, surname, email, password)
             .then (() => res.redirect('/'))
-            .catch (({message}) => res.send(message))
+            .catch (({message}) => res.send(View({body: Register({path: '/register', error: message})})))
 
-    } catch (error) {
-        res.send(error.message)
+    } catch ({message}) {
+        res.send(View({body: Register({path: '/register', error: message})}))
     }
 })
 
@@ -42,7 +42,6 @@ app.get('/login', (req, res)=> {
 })
 
 app.post('/login', bodyParser, (req, res) => {
-    debugger
     const {body : {email, password}} = req
     try {
         authenticateUser (email, password)
@@ -51,41 +50,46 @@ app.post('/login', bodyParser, (req, res) => {
             res.setHeader('set-cookie', `id=${id}`)
             res.redirect('./search')
         })
-        .catch (({message}) => res.send(message))
+        .catch (({message}) => res.send(View({body: Login({path: '/login', error: message})})))
             
-    } catch (error) {
-        res.send(error.message)
+    } catch ({message}) {
+        res.send(View({body: Login({path: '/login', error: message})}))
     }
 })
 
 app.get('/search', cookiesParser, (req, res)=>{
     try {
-        const { cookies: { id } } = req
+        const { cookies: { id }, query : { query } } = req
         if (!id) return res.redirect('/')
-        
         const token = sessions[id]
         if (!token) return res.redirect('/')
+
+        let name
         
         retrieveUser (id, token)
-            .then ((user)=>{
-                const { name } = user
-                
-                const { query : { query }} = req
-    
-                if (!query) res.send(View({ body: Search({name: name, path: '/search'}) }))
-                else {
-                    try {
-                        searchDucks(id , token, query, (error, ducks) => {
-                            res.send(View({body: Results({items: ducks})}))
-                        })
-                    } catch ({message}) { res.send (message) }
-            
-                }
+            .then (user => {
+                name = user.name
+                    
+                if (!query) return res.send(View({ body: Search({ logout: '/logout', name: name, path: '/search'}) }))
+                return searchDucks(id , token, query) 
+                    .then (ducks => res.send(View({body: Search ({ logout: '/logout', name: name, path: '/search', results: ducks, favPath: '/fav' })})))
             })
-            .catch (({message}) => res.send (message))
-            
-    } catch ({message}) { res.send (message)}
+            .catch (({message}) => res.send(View({body: Search ({ logout: '/logout', name: name, path: '/search', error: message })})))          
+    } catch ({message}) { 
+        res.send(View({body: Search ({ logout: '/logout', name: name, path: '/search', error: message })}))
+    }
 
+})
+
+app.get('/logout', cookiesParser, (req, res) => {
+    res.setHeader('set-cookie', 'id=""; expires=Thu, 01 Jan 1970 00:00:00 GMT')
+    
+    const { cookies: { id } } = req
+    if (!id) return res.redirect('/')
+
+    delete sessions[id]
+
+    res.redirect('/')
 })
 
 app.get('/results', (req, res)=> {

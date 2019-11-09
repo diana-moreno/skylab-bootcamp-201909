@@ -29,29 +29,24 @@ describe('logic - retrieve user', () => {
         })
     })
 
-    it('should succeed on correct credentials', done => {
-        retrieveUser(id, token, (error, response) => {
-            expect(error).not.to.exist
+    it('should succeed on correct credentials', () => {
+        return retrieveUser(id, token)
+            .then (response => {
 
-            expect(response).to.exist
+                expect(response).to.exist
 
-            const { name, surname, username } = response.data
+                const { name, surname, username } = response.data
 
-            expect(name).to.exist
-            expect(typeof name).to.equal('string')
-            expect(name.length).to.be.greaterThan(0)
+                expect(name).to.exist
+                expect(typeof name).to.equal('string')
+                expect(name.length).to.be.greaterThan(0)
 
-            expect(surname).to.exist
-            expect(typeof surname).to.equal('string')
-            expect(surname.length).to.be.greaterThan(0)
+                expect(surname).to.exist
+                expect(typeof surname).to.equal('string')
+                expect(surname.length).to.be.greaterThan(0)
 
-            expect(username).to.exist
-            expect(typeof username).to.equal('string')
-            expect(username.length).to.be.greaterThan(0)
-
-
-
-            done()
+                expect(username).to.exist
+                expect(typeof username).to.equal('string')
         })
     })
 })

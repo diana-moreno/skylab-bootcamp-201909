@@ -12,13 +12,11 @@ describe('logic - register user', () => {
         password = `password-${Math.random()}`
     })
 
-    it('should succeed on correct credentials', done => {
-        registerUser(name, surname, email, password, (error, response) => {
-            expect(error).not.to.exist
-            expect(response).not.to.exist
-
-            done()
-        })
+    it('should succeed on correct credentials', () => {
+        return registerUser(name, surname, email, password)
+            .then (response => {
+                expect(response).to.exist
+            })
     })
 
     describe('when user already exists', () => {
@@ -29,16 +27,14 @@ describe('logic - register user', () => {
             })
         })
 
-        it('should fail on already existing user', done => {
-            registerUser(name, surname, email, password, (error, response) => {
-                expect(response).not.to.exist
-                expect(error).to.exist
+        it('should fail on already existing user', () => {
+            return registerUser(name, surname, email, password)
+                .catch (error => {
+                    expect(error).to.exist
 
-                expect(error.message).to.exist
-                expect(typeof error.message).to.equal('string')
-                expect(error.message.length).to.be.greaterThan(0)
-
-                done()
+                    expect(error.message).to.exist
+                    expect(typeof error.message).to.equal('string')
+                    expect(error.message.length).to.be.greaterThan(0)
             })
 
         })

@@ -18,31 +18,30 @@ describe('logic - authenticate user', () => {
         })
     })
 
-    it('should succeed on correct credentials', done => {
-        authenticateUser(email, password, (error, response) => {
-            expect(error).not.to.exist
+    it('should succeed on correct credentials', () => {
+        return authenticateUser(email, password)
+            .then(response => {
+                expect(response).to.exist
 
-            expect(response).to.exist
+                const { id, token } = response
 
-            const { id, token } = response
+                expect(id).to.exist
+                expect(typeof id).to.equal('string')
+                expect(id.length).to.be.greaterThan(0)
 
-            expect(id).to.exist
-            expect(typeof id).to.equal('string')
-            expect(id.length).to.be.greaterThan(0)
+                expect(token).to.exist
+                expect(typeof token).to.equal('string')
+                expect(token.length).to.be.greaterThan(0)
 
-            expect(token).to.exist
-            expect(typeof token).to.equal('string')
-            expect(token.length).to.be.greaterThan(0)
-
-            done()
         })
     })
 
-    it('should fail on wrong credentials', done => {
-        authenticateUser(`wrong${email}`, password, (error, response) => {
-            expect(error).to.exist
-            expect(response).not.to.exist
-            done()
+    it('should fail on wrong credentials', () => {
+
+        return authenticateUser(`wrong${email}`, password)
+            .catch (error => {
+                expect(error).to.exist
         })
+
     })
 })
