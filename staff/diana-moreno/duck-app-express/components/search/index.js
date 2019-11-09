@@ -3,7 +3,7 @@ const Results = require('../results')
 const ResultsItem = require('../results-item')
 const Detail = require('../detail')
 
-module.exports = function({ name, query, path, logout, error, results, favPath, detailPath, item, backPath }) {
+module.exports = function({ name, query, path, logout, error, results, favPath, detailPath, item, favDetailPath }) {
   return (
     `<header class='header view__header'>
       <div class='nav'>
@@ -31,7 +31,7 @@ module.exports = function({ name, query, path, logout, error, results, favPath, 
 
     ${error ? Results({ error }) : ''}
 
-    ${item ? Detail({ item, path }) : ''}` // pasar error
+    ${item ? Detail({ item, path, favDetailPath }) : ''}` // pasar error
   )
 }
 //query is added to input value to keep the last search printed in input

@@ -7,6 +7,8 @@ const { argv: [, , port = 8080] } = process
 
 const sessions = {}
 
+let query, name
+
 const app = express()
 
 app.use(express.static('public'))
@@ -128,10 +130,30 @@ app.post('/fav', cookieParser, bodyParser, (req, res) => {
   }
 })
 
+app.post('/favDetail', cookieParser, bodyParser, (req, res) => {
+  try {
+    const { cookies: { id }, body: { id: duckId } } = req
+    const session = sessions[id]
+    const { token, query } = session
+
+    if (!id || !session || !token) return res.redirect('/login')
+
+    toggleFavDuck(id, token, duckId)
+        .then(() => res.redirect(`/ducks/${duckId}`))
+        .catch(({ message }) => {
+            res.send('TODO error handling')
+        })
+
+    //res.send(`make fav duck ${duckId}`)
+  } catch (error) {
+    res.send('kaput')
+  }
+})
+
 app.get('/ducks/:id', cookieParser, (req, res) => {
   try {
-    const { params: { id: idDuck }, cookies: { id }, query: { query }  } = req
-
+    const { params: { id: duckId }, cookies: { id }, query: { query }  } = req
+//cómo se ha guardado en params?
     const session = sessions[id]
     const { token } = session
     let name
@@ -142,8 +164,8 @@ app.get('/ducks/:id', cookieParser, (req, res) => {
       .then(userData => {
         name = userData.name
 
-        return retrieveDuck(id, token, idDuck)
-          .then(duck => res.send(View({ body: Search({ path: '/search', name, logout: '/logout', item: duck, favPath: '/fav' }) })))
+        return retrieveDuck(id, token, duckId)
+          .then(duck => res.send(View({ body: Search({ path: '/search', name, logout: '/logout', item: duck, favPath: '/fav', favDetailPath: '/favDetail' }) })))
       })
       .catch(({ message }) => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) })))
   } catch ({ message }) {
