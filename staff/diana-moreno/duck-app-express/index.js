@@ -1,13 +1,15 @@
 const express = require('express')
 const { View, Login, Register, RegisterSuccess, Search, ResultsItem, Result, Detail } = require('./components')
-const { registerUser, authenticateUser, retrieveUser, searchDucks, retrieveDuck, toggleFavDuck } = require('./logic')
+const { registerUser, authenticateUser, retrieveUser, searchDucks, retrieveDuck, toggleFavDuck, retrieveFavDucks } = require('./logic')
 const { bodyParser, cookieParser } = require('./utils/middlewares')
+const arrayShuffle = require('./utils/array-shuffle')
 
 const { argv: [, , port = 8080] } = process
 
 const sessions = {}
 
 let query, name
+//let random = false
 
 const app = express()
 
@@ -40,23 +42,10 @@ app.post('/register', bodyParser, (req, res) => {
 app.post('/login', bodyParser, (req, res) => {
   const { body: { username, password } } = req
 
-  /* callback version:
-    try {
-      authenticateUser(username, password, (error, credentials) => {
-        if (error) return res.send(error.message) //TODO
-
-        const { id, token } = credentials
-        sessions[id] = token
-        res.setHeader('set-cookie', `id=${id}`)
-        res.redirect('/search')
-      })
-    } catch (error) {
-        res.send(View({ body: Login({ path: '/login', error: error.message }) }))
-    }*/
-
   try {
     authenticateUser(username, password)
       .then(credentials => {
+        random = true
         const { id, token } = credentials
         sessions[id] = { token }
         res.setHeader('set-cookie', `id=${id}`)
@@ -77,7 +66,7 @@ app.get('/search', cookieParser, (req, res) => {
     const { token } = session
     // se guarda la query en la req para mantenerla a volver para atrás en el detalle.
     if(!req.query.query && session.query) req.query.query = session.query
-    const { query: { query } } = req
+    let { query: { query } } = req
 
     if (!session || !token || !id) return res.redirect('/login')
     let name
@@ -86,17 +75,24 @@ app.get('/search', cookieParser, (req, res) => {
       .then(userData => {
         name = userData.name
 
-        if (!query) return res.send(View({ body: Search({ path: '/search', name, logout: '/logout' }) })) //return???
-
+        //if(!query) query = ''
         session.query = query
 
         return searchDucks(id, token, query) // return es necesario si queremos ahorrarnos un catch y dejar que se recoja el valor en el siguiente catch.
-         /* .then(ducks => console.log(ducks)) con el console.log se pierde el rastro de ducks porque no se devuelven*/
-          .then(ducks => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks' }) })))
+
+/*
+No se pueden mostrar random con favoritos!!! al refrescar la pantalla, se pierden!!
+         .then(ducks => query === '' && random ? arrayShuffle(ducks).splice(0, 8) : ducks)
+          .then(ducks => {
+            random = false // solo muestra patos random cuando se logea, nunca  más
+            return ducks
+          })*/
+
+          .then(ducks => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks', favorites: '/favorites' }) })))
       })
-      .catch(({ message }) => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) })))
+      .catch(({ message }) => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message, favorites: '/favorites' }) })))
   } catch ({ message }) {
-    res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) }))
+    res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message, favorites: '/favorites' }) }))
   }
 })
 
@@ -110,6 +106,27 @@ app.post('/logout', cookieParser, (req, res) => {
   res.redirect('/login')
 })
 
+app.post('/favorites', cookieParser, (req, res) => {
+  try {
+    const { cookies: { id } } = req
+    const session = sessions[id]
+    const { token } = session
+
+    retrieveUser(id, token)
+      .then(userData => {
+        name = userData.name
+
+      return retrieveFavDucks(id, token)
+        .then(ducks => res.send(View({ body: Search({ path: '/search', name, logout: '/logout', results: ducks, detailPath: '/ducks', favPath: '/fav', favDetailPath: '/favDetail' }) })))
+      })
+  } catch {
+
+  }
+})
+
+
+
+
 app.post('/fav', cookieParser, bodyParser, (req, res) => {
   try {
     const { cookies: { id }, body: { id: duckId } } = req
@@ -119,12 +136,13 @@ app.post('/fav', cookieParser, bodyParser, (req, res) => {
     if (!id || !session || !token) return res.redirect('/login')
 
     toggleFavDuck(id, token, duckId)
-        .then(() => res.redirect(`/search?q=${query}`))
+        .then(() => {
+          query && res.redirect(`/search?q=${query}`)
+        })
         .catch(({ message }) => {
             res.send('TODO error handling')
         })
 
-    //res.send(`make fav duck ${duckId}`)
   } catch (error) {
     res.send('kaput')
   }
@@ -144,7 +162,25 @@ app.post('/favDetail', cookieParser, bodyParser, (req, res) => {
             res.send('TODO error handling')
         })
 
-    //res.send(`make fav duck ${duckId}`)
+  } catch (error) {
+    res.send('kaput')
+  }
+})
+
+app.post('/favFavorites', cookieParser, bodyParser, (req, res) => {
+  try {
+    const { cookies: { id }, body: { id: duckId } } = req
+    const session = sessions[id]
+    const { token, query } = session
+
+    if (!id || !session || !token) return res.redirect('/login')
+
+    toggleFavDuck(id, token, duckId)
+        .then(() => res.redirect(`/favorites`))
+        .catch(({ message }) => {
+            res.send('TODO error handling')
+        })
+
   } catch (error) {
     res.send('kaput')
   }
