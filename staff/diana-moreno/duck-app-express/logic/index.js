@@ -5,5 +5,6 @@ module.exports = {
   searchDucks: require('./search-ducks'),
   retrieveDuck: require('./retrieve-duck'),
   toggleFavDuck: require('./toggle-fav-duck'),
-  retrieveFavDucks: require('./retrieve-fav-ducks')
+  retrieveFavDucks: require('./retrieve-fav-ducks'),
+  toggleFavDucks: require('./toggle-fav-ducks')
 }

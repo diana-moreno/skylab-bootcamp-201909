@@ -3,16 +3,14 @@ const Results = require('../results')
 const ResultsItem = require('../results-item')
 const Detail = require('../detail')
 
-module.exports = function({ name, query, path, logout, error, results, favPath, detailPath, item, favoritePath, favorites, favFavorites, lastPath }) {
+module.exports = function({ name, query, path, logout, error, results, favPath, detailPath, item, favoritePath, favorites, favFavorites, lastPath, isClickedFavorites }) {
   return (
     `<header class='header view__header'>
       <div class='nav'>
         <div class='nav__links-container'>
-
           <form method="get" action="${favoritePath}">
-            <button class='nav__elems nav__button'>Favorites</button>
+            <button ${isClickedFavorites ? `class='nav__elems nav__button nav__button--clicked'` : `class='nav__elems nav__button'` }>Favorites</button>
           </form>
-
           <form method="post" action="${logout}">
             <button class='nav__elems nav__button'>Logout</button>
           </form>
@@ -35,7 +33,6 @@ module.exports = function({ name, query, path, logout, error, results, favPath, 
     ${item ? Detail({ item, lastPath, favPath }) : ''}
 
     ${favorites ? Results({ items: favorites, onItemRender: duck => ResultsItem({ item: duck, favPath, detailPath }) }) : ''}`
-
   )
 }
 //query is added to input value to keep the last search printed in input

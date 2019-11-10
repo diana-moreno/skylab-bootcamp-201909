@@ -1,6 +1,6 @@
 const express = require('express')
 const { View, Login, Register, RegisterSuccess, Search, ResultsItem, Result, Detail } = require('./components')
-const { registerUser, authenticateUser, retrieveUser, searchDucks, retrieveDuck, toggleFavDuck, retrieveFavDucks } = require('./logic')
+const { registerUser, authenticateUser, retrieveUser, searchDucks, retrieveDuck, toggleFavDuck, retrieveFavDucks, toggleFavDucks } = require('./logic')
 const { bodyParser, cookieParser } = require('./utils/middlewares')
 const arrayShuffle = require('./utils/array-shuffle')
 
@@ -9,7 +9,6 @@ const { argv: [, , port = 8080] } = process
 const sessions = {}
 
 let query, name
-//let random = false
 
 const app = express()
 
@@ -45,11 +44,10 @@ app.post('/login', bodyParser, (req, res) => {
   try {
     authenticateUser(username, password)
       .then(credentials => {
-        random = true
         const { id, token } = credentials
         sessions[id] = { token }
         res.setHeader('set-cookie', `id=${id}`)
-        res.redirect('/search')
+        res.redirect('/random')
       })
       .catch(({ message }) => {
         res.send(View({ body: Login({ path: '/login', error: message }) }))
@@ -62,6 +60,41 @@ app.post('/login', bodyParser, (req, res) => {
 app.post('/search', (req, res) => {
   res.redirect('/search')
 })
+
+app.get('/random', cookieParser, (req, res) => {
+  try {
+    let { cookies: { id } } = req
+    const session = sessions[id]
+    const { token, randomDucks } = session
+    session.lastPath = '/random'
+    if(!query) query = ''
+    if (!session || !token || !id) return res.redirect('/login')
+    let name
+
+    retrieveUser(id, token)
+      .then(userData => {
+        name = userData.name
+
+        return searchDucks(id, token, query)
+          .then(ducks => {
+            if(!session.randomDucks) {
+              let randomDucks = arrayShuffle(ducks).splice(0, 8)
+              session.randomDucks = randomDucks
+            }
+              return session.randomDucks
+          })
+          .then(ducks => {
+            return toggleFavDucks(id, token, ducks)
+              .then(ducks => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks', favoritePath: '/favorites' }) })))
+          })
+
+      })
+      .catch(({ message }) => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' }) })))
+  } catch ({ message }) {
+    res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' }) }))
+  }
+})
+
 
 app.get('/search', cookieParser, (req, res) => {
   try {
@@ -77,18 +110,10 @@ app.get('/search', cookieParser, (req, res) => {
       .then(userData => {
         name = userData.name
 
-        if(!query) query = '' // imprime todos los patos al logearse
+        if(!query) query = ''
         session.query = query
 
         return searchDucks(id, token, query) // return es necesario si queremos ahorrarnos un catch y dejar que se recoja el valor en el siguiente catch.
-
-/*
-No se pueden mostrar random con favoritos!!! al refrescar la pantalla, se pierden!!
-         .then(ducks => query === '' && random ? arrayShuffle(ducks).splice(0, 8) : ducks)
-          .then(ducks => {
-            random = false // solo muestra patos random cuando se logea, nunca  más
-            return ducks
-          })*/
 
           .then(ducks => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks', favoritePath: '/favorites' }) })))
       })
@@ -113,7 +138,8 @@ app.get('/favorites', cookieParser, (req, res) => {
     const { cookies: { id } } = req
     const session = sessions[id]
     session.lastPath = '/favorites'
-    const { token, lastPath } = session
+    session.isClickedFavorites = true
+    const { token, lastPath, isClickedFavorites } = session
 
     if (!id || !session || !token) return res.redirect('/login')
 
@@ -122,7 +148,8 @@ app.get('/favorites', cookieParser, (req, res) => {
         name = userData.name
 
       return retrieveFavDucks(id, token)
-        .then(ducks => res.send(View({ body: Search({ path: '/search', name, logout: '/logout', favorites: ducks, detailPath: '/ducks', favPath: '/fav', lastPath, favoritePath: '/favorites' }) })))
+        .then(ducks => res.send(View({ body: Search({ path: '/search', name, logout: '/logout', favorites: ducks, detailPath: '/ducks', favPath: '/fav', lastPath, favoritePath: '/favorites', isClickedFavorites }) })))
+        .then(() => session.isClickedFavorites = false)
       })
   } catch {
 
@@ -139,12 +166,11 @@ app.post('/fav', cookieParser, bodyParser, (req, res) => {
 
     toggleFavDuck(id, token, duckId)
         .then(() => {
-          /*query && */res.redirect(req.headers.referer)
+          res.redirect(req.headers.referer)
         })
         .catch(({ message }) => {
             res.send('TODO error handling')
         })
-
   } catch (error) {
     res.send('kaput')
   }

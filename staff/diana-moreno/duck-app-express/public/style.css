@@ -124,6 +124,9 @@ main, html, #root {
   border: unset;
   font-family: unset;
 }
+.nav__button--clicked {
+  background-color: #00000024;
+}
 
 @media only screen and (min-width: 768px) {
   .nav {
