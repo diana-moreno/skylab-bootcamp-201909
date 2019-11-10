@@ -59,11 +59,17 @@ app.post('/login', bodyParser, (req, res) => {
   }
 })
 
+app.post('/search', (req, res) => {
+  res.redirect('/search')
+})
+
+
 app.get('/search', cookieParser, (req, res) => {
   try {
     const { cookies: { id } } = req
     const session = sessions[id]
-    const { token } = session
+    session.lastPath = '/search'
+    const { token, lastPath } = session
     // se guarda la query en la req para mantenerla a volver para atrás en el detalle.
     if(!req.query.query && session.query) req.query.query = session.query
     let { query: { query } } = req
@@ -88,13 +94,14 @@ No se pueden mostrar random con favoritos!!! al refrescar la pantalla, se pierde
             return ducks
           })*/
 
-          .then(ducks => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks', favorites: '/favorites' }) })))
+          .then(ducks => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks', favoritePath: '/favorites' }) })))
       })
-      .catch(({ message }) => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message, favorites: '/favorites' }) })))
+      .catch(({ message }) => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' }) })))
   } catch ({ message }) {
-    res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message, favorites: '/favorites' }) }))
+    res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' }) }))
   }
 })
+
 
 app.post('/logout', cookieParser, (req, res) => {
   res.setHeader('set-cookie', 'id=""; expires=Thu, 01 Jan 1970 00:00:00 GMT')
@@ -106,25 +113,30 @@ app.post('/logout', cookieParser, (req, res) => {
   res.redirect('/login')
 })
 
+app.get('/favorites', (req, res) => {
+  res.redirect('/favorites')
+})
+
 app.post('/favorites', cookieParser, (req, res) => {
   try {
     const { cookies: { id } } = req
     const session = sessions[id]
-    const { token } = session
+    session.lastPath = '/favorites'
+    const { token, lastPath } = session
+
+    if (!id || !session || !token) return res.redirect('/login')
 
     retrieveUser(id, token)
       .then(userData => {
         name = userData.name
 
       return retrieveFavDucks(id, token)
-        .then(ducks => res.send(View({ body: Search({ path: '/search', name, logout: '/logout', results: ducks, detailPath: '/ducks', favPath: '/fav', favDetailPath: '/favDetail' }) })))
+        .then(ducks => res.send(View({ body: Search({ path: '/search', name, logout: '/logout', favorites: ducks, detailPath: '/ducks', favPath: '/favFavorites', favDetailPath: '/favDetail', lastPath, favoritePath: '/favorites' }) })))
       })
   } catch {
 
   }
 })
-
-
 
 
 app.post('/fav', cookieParser, bodyParser, (req, res) => {
@@ -191,7 +203,7 @@ app.get('/ducks/:id', cookieParser, (req, res) => {
     const { params: { id: duckId }, cookies: { id }, query: { query }  } = req
 //cómo se ha guardado en params?
     const session = sessions[id]
-    const { token } = session
+    const { token, lastPath } = session
     let name
 
     if (!id || !session || !token) return res.redirect('/login')
@@ -201,11 +213,11 @@ app.get('/ducks/:id', cookieParser, (req, res) => {
         name = userData.name
 
         return retrieveDuck(id, token, duckId)
-          .then(duck => res.send(View({ body: Search({ path: '/search', name, logout: '/logout', item: duck, favPath: '/fav', favDetailPath: '/favDetail' }) })))
+          .then(duck => res.send(View({ body: Search({ path: '/search', name, logout: '/logout', item: duck, favPath: '/fav', favDetailPath: '/favDetail', lastPath, favoritePath: '/favorites' }) })))
       })
-      .catch(({ message }) => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) })))
+      .catch(({ message }) => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' }) })))
   } catch ({ message }) {
-    res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) }))
+    res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' }) }))
   }
 })
 

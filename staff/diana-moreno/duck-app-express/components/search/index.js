@@ -3,13 +3,14 @@ const Results = require('../results')
 const ResultsItem = require('../results-item')
 const Detail = require('../detail')
 
-module.exports = function({ name, query, path, logout, error, results, favPath, detailPath, item, favDetailPath, favorites, favFavorites }) {
+module.exports = function({ name, query, path, logout, error, results, favPath, detailPath, item, favDetailPath, favoritePath, favorites, favFavorites, lastPath }) {
+  console.log(lastPath)
   return (
     `<header class='header view__header'>
       <div class='nav'>
         <div class='nav__links-container'>
 
-          <form method="post" action="${favorites}">
+          <form method="post" action="${favoritePath}">
             <button class='nav__elems nav__button'>Favorites</button>
           </form>
 
@@ -32,7 +33,9 @@ module.exports = function({ name, query, path, logout, error, results, favPath, 
 
     ${error ? Results({ error }) : ''}
 
-    ${item ? Detail({ item, path, favDetailPath }) : ''}`
+    ${item ? Detail({ item, lastPath, favDetailPath }) : ''}
+
+    ${favorites ? Results({ items: favorites, onItemRender: duck => ResultsItem({ item: duck, favPath, detailPath }) }) : ''}`
 
   )
 }

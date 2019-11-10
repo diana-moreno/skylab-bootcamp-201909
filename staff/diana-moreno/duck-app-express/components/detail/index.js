@@ -1,8 +1,6 @@
-module.exports = function({ item, path, favDetailPath, id, isFav }) {
+module.exports = function({ item, lastPath, favDetailPath, id, isFav }) {
   return (
     `<div class='duck duck--litle'>
-
-
       <div class='duck'>
         <form class='duck__favorite duck__favorite--litle' method="post" action="${favDetailPath}">
             <input type="hidden" name="id" value="${item.id}">
@@ -18,19 +16,11 @@ module.exports = function({ item, path, favDetailPath, id, isFav }) {
         <p class='duck__description duck__description--litle'>${item.description}</p>
         <div class='duck__container-buttons'>
           <p class='duck__button'>${item.price}</p>
-          <a href="${path}">
+          <form method='post' action="${lastPath}">
             <button class='duck__button duck__button--back'>◀</button>
-          </a>
+          </form>
         </div>
       </div>
-
-
     </div>`
   )
 }
-
-
-{/*      <i class=${item.isFav
-                    ? "duck__favorite duck__favorite--litle fas fa-heart"
-                    : 'duck__favorite duck__favorite--litle far fa-heart'}
-      ></i>*/}
