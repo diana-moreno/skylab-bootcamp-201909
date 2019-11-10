@@ -63,7 +63,6 @@ app.post('/search', (req, res) => {
   res.redirect('/search')
 })
 
-
 app.get('/search', cookieParser, (req, res) => {
   try {
     const { cookies: { id } } = req
@@ -102,7 +101,6 @@ No se pueden mostrar random con favoritos!!! al refrescar la pantalla, se pierde
   }
 })
 
-
 app.post('/logout', cookieParser, (req, res) => {
   res.setHeader('set-cookie', 'id=""; expires=Thu, 01 Jan 1970 00:00:00 GMT')
 
@@ -113,11 +111,7 @@ app.post('/logout', cookieParser, (req, res) => {
   res.redirect('/login')
 })
 
-app.get('/favorites', (req, res) => {
-  res.redirect('/favorites')
-})
-
-app.post('/favorites', cookieParser, (req, res) => {
+app.get('/favorites', cookieParser, (req, res) => {
   try {
     const { cookies: { id } } = req
     const session = sessions[id]
@@ -131,64 +125,25 @@ app.post('/favorites', cookieParser, (req, res) => {
         name = userData.name
 
       return retrieveFavDucks(id, token)
-        .then(ducks => res.send(View({ body: Search({ path: '/search', name, logout: '/logout', favorites: ducks, detailPath: '/ducks', favPath: '/favFavorites', favDetailPath: '/favDetail', lastPath, favoritePath: '/favorites' }) })))
+        .then(ducks => res.send(View({ body: Search({ path: '/search', name, logout: '/logout', favorites: ducks, detailPath: '/ducks', favPath: '/fav', lastPath, favoritePath: '/favorites' }) })))
       })
   } catch {
 
   }
 })
 
-
 app.post('/fav', cookieParser, bodyParser, (req, res) => {
   try {
     const { cookies: { id }, body: { id: duckId } } = req
     const session = sessions[id]
-    const { token, query } = session
+    const { token, query, lastPath } = session
 
     if (!id || !session || !token) return res.redirect('/login')
 
     toggleFavDuck(id, token, duckId)
         .then(() => {
-          query && res.redirect(`/search?q=${query}`)
+          /*query && */res.redirect(req.headers.referer)
         })
-        .catch(({ message }) => {
-            res.send('TODO error handling')
-        })
-
-  } catch (error) {
-    res.send('kaput')
-  }
-})
-
-app.post('/favDetail', cookieParser, bodyParser, (req, res) => {
-  try {
-    const { cookies: { id }, body: { id: duckId } } = req
-    const session = sessions[id]
-    const { token, query } = session
-
-    if (!id || !session || !token) return res.redirect('/login')
-
-    toggleFavDuck(id, token, duckId)
-        .then(() => res.redirect(`/ducks/${duckId}`))
-        .catch(({ message }) => {
-            res.send('TODO error handling')
-        })
-
-  } catch (error) {
-    res.send('kaput')
-  }
-})
-
-app.post('/favFavorites', cookieParser, bodyParser, (req, res) => {
-  try {
-    const { cookies: { id }, body: { id: duckId } } = req
-    const session = sessions[id]
-    const { token, query } = session
-
-    if (!id || !session || !token) return res.redirect('/login')
-
-    toggleFavDuck(id, token, duckId)
-        .then(() => res.redirect(`/favorites`))
         .catch(({ message }) => {
             res.send('TODO error handling')
         })
@@ -203,6 +158,7 @@ app.get('/ducks/:id', cookieParser, (req, res) => {
     const { params: { id: duckId }, cookies: { id }, query: { query }  } = req
 //cómo se ha guardado en params?
     const session = sessions[id]
+    session.duckId = duckId
     const { token, lastPath } = session
     let name
 
