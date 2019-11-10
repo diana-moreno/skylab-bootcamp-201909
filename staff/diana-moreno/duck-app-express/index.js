@@ -14,6 +14,10 @@ const app = express()
 
 app.use(express.static('public'))
 
+app.get('/', (req, res) => {
+  res.redirect('/login')
+})
+
 app.get('/login', (req, res) => {
   res.send(View({ body: Login({ path: '/login', register: '/register' }) }))
 })
@@ -64,12 +68,16 @@ app.post('/search', (req, res) => {
 app.get('/random', cookieParser, (req, res) => {
   try {
     let { cookies: { id } } = req
+    if (!id) return res.redirect('/login')
     const session = sessions[id]
-    const { token, randomDucks } = session
+    if (!session) return res.redirect('/login')
+    const { token } = session
+    if (!token) return res.redirect('/login')
     session.lastPath = '/random'
+    const { lastPath, randomDucks } = session
     if(!query) query = ''
-    if (!session || !token || !id) return res.redirect('/login')
     let name
+
 
     retrieveUser(id, token)
       .then(userData => {
@@ -99,12 +107,15 @@ app.get('/random', cookieParser, (req, res) => {
 app.get('/search', cookieParser, (req, res) => {
   try {
     let { cookies: { id }, query: { query } } = req
+    if (!id) return res.redirect('/login')
     const session = sessions[id]
+    if (!session) return res.redirect('/login')
+    const { token } = session
+    if (!token) return res.redirect('/login')
     session.lastPath = '/search'
-    const { token, lastPath } = session
-
-    if (!session || !token || !id) return res.redirect('/login')
+    const { lastPath } = session
     let name
+
 
     retrieveUser(id, token)
       .then(userData => {
@@ -136,20 +147,22 @@ app.post('/logout', cookieParser, (req, res) => {
 app.get('/favorites', cookieParser, (req, res) => {
   try {
     const { cookies: { id } } = req
+    if (!id) return res.redirect('/login')
     const session = sessions[id]
+    if (!session) return res.redirect('/login')
+    const { token } = session
+    if (!token) return res.redirect('/login')
     session.lastPath = '/favorites'
     session.isClickedFavorites = true
-    const { token, lastPath, isClickedFavorites } = session
-
-    if (!id || !session || !token) return res.redirect('/login')
+    const { lastPath, isClickedFavorites } = session
 
     retrieveUser(id, token)
       .then(userData => {
         name = userData.name
 
-      return retrieveFavDucks(id, token)
-        .then(ducks => res.send(View({ body: Search({ path: '/search', name, logout: '/logout', favorites: ducks, detailPath: '/ducks', favPath: '/fav', lastPath, favoritePath: '/favorites', isClickedFavorites }) })))
-        .then(() => session.isClickedFavorites = false)
+        return retrieveFavDucks(id, token)
+          .then(ducks => res.send(View({ body: Search({ path: '/search', name, logout: '/logout', favorites: ducks, detailPath: '/ducks', favPath: '/fav', lastPath, favoritePath: '/favorites', isClickedFavorites }) })))
+          .then(() => session.isClickedFavorites = false)
       })
   } catch {
 
@@ -159,10 +172,13 @@ app.get('/favorites', cookieParser, (req, res) => {
 app.post('/fav', cookieParser, bodyParser, (req, res) => {
   try {
     const { cookies: { id }, body: { id: duckId } } = req
+    if (!id) return res.redirect('/login')
     const session = sessions[id]
-    const { token, query, lastPath } = session
-
-    if (!id || !session || !token) return res.redirect('/login')
+    if (!session) return res.redirect('/login')
+    const { token } = session
+    if (!token) return res.redirect('/login')
+    const { query, lastPath } = session
+    session.duckId = duckId
 
     toggleFavDuck(id, token, duckId)
         .then(() => {
@@ -180,12 +196,14 @@ app.get('/ducks/:id', cookieParser, (req, res) => {
   try {
     const { params: { id: duckId }, cookies: { id }, query: { query }  } = req
 //cómo se ha guardado en params?
+    if (!id) return res.redirect('/login')
     const session = sessions[id]
+    if (!session) return res.redirect('/login')
+    const { token } = session
+    if (!token) return res.redirect('/login')
     session.duckId = duckId
-    const { token, lastPath } = session
+    const { lastPath } = session
     let name
-
-    if (!id || !session || !token) return res.redirect('/login')
 
     retrieveUser(id, token)
       .then(userData => {
@@ -199,6 +217,5 @@ app.get('/ducks/:id', cookieParser, (req, res) => {
     res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' }) }))
   }
 })
-
 
 app.listen(port, () => console.log(`server running on port ${port}`))
