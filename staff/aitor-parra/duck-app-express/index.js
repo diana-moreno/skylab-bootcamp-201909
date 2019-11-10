@@ -22,7 +22,7 @@ app.get('/register', (req, res) => {
 
 app.post('/register', bodyParser, (req, res) => {
     const { body: { name, surname, email, password } } = req
-
+ 
     try {
         registerUser(name, surname, email, password)
             .then(() => res.redirect('/'))
