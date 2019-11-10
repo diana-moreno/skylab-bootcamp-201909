@@ -51,7 +51,8 @@ app.post('/login', bodyParser, (req, res) => {
 
                 res.redirect('/search')
             })
-            .catch(({ message }) => {res.send(View({ body: Login({ path: '/login', error: message }) }))
+            .catch(({ message }) => {
+                res.send(View({ body: Login({ path: '/login', error: message }) }))
         })
     } catch ({ message }) {
         res.send(View({ body: Login({ path: '/login', error: message }) }))
@@ -87,9 +88,8 @@ app.get('/search', cookieParser, (req, res) => {
                     .then(ducks => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks' }) })))
             })
             .catch(({ message }) => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) })))
-
-
-    } catch ({ message }) { res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) }))
+    } catch ({ message }) { 
+        res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) }))
     }
 
 })
@@ -110,10 +110,8 @@ app.post('/logout', cookieParser, (req, res) => {
 
 
 app.post('/fav', cookieParser, bodyParser, (req, res) => {
-
     try {
-
-        const { cookies: { id}, body: { id: duckId }} = req
+        const { cookies: { id }, body: { id: duckId }} = req
 
         if (!id) return res.redirect('/')
 
