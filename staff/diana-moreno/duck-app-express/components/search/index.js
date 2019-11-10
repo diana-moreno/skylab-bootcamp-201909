@@ -21,7 +21,7 @@ module.exports = function({ name, query, path, logout, error, results, favPath, 
       </div>
       <h1 class='header__title'>Duck Store</h1>
       <form class='header__form form' method ='get' action='${path}'>
-        <input class='form__input' type="text" name="query" placeholder="search..." ${query? `value=${query}` : '' } />
+        <input class='form__input' type="text" name="query" placeholder="search..." ${query? `value=${query}` : `value=''` } />
         <button class='form__button'>
           <i class="fas fa-search"></i>
         </button>

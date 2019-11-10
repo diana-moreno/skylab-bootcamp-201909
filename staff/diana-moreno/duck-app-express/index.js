@@ -65,13 +65,10 @@ app.post('/search', (req, res) => {
 
 app.get('/search', cookieParser, (req, res) => {
   try {
-    const { cookies: { id } } = req
+    let { cookies: { id }, query: { query } } = req
     const session = sessions[id]
     session.lastPath = '/search'
     const { token, lastPath } = session
-    // se guarda la query en la req para mantenerla a volver para atrás en el detalle.
-    if(!req.query.query && session.query) req.query.query = session.query
-    let { query: { query } } = req
 
     if (!session || !token || !id) return res.redirect('/login')
     let name
@@ -80,7 +77,7 @@ app.get('/search', cookieParser, (req, res) => {
       .then(userData => {
         name = userData.name
 
-        //if(!query) query = ''
+        if(!query) query = '' // imprime todos los patos al logearse
         session.query = query
 
         return searchDucks(id, token, query) // return es necesario si queremos ahorrarnos un catch y dejar que se recoja el valor en el siguiente catch.
