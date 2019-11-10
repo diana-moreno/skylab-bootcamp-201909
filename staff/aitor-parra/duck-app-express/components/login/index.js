@@ -9,10 +9,9 @@ module.exports = function( {path, error} ) {
         <input class="login__field" type="password" name="password" placeholder="password">
         <button class="login__submit">🗝</button>
     </form>
-    </section>
-    
     ${error ? Feedback({ message: error}) : ''  }
     
+    </section>
     `
 
 }
