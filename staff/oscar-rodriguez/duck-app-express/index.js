@@ -11,12 +11,14 @@ const cookiesParser = require('./utils/middleware/cookies-parser')
 
 /********************** MISC **************************/
 const express = require('express')
+const shuffle = require('./utils/array-shuffle')
 const { argv: [, , port = 8080] } = process
 const app = express()
 app.use(express.static('public'))
 const sessions = {}
 
 app.get('/', (req, res) => {
+    shuffle()
     res.send(View({ body: Landing({ login: '/login', register: '/register' }) }))
 })
 
@@ -74,7 +76,16 @@ app.get('/search', cookiesParser, (req, res) => {
             .then(user => {
                 name = user.name
 
-                if (!query) return res.send(View({ body: Search({ logout: '/logout', name, query, path: '/search' }) }))
+                if (!query) {
+                    return searchDucks(id, token, '')
+                    .then(ducks => {
+                        session.view = 'home'
+                        ducks = ducks.shuffle().splice(0,3)
+                        res.send(View({ body: Search({ logout: '/logout', name, query, path: '/search', results: ducks, favPath: '/fav', detailPath: '/ducks' }) }))
+                    })
+                    
+                    //return res.send(View({ body: Search({ logout: '/logout', name, query, path: '/search' }) }))
+                }
                 session.query = query
                 session.view = 'search'
                 return searchDucks(id, token, query)
@@ -115,6 +126,7 @@ app.post('/fav', cookiesParser, bodyParser, (req, res) => {
                 switch (view) {
                     case 'detail': backPath = `/ducks/${duckId}`; break;
                     case 'search': backPath = `/search?query=${query}`; break;
+                    case 'home' : backPath = '/search'; break;
                     case 'userpage': backPath = `/userpage`; break;
                     default: backPath = '/'
                 }
@@ -136,13 +148,19 @@ app.get('/ducks/:id', cookiesParser, (req, res) => {
         const session = sessions[id]
         if (!session) return res.redirect('/')
 
-        const { token, query } = session
+        const { token, query, view } = session
         if (!token) return res.redirect('/')
 
         
         retrieveDuck(id, token, duckId)
         .then(duck => {
-                let backPath = session.view === 'search' ? `/search?query=${query}` : '/userpage'
+                switch (view) {
+                    case 'detail': backPath = `/ducks/${duckId}`; break;
+                    case 'search': backPath = `/search?query=${query}`; break;
+                    case 'home' : backPath = '/search'; break;
+                    case 'userpage': backPath = `/userpage`; break;
+                    default: backPath = '/'
+                }
                 session.view = 'detail'
                 res.send(View({ body: Detail({ duck, goBack: backPath, favPath: '/fav' }) }))
             })
