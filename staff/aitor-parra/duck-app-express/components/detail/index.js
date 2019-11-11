@@ -1,4 +1,4 @@
-module.exports = function ({ item: { id, title, image, description, price, link, isFav }, favPath  }) {
+module.exports = function ({ item: { id, title, image, description, price, link, isFav }, backPath, favPath  }) {
 
     return `
     <section class="view detail">
@@ -13,5 +13,6 @@ module.exports = function ({ item: { id, title, image, description, price, link,
                 <button type="submit">${isFav ? '❤️' : '🖤'}</button>
             </form>
         </span>
+        <a class="detail__back" href="${backPath}">Go back</a>
     </section>`
 }
