@@ -3,6 +3,8 @@ module.exports = function(req) {
 
   req.cookies = {}
 
+  if(!cookie) return req.cookies // avoid the split error when cookie is undefined
+
   const keyValues = cookie.split(';')
 
   keyValues.forEach(keyValue => {

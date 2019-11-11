@@ -15,9 +15,21 @@ describe('logic - register user', () => {
 
   it('should succeed on correct credentials', () =>
     registerUser(name, surname, email, password)
-    .then(response => {
-      expect(response).to.be.undefined
-    })
+      .then(response => {
+        expect(response).to.be.undefined
+      })
+  )
+  it('should fail on incorrect credentials', () =>
+    registerUser(name, surname, email, password)
+      .then(() => {
+        throw Error('should not reach this point')
+      })
+      .catch(error => {
+        expect(error).to.exist
+        expect(error.message).to.exist
+        expect(typeof error.message).to.equal('string')
+        expect(error.message.length).to.be.greaterThan(0)
+      })
   )
 
   describe('when user already exists', () => {
@@ -30,17 +42,16 @@ describe('logic - register user', () => {
 
     it('should fail on already existing user', () =>
       registerUser(name, surname, email, password)
-      .then(() => {
-        throw Error('should not reach this point')
-      })
-      .catch(error => {
-        expect(error).to.exist
-
-        expect(error.message).to.exist
-        expect(typeof error.message).to.equal('string')
-        expect(error.message.length).to.be.greaterThan(0)
-        expect(error.message).to.equal(`user with username "${email}" already exists`)
-      })
+        .then(() => {
+          throw Error('should not reach this point')
+        })
+        .catch(error => {
+          expect(error).to.exist
+          expect(error.message).to.exist
+          expect(typeof error.message).to.equal('string')
+          expect(error.message.length).to.be.greaterThan(0)
+          expect(error.message).to.equal(`user with username "${email}" already exists`)
+        })
     )
   })
 
@@ -85,6 +96,4 @@ describe('logic - register user', () => {
     expect(() => registerUser(name, surname, email, '')).to.throw(ContentError, 'password is empty or blank')
     expect(() => registerUser(name, surname, email, ' \t\r')).to.throw(ContentError, 'password is empty or blank')
   })
-
-  // TODO other cases
 })

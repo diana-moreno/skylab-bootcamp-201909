@@ -18,12 +18,32 @@ app.get('/', (req, res) => {
   res.redirect('/login')
 })
 
-app.get('/login', (req, res) => {
-  res.send(View({ body: Login({ path: '/login', register: '/register' }) }))
+app.get('/login', cookieParser, (req, res) => {
+  let { cookies: { id } } = req
+  if(id) {
+    const session = sessions[id]
+    if(session) {
+      res.redirect(session.allLastPath)
+    } else {
+      res.send(View({ body: Login({ path: '/login', register: '/register' })}))
+    }
+  } else {
+      res.send(View({ body: Login({ path: '/login', register: '/register' })}))
+  }
 })
 
-app.get('/register', (req, res) => {
-  res.send(View({ body: Register({ path: '/register', login: '/login' }) }))
+app.get('/register', cookieParser, (req, res) => {
+  let { cookies: { id } } = req
+  if(id) {
+    const session = sessions[id]
+    if(session) {
+      res.redirect(session.allLastPath)
+    } else {
+      res.send(View({ body: Register({ path: '/register', login: '/login' })}))
+    }
+  } else {
+      res.send(View({ body: Register({ path: '/register', login: '/login' })}))
+  }
 })
 
 app.get('/register-success', (req, res) => {
@@ -73,6 +93,7 @@ app.get('/random', cookieParser, (req, res) => {
     const { randomDucks } = session
     if(!query) query = ''
     let name
+    session.allLastPath = '/random'
 
     retrieveUser(id, token)
       .then(userData => {
@@ -112,6 +133,7 @@ app.get('/search', cookieParser, (req, res) => {
     if (!token) return res.redirect('/login')
     session.lastPath = '/search'
     let name
+    session.allLastPath = '/search'
 
     retrieveUser(id, token)
       .then(userData => {
@@ -151,6 +173,7 @@ app.get('/favorites', cookieParser, (req, res) => {
     session.lastPath = '/favorites'
     session.isClickedFavorites = true
     const { isClickedFavorites } = session
+    session.allLastPath = '/favorites'
 
     retrieveUser(id, token)
       .then(userData => {
@@ -202,6 +225,7 @@ app.get('/ducks/:id', cookieParser, (req, res) => {
     session.duckId = duckId
     const { lastPath } = session
     let name
+    session.allLastPath = `/ducks/${session.duckId}`
 
     retrieveUser(id, token)
       .then(userData => {
