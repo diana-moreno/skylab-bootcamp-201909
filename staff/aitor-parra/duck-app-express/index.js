@@ -51,7 +51,8 @@ app.post('/register', formBodyParser, (req, res) => {
 })
 
 app.get('/login', (req, res) => {
-    res.send(View({ body: Login({ path: '/login' }) }))
+    // res.send(View({ body: Login({ path: '/login' }) }))
+    res.render('login', { path: '/login' })
 })
 
 app.post('/login', formBodyParser, (req, res) => {
