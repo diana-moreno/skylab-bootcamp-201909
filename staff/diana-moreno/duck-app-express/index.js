@@ -61,10 +61,6 @@ app.post('/login', bodyParser, (req, res) => {
   }
 })
 
-app.post('/search', (req, res) => {
-  res.redirect('/search')
-})
-
 app.get('/random', cookieParser, (req, res) => {
   try {
     let { cookies: { id } } = req
@@ -99,6 +95,10 @@ app.get('/random', cookieParser, (req, res) => {
   } catch ({ message }) {
     res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' }) }))
   }
+})
+
+app.post('/search', (req, res) => {
+  res.redirect('/search')
 })
 
 app.get('/search', cookieParser, (req, res) => {
@@ -159,9 +159,12 @@ app.get('/favorites', cookieParser, (req, res) => {
         return retrieveFavDucks(id, token)
           .then(ducks => res.send(View({ body: Search({ path: '/search', name, logout: '/logout', favorites: ducks, detailPath: '/ducks', favPath: '/fav', favoritePath: '/favorites', isClickedFavorites }) })))
           .then(() => session.isClickedFavorites = false)
+          .catch(({ message }) => {
+            res.send(View({ body: Search({ path: '/search', name, logout: '/logout', error: message, favoritePath: '/favorites' }) }))
+          })
       })
-  } catch {
-
+  } catch ({ message }) {
+    res.send(View({ body: Search({ path: '/search', name, logout: '/logout', error: message, favoritePath: '/favorites' }) }))
   }
 })
 
@@ -180,10 +183,10 @@ app.post('/fav', cookieParser, bodyParser, (req, res) => {
           res.redirect(req.headers.referer)
         })
         .catch(({ message }) => {
-            res.send('TODO error handling')
+          res.send(View({ body: Search({ path: '/search', name, logout: '/logout', error: message, favoritePath: '/favorites' }) }))
         })
-  } catch (error) {
-    res.send('kaput')
+  } catch ({ message }) {
+    res.send(View({ body: Search({ path: '/search', name, logout: '/logout', error: message, favoritePath: '/favorites' }) }))
   }
 })
 
