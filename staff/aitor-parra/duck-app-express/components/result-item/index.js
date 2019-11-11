@@ -13,6 +13,4 @@ return `<li class="results__item">
                 </span>
             </a>
         </li>`
-
-
 }

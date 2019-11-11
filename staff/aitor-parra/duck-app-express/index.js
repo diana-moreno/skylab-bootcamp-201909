@@ -133,7 +133,40 @@ app.post('/fav', cookieParser, bodyParser, (req, res) => {
 
 })
 
-app.get('/ducks/:id', (req, res) => {
+app.get('/ducks/:id', cookieParser, (req, res) => {
+    try {
+        const { cookies: { id }, query: { q: query } } = req
+
+        if (!id) return res.redirect('/')
+
+        const session = sessions[id]
+
+        if (!session) return res.redirect('/')
+
+        const { token } = session
+
+        if (!token) return res.redirect('/')
+
+        let name
+
+        retrieveUser(id, token)
+            .then(user => {
+
+                name = user.name
+
+                if (!query) return res.send(View({ body: Search({ path: '/search', name, logout: '/logout' }) }))
+
+                session.query = query
+
+                return retrieveDuck()
+
+            })
+
+
+    } catch {
+
+    }
+
 
     const { params: { id }} = req
 
@@ -146,3 +179,41 @@ app.get('/ducks/:id', (req, res) => {
 
 app.listen(port, () => console.log(`server running on port ${port}`))
 
+/*
+
+app.get('/search', cookieParser, (req, res) => {
+    try {
+        const { cookies: { id }, query: { q: query } } = req
+
+        if (!id) return res.redirect('/')
+
+        const session = sessions[id]
+
+        if (!session) return res.redirect('/')
+
+        const { token } = session
+
+        if (!token) return res.redirect('/')
+
+        let name
+
+        retrieveUser(id, token)
+            .then(user => {
+
+                name = user.name
+
+                if (!query) return res.send(View({ body: Search({ path: '/search', name, logout: '/logout' }) }))
+
+                session.query = query
+
+                return searchDucks(id, token, query)
+                    .then(ducks => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks' }) })))
+            })
+            .catch(({ message }) => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) })))
+    } catch ({ message }) { 
+        res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) }))
+    }
+
+})
+
+*/

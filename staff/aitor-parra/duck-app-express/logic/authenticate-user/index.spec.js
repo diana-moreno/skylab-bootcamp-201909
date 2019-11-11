@@ -13,7 +13,7 @@ describe('logic - authenticate user', () => {
         })
     })
 
-    it('should succeed on correct credentials', done => {
+    it.only('should succeed on correct credentials', done => {
         authenticateUser(email, password, (error, response) => {
             expect(error).toBeUndefined()
 
