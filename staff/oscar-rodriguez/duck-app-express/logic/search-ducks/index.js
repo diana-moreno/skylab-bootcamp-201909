@@ -13,7 +13,7 @@ module.exports = function (id, token, query) {
                     if (user.error ) return reject(new Error(user.error))
                     const {favs = []} = user.data
                     result.map (duck => {
-                        favs.includes (duck.id) ? duck.fav = true : duck.fav = false
+                        favs.includes (duck.id) ? duck.isFav = true : duck.isFav = false
                         return duck
                     })
                     resolve(result)
