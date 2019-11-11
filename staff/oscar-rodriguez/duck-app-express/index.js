@@ -22,11 +22,17 @@ app.get('/', (req, res) => {
     res.send(View({ body: Landing({ login: '/login', register: '/register' }) }))
 })
 
-app.get('/register', (req, res) => {
+app.get('/register', cookiesParser, (req, res) => {
+    const { cookies: { id } } = req
+        
+      if(id) {  const session = sessions[id]
+             if (session) return res.redirect('/search')}
+
     res.send(View({ body: Register({ path: '/register' }) }))
 })
 
 app.post('/register', bodyParser, (req, res) => {
+    
     const { body: { name, surname, email, password } } = req
 
     try {
@@ -39,11 +45,16 @@ app.post('/register', bodyParser, (req, res) => {
     }
 })
 
-app.get('/login', (req, res) => {
+app.get('/login', cookiesParser, (req, res) => {
+    const { cookies: { id } } = req
+    if(id) {  const session = sessions[id]
+        if (session) return res.redirect('/search')}
+        
     res.send(View({ body: Login({ path: '/login' }) }))
 })
 
 app.post('/login', bodyParser, (req, res) => {
+    
     const { body: { email, password } } = req
     try {
         authenticateUser(email, password)
@@ -75,16 +86,18 @@ app.get('/search', cookiesParser, (req, res) => {
         retrieveUser(id, token)
             .then(user => {
                 name = user.name
-
                 if (!query) {
-                    return searchDucks(id, token, '')
-                    .then(ducks => {
-                        session.view = 'home'
-                        ducks = ducks.shuffle().splice(0,3)
-                        res.send(View({ body: Search({ logout: '/logout', name, query, path: '/search', results: ducks, favPath: '/fav', detailPath: '/ducks' }) }))
-                    })
-                    
-                    //return res.send(View({ body: Search({ logout: '/logout', name, query, path: '/search' }) }))
+                    const { randoms } = session
+                    if (!randoms) return searchDucks(id, token, '')
+                        .then(ducks => {
+                            session.view = 'home'
+                            ducks = ducks.shuffle().splice(0, 3)
+                            session.randoms = [ducks[0].id, ducks[1].id, ducks[2].id]
+                            res.send(View({ body: Search({ logout: '/logout', name, query, path: '/search', results: ducks, favPath: '/fav', detailPath: '/ducks' }) }))
+                        })
+                    const calls = randoms.map(duckId => retrieveDuck(id, token, duckId))
+                    return Promise.all(calls)
+                        .then(ducks => res.send(View({ body: Search({ logout: '/logout', name, query, path: '/search', results: ducks, favPath: '/fav', detailPath: '/ducks' }) })))
                 }
                 session.query = query
                 session.view = 'search'
@@ -126,7 +139,7 @@ app.post('/fav', cookiesParser, bodyParser, (req, res) => {
                 switch (view) {
                     case 'detail': backPath = `/ducks/${duckId}`; break;
                     case 'search': backPath = `/search?query=${query}`; break;
-                    case 'home' : backPath = '/search'; break;
+                    case 'home': backPath = '/search'; break;
                     case 'userpage': backPath = `/userpage`; break;
                     default: backPath = '/'
                 }
@@ -151,13 +164,13 @@ app.get('/ducks/:id', cookiesParser, (req, res) => {
         const { token, query, view } = session
         if (!token) return res.redirect('/')
 
-        
+
         retrieveDuck(id, token, duckId)
-        .then(duck => {
+            .then(duck => {
                 switch (view) {
                     case 'detail': backPath = `/ducks/${duckId}`; break;
                     case 'search': backPath = `/search?query=${query}`; break;
-                    case 'home' : backPath = '/search'; break;
+                    case 'home': backPath = '/search'; break;
                     case 'userpage': backPath = `/userpage`; break;
                     default: backPath = '/'
                 }
