@@ -74,10 +74,9 @@ app.get('/random', cookieParser, (req, res) => {
     const { token } = session
     if (!token) return res.redirect('/login')
     session.lastPath = '/random'
-    const { lastPath, randomDucks } = session
+    const { randomDucks } = session
     if(!query) query = ''
     let name
-
 
     retrieveUser(id, token)
       .then(userData => {
@@ -95,14 +94,12 @@ app.get('/random', cookieParser, (req, res) => {
             return toggleFavDucks(id, token, ducks)
               .then(ducks => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks', favoritePath: '/favorites' }) })))
           })
-
       })
       .catch(({ message }) => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' }) })))
   } catch ({ message }) {
     res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' }) }))
   }
 })
-
 
 app.get('/search', cookieParser, (req, res) => {
   try {
@@ -113,15 +110,14 @@ app.get('/search', cookieParser, (req, res) => {
     const { token } = session
     if (!token) return res.redirect('/login')
     session.lastPath = '/search'
-    const { lastPath } = session
     let name
-
 
     retrieveUser(id, token)
       .then(userData => {
         name = userData.name
 
-        if(!query) query = session.query
+        if(query === '') query === ''
+        if(query === undefined) query = session.query
         session.query = query
 
         return searchDucks(id, token, query) // return es necesario si queremos ahorrarnos un catch y dejar que se recoja el valor en el siguiente catch.
@@ -154,14 +150,14 @@ app.get('/favorites', cookieParser, (req, res) => {
     if (!token) return res.redirect('/login')
     session.lastPath = '/favorites'
     session.isClickedFavorites = true
-    const { lastPath, isClickedFavorites } = session
+    const { isClickedFavorites } = session
 
     retrieveUser(id, token)
       .then(userData => {
         name = userData.name
 
         return retrieveFavDucks(id, token)
-          .then(ducks => res.send(View({ body: Search({ path: '/search', name, logout: '/logout', favorites: ducks, detailPath: '/ducks', favPath: '/fav', lastPath, favoritePath: '/favorites', isClickedFavorites }) })))
+          .then(ducks => res.send(View({ body: Search({ path: '/search', name, logout: '/logout', favorites: ducks, detailPath: '/ducks', favPath: '/fav', favoritePath: '/favorites', isClickedFavorites }) })))
           .then(() => session.isClickedFavorites = false)
       })
   } catch {
