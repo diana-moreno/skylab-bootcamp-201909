@@ -87,6 +87,7 @@ app.get('/random', cookieParser, (req, res) => {
               return session.randomDucks
           })
           .then(ducks => {
+            //throw (new Error('errorrrrrrrrr'))
             return toggleFavDucks(id, token, ducks)
               .then(ducks => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks', favoritePath: '/favorites' }) })))
           })
@@ -121,7 +122,6 @@ app.get('/search', cookieParser, (req, res) => {
         session.query = query
 
         return searchDucks(id, token, query) // return es necesario si queremos ahorrarnos un catch y dejar que se recoja el valor en el siguiente catch.
-
           .then(ducks => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks', favoritePath: '/favorites' }) })))
       })
       .catch(({ message }) => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' }) })))
@@ -159,9 +159,9 @@ app.get('/favorites', cookieParser, (req, res) => {
         return retrieveFavDucks(id, token)
           .then(ducks => res.send(View({ body: Search({ path: '/search', name, logout: '/logout', favorites: ducks, detailPath: '/ducks', favPath: '/fav', favoritePath: '/favorites', isClickedFavorites }) })))
           .then(() => session.isClickedFavorites = false)
-          .catch(({ message }) => {
-            res.send(View({ body: Search({ path: '/search', name, logout: '/logout', error: message, favoritePath: '/favorites' }) }))
-          })
+      })
+      .catch(({ message }) => {
+        res.send(View({ body: Search({ path: '/search', name, logout: '/logout', error: message, favoritePath: '/favorites' }) }))
       })
   } catch ({ message }) {
     res.send(View({ body: Search({ path: '/search', name, logout: '/logout', error: message, favoritePath: '/favorites' }) }))
