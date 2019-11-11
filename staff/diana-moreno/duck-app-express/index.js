@@ -121,7 +121,7 @@ app.get('/search', cookieParser, (req, res) => {
       .then(userData => {
         name = userData.name
 
-        if(!query) query = ''
+        if(!query) query = session.query
         session.query = query
 
         return searchDucks(id, token, query) // return es necesario si queremos ahorrarnos un catch y dejar que se recoja el valor en el siguiente catch.
@@ -177,7 +177,6 @@ app.post('/fav', cookieParser, bodyParser, (req, res) => {
     if (!session) return res.redirect('/login')
     const { token } = session
     if (!token) return res.redirect('/login')
-    const { query, lastPath } = session
     session.duckId = duckId
 
     toggleFavDuck(id, token, duckId)
