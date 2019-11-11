@@ -34,9 +34,10 @@ describe('logic - authenticate user', () => {
       })
   })
 
+  email = 'fake'
   it('should fail on incorrect credentials', () =>
     authenticateUser(email, password)
-      .then(() => {
+      .then((response) => {
         throw Error('should not reach this point')
       })
       .catch(error => {
