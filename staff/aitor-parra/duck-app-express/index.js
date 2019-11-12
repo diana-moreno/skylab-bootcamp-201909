@@ -1,6 +1,6 @@
 const express = require('express')
 const { View, Landing, Register, Login, Search, Detail } = require('./components')
-const { registerUser, authenticateUser, retrieveUser, searchDucks, toggleFavDuck, retrieveDuck } = require('./logic')
+const { registerUser, authenticateUser, retrieveUser, searchDucks, toggleFavDuck, retrieveDuck, retrieveFavDucks } = require('./logic')
 
 /* const { bodyParser, cookieParser } = require('./utils/middlewares') */
 //const querystring = require('querystring')
@@ -184,8 +184,8 @@ app.get('/ducks/:id', (req, res) => {
                 //res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) })))
                 res.render('search', { path: '/search', query, name, logout: '/logout', error: message })
             )} catch ({ message }){
-        //res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message })}))
-        res.render('search', { path: '/search', query, name, logout: '/logout', error: message })
+                    //res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message })}))
+                    res.render('search', { path: '/search', query, name, logout: '/logout', error: message })
 
             }
     
@@ -194,11 +194,11 @@ app.get('/ducks/:id', (req, res) => {
 
 app.get('/favorites', (req, res) => {
     try {
-        const { session } = req
+        const { session } = req // req.session = session
 
         if (!session) return res.redirect('/')
 
-        const { userId: id, token, query } = session
+        const { userId: id, token, query } = session //session.userId = id, session.token = token, session.query = query
 
         if (!token) return res.redirect('/')
 
@@ -210,9 +210,12 @@ app.get('/favorites', (req, res) => {
                     res.render('favorites', { results: favs, backPath: query ? `/search?q=${query}` : '/search', favPath: '/fav', detailPath: '/ducks' })
                 )
             })
-            .catch(({ error }) => res.send(`TODO error handling for: ${error}`))
+            .catch(({ error }) => //res.send(`TODO error handling for: ${error}`)))
+                                  res.render('search', { path: '/search', error: message }))
     } catch ({ error }) {
-        res.send(`TODO error handling for: ${error}`)
+        // res.send(`TODO error handling for: ${error}`)
+        res.render('search', { path: '/search', error: message})
+       
     }
 })
 
