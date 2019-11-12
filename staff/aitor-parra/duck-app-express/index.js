@@ -172,23 +172,48 @@ app.get('/ducks/:id', (req, res) => {
 
 
         retrieveDuck(id, token, duckId)
-            .then(duck =>
+            .then(duck =>{
                 //res.send(View({ body: Detail({ item: duck, backPath: view === 'search' ? `/search?=${query}` : '/', favPath: '/fav' }) }))
 
                 const backPath = view === 'search' ? `/search?=${query}` : (view === 'favorites' ? '/favorites' : '/')
                 
                 res.render('detail', { item: duck, backPath, favPath: '/fav '})
 
-            )
+            })
             .catch (({ message }) => 
                 //res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) })))
-                res.render('search', { path: '/search'}, query, name, { logout: '/logout', error: message })
-    } catch ({ message }){
+                res.render('search', { path: '/search', query, name, logout: '/logout', error: message })
+            )} catch ({ message }){
         //res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message })}))
-        res.render('search', { path: '/search'}, query, name, { logout: '/logout', error: message })
+        res.render('search', { path: '/search', query, name, logout: '/logout', error: message })
 
             }
     
+})
+
+
+app.get('/favorites', (req, res) => {
+    try {
+        const { session } = req
+
+        if (!session) return res.redirect('/')
+
+        const { userId: id, token, query } = session
+
+        if (!token) return res.redirect('/')
+
+        retrieveFavDucks(id, token)
+            .then(favs => {
+                session.view = 'favorites'
+
+                session.save(() =>
+                    res.render('favorites', { results: favs, backPath: query ? `/search?q=${query}` : '/search', favPath: '/fav', detailPath: '/ducks' })
+                )
+            })
+            .catch(({ error }) => res.send(`TODO error handling for: ${error}`))
+    } catch ({ error }) {
+        res.send(`TODO error handling for: ${error}`)
+    }
 })
 
 app.listen(port, () => console.log(`server running on port ${port}`))
