@@ -7,15 +7,19 @@ const { authenticateUser, retrieveUser, registerUser, searchDucks, retrieveDuck,
 
 
 /********************** MISC **************************/
-const express = require('express')
 const shuffle = require('./utils/array-shuffle')
+shuffle()
 const { argv: [, , port = 8080] } = process
-const app = express()
-app.use(express.static('public'))
-
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const FileStore = require('session-file-store')(session)
+
+
+const express = require('express')
+const app = express()
+app.use(express.static('public'))
+app.set('view engine', 'pug')
+app.set('views', 'components')
 
 
 app.use(session({
@@ -30,15 +34,16 @@ app.use(session({
 const formBodyParser = bodyParser.urlencoded({ extended: false })
 
 app.get('/', (req, res) => {
-    shuffle()
-    res.send(View({ body: Landing({ login: '/login', register: '/register' }) }))
+    //res.send(View({ body: Landing({ login: '/login', register: '/register' }) }))
+    res.render('landing', { login: '/login', register: '/register' })
 })
 
 app.get('/register', (req, res) => {
     const { token } = req.session
     if (token) return res.redirect('/search')
 
-    res.send(View({ body: Register({ path: '/register' }) }))
+    //res.send(View({ body: Register({ path: '/register' }) }))
+    res.render('register', { path: '/register' })
 })
 
 app.post('/register', formBodyParser, (req, res) => {
@@ -59,7 +64,8 @@ app.get('/login', (req, res) => {
     const { token } = req.session
     if (token) return res.redirect('/search')
 
-    res.send(View({ body: Login({ path: '/login' }) }))
+    //res.send(View({ body: Login({ path: '/login' }) }))
+    res.render('login', { path: '/login' })
 })
 
 app.post('/login', formBodyParser, (req, res) => {
@@ -74,10 +80,13 @@ app.post('/login', formBodyParser, (req, res) => {
 
                 session.save(() => res.redirect('./search'))
             })
-            .catch(({ message }) => res.send(View({ body: Login({ path: '/login', error: message }) })))
+            .catch(({ message }) => //res.send(View({ body: Login({ path: '/login', error: message }) }))
+                res.render('login',{ path: '/login', error: message })
+            )
 
     } catch ({ message }) {
-        res.send(View({ body: Login({ path: '/login', error: message }) }))
+        //res.send(View({ body: Login({ path: '/login', error: message }) }))
+        res.render('login',{ path: '/login', error: message })
     }
 })
 
@@ -91,33 +100,41 @@ app.get('/search', (req, res) => {
         if (!token) return res.redirect('/')
 
         let name
-
         retrieveUser(id, token)
             .then(user => {
                 name = user.name
                 if (!query) {
                     const { randoms } = session
+                    session.view = 'home'
                     if (!randoms) return searchDucks(id, token, '')
                         .then(ducks => {
-                            session.view = 'home'
                             ducks = ducks.shuffle().splice(0, 3)
                             session.randoms = [ducks[0].id, ducks[1].id, ducks[2].id]
-                            session.save(() => res.send(View({ body: Search({ logout: '/logout', name, query, path: '/search', results: ducks, favPath: '/fav', detailPath: '/ducks' }) })))
+                            session.save(() => //res.send(View({ body: Search({ logout: '/logout', name, query, path: '/search', results: ducks, favPath: '/fav', detailPath: '/ducks' }) }))
+                                res.render('search', { logout: '/logout', name, query, path: '/search', results: ducks, favPath: '/fav', detailPath: '/ducks' })
+                            )
                         })
                     const calls = randoms.map(duckId => retrieveDuck(id, token, duckId))
                     return Promise.all(calls)
-                        .then(ducks => res.send(View({ body: Search({ logout: '/logout', name, query, path: '/search', results: ducks, favPath: '/fav', detailPath: '/ducks' }) })))
+                        .then(ducks => //res.send(View({ body: Search({ logout: '/logout', name, query, path: '/search', results: ducks, favPath: '/fav', detailPath: '/ducks' }) }))
+                            res.render('search', { logout: '/logout', name, query, path: '/search', results: ducks, favPath: '/fav', detailPath: '/ducks' })
+                        )
                 }
                 return searchDucks(id, token, query)
                     .then(ducks => {
                         session.query = query
                         session.view = 'search'
-                        session.save(() => res.send(View({ body: Search({ logout: '/logout', name, query, path: '/search', results: ducks, favPath: '/fav', detailPath: '/ducks' }) })))
+                        session.save(() => //res.send(View({ body: Search({ logout: '/logout', name, query, path: '/search', results: ducks, favPath: '/fav', detailPath: '/ducks' }) }))                        
+                            res.render('search', { logout: '/logout', name, query, path: '/search', results: ducks, favPath: '/fav', detailPath: '/ducks' })
+                        )
                     })
             })
-            .catch(({ message }) => res.send(View({ body: Search({ logout: '/logout', name, query, path: '/search', error: message }) })))
+            .catch(({ message }) => //res.send(View({ body: Search({ logout: '/logout', name, query, path: '/search', error: message }) }))
+                res.render('search', { logout: '/logout', name, query, path: '/search', error: message })
+            )
     } catch ({ message }) {
-        res.send(View({ body: Search({ logout: '/logout', name, query, path: '/search', error: message }) }))
+        //res.send(View({ body: Search({ logout: '/logout', name, query, path: '/search', error: message }) }))
+        res.render('search', { logout: '/logout', name, query, path: '/search', error: message })
     }
 
 })
@@ -151,9 +168,12 @@ app.post('/fav', formBodyParser, (req, res) => {
                 }
                 res.redirect(backPath)
             })
-            .catch(({ message }) => res.send(View({ body: Search({ logout: '/logout', query, path: '/search', error: message }) })))
+            .catch(({ message }) => //res.send(View({ body: Search({ logout: '/logout', query, path: '/search', error: message }) }))
+                res.render('search', { logout: '/logout', query, path: '/search', error: message })
+            )
     } catch ({ message }) {
-        res.send(View({ body: Search({ logout: '/logout', query, path: '/search', error: message }) }))
+        //res.send(View({ body: Search({ logout: '/logout', query, path: '/search', error: message }) }))
+        res.render('search', { logout: '/logout', query, path: '/search', error: message })
     }
 })
 
@@ -167,7 +187,6 @@ app.get('/ducks/:id', (req, res) => {
         const { userId: id, token, query, view } = session
         if (!token) return res.redirect('/')
 
-
         retrieveDuck(id, token, duckId)
             .then(duck => {
                 switch (view) {
@@ -177,14 +196,19 @@ app.get('/ducks/:id', (req, res) => {
                 }
                 const { backPath } = session
                 session.view = 'detail'
-                session.save(() => res.send(View({ body: Detail({ duck, goBack: backPath, favPath: '/fav' }) })))
+                session.save(() => //res.send(View({ body: Detail({ duck, goBack: backPath, favPath: '/fav' }) }))
+                    //res.render('detail', { duck, goBack: backPath, favPath: '/fav' })
+                    res.render('search', { logout: '/logout', query, path: '/search', error: message })
+                )
             })
             .catch(({ message }) => {
-                res.send(View({ body: Search({ logout: '/logout', query, path: '/search', error: message }) }))
+                //res.send(View({ body: Search({ logout: '/logout', query, path: '/search', error: message }) }))
+                res.render('search', { logout: '/logout', query, path: '/search', error: message })
             })
 
     } catch ({ message }) {
-        res.send(View({ body: Search({ logout: '/logout', query, path: '/search', error: message }) }))
+        //res.send(View({ body: Search({ logout: '/logout', query, path: '/search', error: message }) }))
+        res.render('search', { logout: '/logout', query, path: '/search', error: message })
     }
 })
 
@@ -202,14 +226,18 @@ app.get('/userpage', (req, res) => {
                 return retrieveFavDucks(id, token)
                     .then(ducks => {
                         session.view = 'userpage'
-                        session.save(() => res.send(View({ body: UserPage({ logout: '/logout', user, results: ducks, favPath: '/fav', detailPath: '/ducks', goBack: '/search' }) })))
+                        session.save(() => //res.send(View({ body: UserPage({ logout: '/logout', user, results: ducks, favPath: '/fav', detailPath: '/ducks', goBack: '/search' }) }))
+                            res.render('user-page', { logout: '/logout', user, results: ducks, favPath: '/fav', detailPath: '/ducks', goBack: '/search' })
+                        )
                     })
             })
             .catch(({ message }) => {
-                res.send(View({ body: Search({ logout: '/logout', path: '/search', error: message }) }))
+                //res.send(View({ body: Search({ logout: '/logout', path: '/search', error: message }) }))
+                res.render('search', { logout: '/logout', path: '/search', error: message })
             })
     } catch ({ message }) {
-        res.send(View({ body: Search({ logout: '/logout', path: '/search', error: message }) }))
+        //res.send(View({ body: Search({ logout: '/logout', path: '/search', error: message }) }))
+        res.render('search', { logout: '/logout', path: '/search', error: message })
     }
 
 })

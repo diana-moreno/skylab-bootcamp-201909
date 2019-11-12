@@ -12,7 +12,7 @@ module.exports = function (id, token) {
         call('GET', 'https://skylabcoders.herokuapp.com/api/user/' + id, token, undefined, user => {
             if (user.error) reject(new Error(user.error))
             else {
-                const { favs } = user.data
+                const { favs = [] } = user.data
 
                 const calls = favs.map(duckId => new Promise((resolve, reject) =>
                     call('GET', `https://duckling-api.herokuapp.com/api/ducks/${duckId}`, undefined, undefined, result => {
