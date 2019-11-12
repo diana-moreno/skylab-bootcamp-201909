@@ -1,6 +1,7 @@
 extends ../view/index
 include ../feedback/index
 include ../results/index
+include ../detail/index
 
 block body
   header.header.view__header
@@ -21,13 +22,13 @@ block body
       button.form__button
         i.fas.fa-search
   if error
-    +feedback(error)
+    .feedback--search
+      +feedback(error)
   if results
-    +results(results)
-    //- ${results ? Results({ items: results, onItemRender: duck => ResultsItem({ item: duck, favPath, detailPath }) }) : ''}
-
-    //- ${error ? Results({ error }) : ''}
-
-    //- ${item ? Detail({ item, backPath, favPath }) : ''}
-
-    //- ${favorites ? Results({ items: favorites, onItemRender: duck => ResultsItem({ item: duck, favPath, detailPath }) }) : ''}`
+    -let items=results
+    +results(results, favPath, detailPath)
+  if item
+    +detail(item, backPath, favPath, id, isFav)
+  if favorites
+    -let item=favorites
+    +results(item, favPath, detailPath)

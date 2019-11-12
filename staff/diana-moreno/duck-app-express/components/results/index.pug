@@ -1,8 +1,9 @@
-mixin results(results, error)
+include ../results-item/index
+
+mixin results(results, favPath, detailPath)
   section.view
     .view__list
       ul.duck__list
         each result in results
-    .feedback--search
-      if error
-        +feedback(error)
+          +results-item(result, favPath, detailPath)
+
