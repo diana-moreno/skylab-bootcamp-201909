@@ -1,12 +1,14 @@
-mixin result-item(items)
-    a.item(href=detailPath/id)
-        h2.item__title=items.title
-        img.item__image(src='image/' + items.image)
-        span.item__price=items.price
-        span.item__fav
-            form(method="post" action=favPath)
-                input(type="hidden" name="id" value=id)
-                button(type="submit") items.isFav ? '❤️' : '🖤'
+mixin result-item(item, favPath, detailPath)
+    li.results__item
+        a.item(href=`${detailPath}/${item.id})`)
+            h2.item__title= item.title
+            img.item__image(src=item.image)
+            span.item__price= item.price
+            span.item__fav
+                form(method="post" action=favPath)
+                    input(type="hidden" name="id" value=id)
+                    button(type="submit")= item.isFav ? '❤️' : '🖤'
 
                 
-
+    //- const { id, title, image, price, isFav } = item
+   

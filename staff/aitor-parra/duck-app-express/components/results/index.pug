@@ -1,7 +1,8 @@
-mixin results(results)
+include ../result-item/index
+
+mixin results(results, favPath, detailPath)
     ul.results
-        each items in results
-            li.results__item
-                +result-item(items)
+        each item in results
+            +result-item(results, favPath, detailPath)
 
 
