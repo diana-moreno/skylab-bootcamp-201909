@@ -35,7 +35,7 @@ app.get('/', (req, res) => {
 
 app.get('/register', (req, res) => {
    // res.send(View({ body: Register({ path: '/register' }) })) 
-   res.render('register', { path: '/register' })
+   res.render('register', { path: '/register' }) //'register' pinta el componente, path: indicio el comportamiento
 })
 
 app.post('/register', formBodyParser, (req, res) => {
@@ -94,7 +94,12 @@ app.get('/search', (req, res) => {
 
                 name = user.name
 
-                if (!query) return res.send(View({ body: Search({ path: '/search', name, logout: '/logout' }) }))
+                if (!query) return res.render('search', { path: '/search' }, name, {logout: '/logout'} )
+                                      // res.send(View({ body: Search({ path: '/search', name, logout: '/logout' }) }))
+
+                                      // res.send(View({ body: Login({ path: '/login' }) }))
+                                      // res.render('login', { path: '/login' })
+
 
                 
                 return searchDucks(id, token, query)
@@ -103,13 +108,16 @@ app.get('/search', (req, res) => {
                     session.query = query
                     session.view = 'search'
 
-                    session.save(() => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks' }) })))
+                    session.save(() => res.render('search', { path: '/search' }, query, name, {logout: '/logout'}, { results: 'ducks' }, { favPath: '/fav' }, { detailPath: 'ducks' } ))
+                    //session.save(() => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks' }) })))
 
                 })
             })
-            .catch(({ message }) => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) })))
+            .catch(({ message }) => res.render('search', { path: '/search' }, query, name, {logout: '/logout'}, { error: message}))
+            //res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) })))
     } catch ({ message }) { 
-        res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) }))
+        res.render('search', { path: '/search' }, query, name, {logout: '/logout'}, { results: 'ducks' }, { favPath: '/fav' }, { detailPath: 'ducks' } )
+        //res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message }) }))
     }
 
 })

@@ -1,0 +1,12 @@
+mixin result-item(items)
+    a.item(href=detailPath/id)
+        h2.item__title=items.title
+        img.item__image(src='image/' + items.image)
+        span.item__price=items.price
+        span.item__fav
+            form(method="post" action=favPath)
+                input(type="hidden" name="id" value=id)
+                button(type="submit") items.isFav ? '❤️' : '🖤'
+
+                
+
