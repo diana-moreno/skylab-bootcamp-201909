@@ -3,7 +3,7 @@ const Results = require('../results')
 const ResultsItem = require('../results-item')
 const Detail = require('../detail')
 
-module.exports = function({ name, query, path, logout, error, results, favPath, detailPath, item, favoritePath, favorites, favFavorites, backPath, isClickedFavorites }) {
+module.exports = function({ name, query, path, logout, error, results, favPath, detailPath, item, favoritePath, favorites, backPath, isClickedFavorites }) {
   return (
     `<header class='header view__header'>
       <div class='nav'>

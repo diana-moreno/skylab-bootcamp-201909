@@ -1,0 +1,8 @@
+mixin results(results, error)
+  section.view
+    .view__list
+      ul.duck__list
+        each result in results
+    .feedback--search
+      if error
+        +feedback(error)

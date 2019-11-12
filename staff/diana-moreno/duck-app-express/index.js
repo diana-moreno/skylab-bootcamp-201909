@@ -10,8 +10,8 @@ const { argv: [, , port = 8080] } = process
 
 const app = express()
 
-/*app.set('view engine', 'pug')
-app.set('views', 'components')*/
+app.set('view engine', 'pug')
+app.set('views', 'components')
 
 app.use(express.static('public'))
 
@@ -32,7 +32,7 @@ app.get('/register', (req, res) => {
   if(lastPath) {
     res.redirect(lastPath)
   } else {
-      res.send(View({ body: Register({ path: '/register', login: '/login' })}))
+      res.render('register', { path: '/register', login: '/login' })
   }
 })
 
@@ -42,14 +42,15 @@ app.post('/register', formBodyParser, (req, res) => {
   try {
     registerUser(name, surname, email, password)
       .then(() => res.redirect('/register-success'))
-      .catch(({ message }) => res.send(View({ body: Register({ path: '/register', login: '/login', error: message }) })))
+      .catch(({ message }) => res.render('register', { path: '/register', login: '/login', error: message }))
   } catch ({ message }) {
-    res.send(View({ body: Register({ path: '/register', error: message }) }))
+    res.render('register', { path: '/register', login: '/login', error: message })
   }
 })
 
 app.get('/register-success', (req, res) => {
-  res.send(View({ body: RegisterSuccess({ login: '/login' }) }))
+  //res.send(View({ body: RegisterSuccess({ login: '/login' }) }))
+  res.render('register-success', { login: '/login' })
 })
 
 app.get('/', (req, res) => {
@@ -62,7 +63,7 @@ app.get('/login', (req, res) => {
   if(lastPath) {
     res.redirect(lastPath)
   } else {
-    res.send(View({ body: Login({ path: '/login', register: '/register' }) }))
+    res.render('login', { path: '/login', register: '/register' })
   }
 })
 
@@ -79,10 +80,10 @@ app.post('/login', formBodyParser, (req, res) => {
         session.save(() => res.redirect('/random'))
       })
       .catch(({ message }) => {
-        res.send(View({ body: Login({ path: '/login', error: message }) }))
+        res.render('login', { path: '/login', register: '/register' })
       })
   } catch ({ message }) {
-    res.send(View({ body: Login({ path: '/login', error: message }) }))
+    res.render('login', { path: '/login', register: '/register', error: message })
   }
 })
 
@@ -147,11 +148,12 @@ app.get('/search', (req, res) => {
         session.save()
 
         return searchDucks(id, token, query) // return es necesario si queremos ahorrarnos un catch y dejar que se recoja el valor en el siguiente catch.
-          .then(ducks => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks', favoritePath: '/favorites' }) })))
+/*          .then(ducks => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks', favoritePath: '/favorites' }) })))*/
+          .then(ducks => res.render('search', {path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks', favoritePath: '/favorites'}))
       })
-      .catch(({ message }) => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' }) })))
+      .catch(({ message }) => res.render('search', { path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' }))
   } catch ({ message }) {
-    res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' }) }))
+    res.render('search', { path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' })
   }
 })
 
@@ -217,7 +219,7 @@ app.get('/ducks/:id', (req, res) => {
     const { session, params: { id: duckId } } = req
     //cómo se ha guardado en params?
     if (!session) return res.redirect('/login')
-    const { userId: id, token, view, query } = session
+    const { userId: id, token, query } = session
     if (!token) return res.redirect('/login')
     let name
     const { backPath } = req.session
