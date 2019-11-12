@@ -1,6 +1,5 @@
 const express = require('express')
-const { registerUser, authenticateUser, retrieveUser, searchDucks, retrieveDuck, toggleFavDuck, retrieveFavDucks, toggleFavDucks } = require('./logic')
-const arrayShuffle = require('./utils/array-shuffle')
+const { registerUser, authenticateUser, retrieveUser, searchDucks, retrieveDuck, toggleFavDuck, retrieveFavDucks, searchRandom } = require('./logic')
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const FileStore = require('session-file-store')(session) // to save the session in disk
@@ -25,12 +24,12 @@ const formBodyParser = bodyParser.urlencoded({ extended: false })
 //  This object will contain key-value pairs, where the value can be a string or array
 
 app.get('/register', (req, res) => {
-  const { session : { lastPath} } = req
+  const { session: { lastPath } } = req
 
-  if(lastPath) {
+  if (lastPath) {
     res.redirect(lastPath)
   } else {
-      res.render('register', { path: '/register', login: '/login' })
+    res.render('register', { path: '/register', login: '/login' })
   }
 })
 
@@ -55,9 +54,9 @@ app.get('/', (req, res) => {
 })
 
 app.get('/login', (req, res) => {
-  const { session : { lastPath} } = req
+  const { session: { lastPath } } = req
 
-  if(lastPath) {
+  if (lastPath) {
     res.redirect(lastPath)
   } else {
     res.render('login', { path: '/login', register: '/register' })
@@ -86,13 +85,12 @@ app.post('/login', formBodyParser, (req, res) => {
 
 app.get('/random', (req, res) => {
   try {
-    let { session, query: { query } } = req
+    let { session } = req
     if (!session) return res.redirect('/login')
     const { userId: id, token, randomDucks } = session
     if (!token) return res.redirect('/login')
-    let name
+    let name, query
 
-    if (!query) query = ''
     session.backPath = '/random'
     session.lastPath = '/random'
     session.save()
@@ -101,23 +99,17 @@ app.get('/random', (req, res) => {
       .then(userData => {
         name = userData.name
 
-        return searchDucks(id, token, query)
+        return searchRandom(id, token, 8)
           .then(ducks => {
-            if (!session.randomDucks) {
-              let randomDucks = arrayShuffle(ducks).splice(0, 8)
-              session.randomDucks = randomDucks
-            }
-            return session.randomDucks
+            session.randomDucks = randomDucks
+            session.save()
+            return ducks
           })
-          .then(ducks => {
-            //throw (new Error('errorrrrrrrrr'))
-            return toggleFavDucks(id, token, ducks)
-              .then(ducks => res.render('search', { path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks', favoritePath: '/favorites'}))
-          })
+          .then(ducks => res.render('search', { path: '/search', name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks', favoritePath: '/favorites' }))
       })
-      .catch(({ message }) => res.render('search', { path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' }))
+      .catch(({ message }) => res.render('search', { path: '/search', name, logout: '/logout', error: message, favoritePath: '/favorites' }))
   } catch ({ message }) {
-    res.render('search', { path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' })
+    res.render('search', { path: '/search', name, logout: '/logout', error: message, favoritePath: '/favorites' })
   }
 })
 
@@ -145,7 +137,7 @@ app.get('/search', (req, res) => {
         session.save()
 
         return searchDucks(id, token, query) // return es necesario si queremos ahorrarnos un catch y dejar que se recoja el valor en el siguiente catch.
-          .then(ducks => res.render('search', {path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks', favoritePath: '/favorites'}))
+          .then(ducks => res.render('search', { path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks', favoritePath: '/favorites' }))
       })
       .catch(({ message }) => res.render('search', { path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' }))
   } catch ({ message }) {
@@ -180,14 +172,14 @@ app.get('/favorites', (req, res) => {
         name = userData.name
 
         return retrieveFavDucks(id, token)
-          .then(ducks => res.render( 'search', { path: '/search', name, logout: '/logout', favorites: ducks, detailPath: '/ducks', favPath: '/fav', favoritePath: '/favorites', isClickedFavorites }))
+          .then(ducks => res.render('search', { path: '/search', name, logout: '/logout', favorites: ducks, detailPath: '/ducks', favPath: '/fav', favoritePath: '/favorites', isClickedFavorites }))
           .then(() => session.isClickedFavorites = false)
       })
       .catch(({ message }) => {
-        res.render( 'search', { path: '/search', name, logout: '/logout', error: message, favoritePath: '/favorites' })
+        res.render('search', { path: '/search', name, logout: '/logout', error: message, favoritePath: '/favorites' })
       })
   } catch ({ message }) {
-    res.render( 'search', { path: '/search', name, logout: '/logout', error: message, favoritePath: '/favorites' })
+    res.render('search', { path: '/search', name, logout: '/logout', error: message, favoritePath: '/favorites' })
   }
 })
 
@@ -203,17 +195,17 @@ app.post('/fav', formBodyParser, (req, res) => {
         res.redirect(referer)
       })
       .catch(({ message }) => {
-        res.render( 'search', { path: '/search', name, logout: '/logout', error: message, favoritePath: '/favorites' })
+        res.render('search', { path: '/search', name, logout: '/logout', error: message, favoritePath: '/favorites' })
       })
   } catch ({ message }) {
-    res.render( 'search', { path: '/search', name, logout: '/logout', error: message, favoritePath: '/favorites' })
+    res.render('search', { path: '/search', name, logout: '/logout', error: message, favoritePath: '/favorites' })
   }
 })
 
 app.get('/ducks/:id', (req, res) => {
   try {
     const { session, params: { id: duckId } } = req
-    //cómo se ha guardado en params?
+
     if (!session) return res.redirect('/login')
     const { userId: id, token, query } = session
     if (!token) return res.redirect('/login')
@@ -229,11 +221,11 @@ app.get('/ducks/:id', (req, res) => {
         name = userData.name
 
         return retrieveDuck(id, token, duckId)
-          .then(duck => res.render( 'search', { path: '/search', name, logout: '/logout', item: duck, favPath: '/fav', favDetailPath: '/favDetail', backPath, favoritePath: '/favorites' }))
+          .then(duck => res.render('search', { path: '/search', name, logout: '/logout', item: duck, favPath: '/fav', favDetailPath: '/favDetail', backPath, favoritePath: '/favorites' }))
       })
-      .catch(({ message }) => res.render( 'search', { path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' }))
+      .catch(({ message }) => res.render('search', { path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' }))
   } catch ({ message }) {
-    res.render( 'search', { path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' })
+    res.render('search', { path: '/search', query, name, logout: '/logout', error: message, favoritePath: '/favorites' })
   }
 })
 
