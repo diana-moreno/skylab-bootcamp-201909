@@ -1,7 +1,6 @@
 const { ContentError } = require('./errors')
 
 const EMAIL_REGEX = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-// expresión regular que valida si el email está bien escrito
 
 const validate = {
     typeOf(type, target) {
@@ -33,7 +32,7 @@ const validate = {
     },
 
     email(target) {
-        if (!EMAIL_REGEX.test(String(target).toLowerCase())) throw ContentError(`${target} is not an e-mail`)
+        if (!EMAIL_REGEX.test(String(target).toLowerCase())) throw new ContentError(`${target} is not an e-mail`)
     }
 }
 
