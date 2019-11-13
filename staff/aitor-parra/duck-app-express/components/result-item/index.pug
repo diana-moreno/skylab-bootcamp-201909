@@ -8,7 +8,3 @@ mixin result-item(item, favPath, detailPath)
                 form(method="post" action=favPath)
                     input(type="hidden" name="id" value=id)
                     button(type="submit")= item.isFav ? '❤️' : '🖤'
-
-                
-    //- const { id, title, image, price, isFav } = item
-   

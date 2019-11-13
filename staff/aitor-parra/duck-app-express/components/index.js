@@ -5,5 +5,8 @@ module.exports = {
     Register: require('./register'),
     Search: require('./search'),
     Detail: require('./detail'),
-    View: require('./view')
+    View: require('./view'),
+    //Favorites: require('./favorites'),
+    Results: require('./results'),
+    ResultItem: require('./result-item')
 }

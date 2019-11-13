@@ -1,7 +1,7 @@
 const call = require('../../helpers/call')
 const validate = require('../../utils/validate')
 
-module.exports = function retrieveUser(id, token) {
+module.exports = function(id, token) {
     validate.string(id)
     validate.string.notVoid('id', id)
     validate.string(token)

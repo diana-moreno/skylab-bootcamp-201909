@@ -1,4 +1,5 @@
 extends ../view/index
+
 include ../feedback/index 
 include ../results/index
 
@@ -8,9 +9,9 @@ block body
         h1.search__title Search
         h2.search__user= name
         a.search__favs(href=favsPath) Favorites
-        form.search__logout(method="POST" action=logout)
+        form.search__logout(method="post" action=logout)
             button Logout
-        form.search__form(method="GET" action=path)
+        form.search__form(method="get" action=path)
             span.search__icon 🐣
             input.search__criteria(type="text" name="q" placeholder="criteria" value=query || "")
             button.search__submit 🔍

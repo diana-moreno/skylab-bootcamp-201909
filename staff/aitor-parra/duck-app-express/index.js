@@ -4,10 +4,10 @@ const { registerUser, authenticateUser, retrieveUser, searchDucks, toggleFavDuck
 
 /* const { bodyParser, cookieParser } = require('./utils/middlewares') */
 //const querystring = require('querystring')
-const { argv: [, , port = 8080] } = process
 const bodyParser = require('body-parser')
 const session = require('express-session')
 const FileStore = require('session-file-store')(session)
+const { argv: [, , port = 9090] } = process
 
 /* const sessions = {}
 const sessionRetriever = require('./helpers/middlewares/session-retriever')(sessions) */
@@ -110,8 +110,8 @@ app.get('/search', (req, res) => {
 
                     session.query = query
                     session.view = 'search'
-
-                    session.save(() => res.render('search', { path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: 'ducks', favsPath: '/favorites'  } ))
+                    
+                    session.save(() => res.render('search', { path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks', favsPath: '/favorites'  } ))
                     //session.save(() => res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', results: ducks, favPath: '/fav', detailPath: '/ducks' }) })))
 
                 })
@@ -153,10 +153,12 @@ app.post('/fav', formBodyParser, (req, res) => {
         toggleFavDuck(id, token, duckId)
         .then(() => res.redirect(referer))
         .catch(({ message }) => 
-            res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message})}) ))
+            //res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message})}) ))
+            res.render('search', { path: '/search', query, name, logout: '/logout', error: message }) 
         
-    } catch ({ message }) {
-            res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message})}) )   
+        )} catch ({ message }) {
+            //res.send(View({ body: Search({ path: '/search', query, name, logout: '/logout', error: message})}) ) 
+            res.render('search', { path: '/search', query, name, logout: '/logout', error: message }) 
     }
 })
 
@@ -172,7 +174,7 @@ app.get('/ducks/:id', (req, res) => {
 
 
         retrieveDuck(id, token, duckId)
-            .then(duck =>{
+            .then(duck => {
                 //res.send(View({ body: Detail({ item: duck, backPath: view === 'search' ? `/search?=${query}` : '/', favPath: '/fav' }) }))
 
                 const backPath = view === 'search' ? `/search?=${query}` : (view === 'favorites' ? '/favorites' : '/')
@@ -212,7 +214,7 @@ app.get('/favorites', (req, res) => {
             })
             .catch(({ error }) => //res.send(`TODO error handling for: ${error}`)))
                                   res.render('search', { path: '/search', error: message }))
-    } catch ({ error }) {
+    } catch ({ message }) {
         // res.send(`TODO error handling for: ${error}`)
         res.render('search', { path: '/search', error: message})
        
