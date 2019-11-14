@@ -46,6 +46,7 @@ api.post('/auth', jsonBodyParser, (req, res) => {
         // estamos creando el token pasándole los datos que queremos, que son sub: id, el secreto y cuando caduca.
         const token = jwt.sign({ sub: id }, SECRET, { expiresIn: '1d' })
 
+//res.json es lo mismo que res.send(JSON.parse({ token }))
         res.json({ token })
       })
       .catch(error => {
