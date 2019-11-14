@@ -38,8 +38,8 @@ api.post('/auth', jsonBodyParser, (req, res) => {
             .then(id => res.json({ message: 'user authenticated successfully', id })) // TODO token
             .catch(error => {
                 // cuando authenticate no va bien
-                if (error instanceof NotFoundError)
-                    return res.status(404).json({ message: error.message })
+                if (error instanceof CredentialsError)
+                    return res.status(401).json({ message: error.message })
 
                 res.status(500).json({ message: error.message })
             })
@@ -56,8 +56,8 @@ api.get('/users/:id', (req, res) => {
         retrieveUser(id)
             .then(user => res.json({ message: 'user retrieved successfully', user })) // TODO token
             .catch(error => {
-                if (error instanceof CredentialsError)
-                    return res.status(401).json({ message: error.message })
+                if (error instanceof NotFoundError)
+                    return res.status(404).json({ message: error.message })
 
                 res.status(500).json({ message: error.message })
             })
