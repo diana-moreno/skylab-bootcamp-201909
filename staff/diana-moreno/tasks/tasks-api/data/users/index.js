@@ -26,7 +26,7 @@ module.exports = function(name = 'index') {
     // path.join es un paquete que hemos instaldo y requerido para hacer referencia a las carpetas.
     // _dirname : la ruta donde estoy. Con esto, está haciendo ruta absoluta, partiendo desde el punto actual hasta donde quiere llegar. Concatena una ruta absoluta con una relativa.
     persist() {
-      return fs.writeFile(path.join(__dirname, `./${name}.json`), JSON.stringify(this.users, undefined, 4)) // 4 es la indentación (prefiero 2)
+      return fs.writeFile(path.join(__dirname, `./${name}.json`), JSON.stringify(this.users, undefined, 2)) // 2 es la indentación
       // hay que volver a transformar los datos para guardarlos, tienen que estar en formato string de json.
     },
 
