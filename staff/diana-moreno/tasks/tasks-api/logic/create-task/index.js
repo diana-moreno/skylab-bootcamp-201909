@@ -4,30 +4,32 @@ const tasks = require('../../data/tasks')()
 const uuid = require('uuid/v4')
 const { NotFoundError } = require('../../utils/errors')
 
-module.exports = function (id, title, description) {
-    validate.string(id)
-    validate.string.notVoid('id', id)
-    validate.string(title)
-    validate.string.notVoid('title', title)
-    validate.string(description)
-    validate.string.notVoid('description', description)
+module.exports = function(id, title, description) {
+  validate.string(id)
+  validate.string.notVoid('id', id)
+  validate.string(title)
+  validate.string.notVoid('title', title)
+  validate.string(description)
+  validate.string.notVoid('description', description)
 
-    return new Promise((resolve, reject) => {
-        const user = users.data.find(user => user.id === id)
+  return new Promise((resolve, reject) => {
+    const user = users.data.find(user => user.id === id)
 
-        if (!user) return reject(new NotFoundError(`user with id ${id} not found`))
+    if (!user) return reject(new NotFoundError(`user with id ${id} not found`))
 
-        const task = {
-            id: uuid(),
-            user: id,
-            title,
-            description,
-            status: 'TODO',
-            date: new Date
-        }
+    const task = {
+      id: uuid(),
+      user: id,
+      title,
+      description,
+      status: 'TODO',
+      date: new Date
+    }
 
-        tasks.data.push(task)
+    tasks.data.push(task)
 
-        tasks.persist().then(() => resolve(task.id)).catch(reject)
-    })
+    tasks.persist()
+      .then(() => resolve(task.id)) // devuelve el id de la tarea
+      .catch(reject) // peta con error
+  })
 }

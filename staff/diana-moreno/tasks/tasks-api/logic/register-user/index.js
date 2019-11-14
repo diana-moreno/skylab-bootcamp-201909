@@ -20,16 +20,16 @@ module.exports = function(name, surname, email, username, password) {
     // comprueba si el usuario ya existe
     const user = users.data.find(user => user.username === username)
 
-    //si existe, error // 409
+    // si existe, error // 409
     if (user) return reject(new ConflictError(`user with username ${username} already exists`)) // error asíncrono
 
     const id = uuid() // se instala y requiere para generar id randoms
 
-    // guarda los datos en la sesión
+    // guarda los datos en la sesión de memoria
     users.data.push({ id, name, surname, email, username, password })
 
     // guarda los datos en el disco
-    users.persist() // persist es una promise, y se resulve con then catch
+    users.persist() // persist es una promise, y se resulve con try catch
       .then(resolve)
       .catch(reject) // intentas guardar en disco y no ha funcionado // 500
   })

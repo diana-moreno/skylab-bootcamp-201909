@@ -1,28 +1,27 @@
 require('dotenv').config()
-
 const express = require('express')
 const bodyParser = require('body-parser')
 const { name, version } = require('./package.json')
 const users = require('./data/users')()
+const tasks = require('./data/tasks')()
 const { registerUser, authenticateUser, retrieveUser } = require('./logic')
 const { ConflictError, CredentialsError, NotFoundError } = require('./utils/errors')
 const jwt = require('jsonwebtoken')
-const { JsonWebTokenError } = jwt // error personalizado que viene en el paquete jwt del token
-
-const api = express()
-
-const jsonBodyParser = bodyParser.json() // transforma los chunks en json
-
 // PORT viene de un fichero a parte al igual que secret. Si port no viene del fichero, usaremos el port pasado por process, y sino el por defecto que es el 8080
 const { argv: [, , port = 8080], env: { SECRET, PORT = port || 8080 } } = process
+const tokenVerifier = require('./utils/token/token-verifier')(SECRET)
+const api = express()
+const jsonBodyParser = bodyParser.json() // transforma los chunks en json
 
+
+// cuando se registra
 api.post('/users', jsonBodyParser, (req, res) => {
   // el body se crea con el body parser, sino no existiría el body
   const { body: { name, surname, email, username, password } } = req
 
   try {
     registerUser(name, surname, email, username, password)
-      .then(() => res.status(201).end()) // end porque no queremos enviar nada más que el error que viene por defecto
+      .then(() => res.status(201).end()) // end porque no queremos enviar nada más
       .catch(error => { // error asíncrono
         const { message } = error
 
@@ -32,7 +31,7 @@ api.post('/users', jsonBodyParser, (req, res) => {
         res.status(500).json({ message })
       })
   } catch ({ message }) { // error.message
-    // error síncrono. El usuario ha metido un dato incorrecto
+    // error síncrono. El usuario ha introducido un dato incorrecto
     res.status(400).json({ message })
   }
 })
@@ -62,17 +61,15 @@ api.post('/auth', jsonBodyParser, (req, res) => {
     // error síncrono. El usuario ha metido un dato incorrecto
   }
 })
+
 //'/users/:id' // id viene recogido del token
-api.get('/users', (req, res) => {
-  const { headers: { authorization } } = req
+api.get('/users', tokenVerifier, (req, res) => {
 
   try {
-    if (!authorization) throw new CredentialsError('no token provided')
-    const [, token] = authorization.split(' ') // vienen unos carácteres delante
-    const { sub: id } = jwt.verify(token, SECRET)
+    const { id } = req
 
     retrieveUser(id)
-      .then(user => res.json({ user }))
+      .then(user => res.json({ user })) /// no entiendo este destructuring user.user???????
       .catch(error => {
         const { message } = error
 
@@ -91,5 +88,44 @@ api.get('/users', (req, res) => {
   }
 })
 
-users.load() // cuando levanta el servidor
-  .then(() => api.listen(port, () => console.log(`${name} ${version} up and running on port ${port}`)))
+
+api.post('/tasks', jsonBodyParser, (req, res) => {
+    try {
+      const { id, body: { title, description } } = req
+
+      createTask(id, title, description)
+          .then(id => res.status(201).json({ id }))
+          .catch(error => {
+              const { message } = error
+
+              if (error instanceof NotFoundError)
+                  return res.status(404).json({ message })
+
+              res.status(500).json({ message })
+          })
+    } catch ({ message }) {
+        res.status(400).json({ message })
+    }
+})
+
+api.get('/tasks', (req, res) => {
+    try {
+      const { id } = req
+
+      listTasks(id)
+          .then(tasks => res.json(tasks))
+          .catch(error => {
+              const { message } = error
+
+              if (error instanceof NotFoundError)
+                  return res.status(404).json({ message })
+
+              res.status(500).json({ message })
+          })
+    } catch ({ message }) {
+        res.status(400).json({ message })
+    }
+})
+
+Promise.all([users.load(), tasks.load()]) // cuando se levanta el servidor
+    .then(() => api.listen(PORT, () => console.log(`${name} ${version} up and running on port ${PORT}`)))

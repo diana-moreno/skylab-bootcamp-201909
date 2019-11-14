@@ -16,7 +16,7 @@ module.exports = function(id) {
 
     users.persist()
       .then(() => {
-        const { name, surname, email, username } = user
+        const { name, surname, email, username } = user // envía user destructurado
         resolve({ id, name, surname, email, username })
       })
       //.catch(reject) // 500
