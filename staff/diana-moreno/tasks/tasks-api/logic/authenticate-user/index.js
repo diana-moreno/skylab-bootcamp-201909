@@ -1,23 +1,31 @@
 const validate = require('../../utils/validate')
-const users = require('../../data/users')() // la instancia solo se habia llamado una vez
 const { CredentialsError } = require('../../utils/errors')
+const database = require('../../utils/database')
 
-module.exports = function (username, password) {
-    validate.string(username)
-    validate.string.notVoid('username', username)
-    validate.string(password)
-    validate.string.notVoid('password', password)
+module.exports = function(username, password) {
+  validate.string(username)
+  validate.string.notVoid('username', username)
+  validate.string(password)
+  validate.string.notVoid('password', password)
 
-    return new Promise((resolve, reject) => {
-        const user = users.data.find(user => user.username === username && user.password === password)
+  const client = database()
 
-        // 404
-        if (!user) return reject(new CredentialsError('wrong credentials'))
+  return client.connect()
+    .then(connection => {
+      const users = connection.db().collection('users')
 
-        user.lastAccess = new Date
+      return users.findOne({ username, password })
+        .then(user => {
+          if (!user) throw new CredentialsError('wrong credentials')
 
-        users.persist()
-            .then(() => resolve(user.id)) // resuelve devolviendo el id
-            .catch(reject) // pasa a index.js general // 500
+          const { _id } = user // _id viene de user, de mongo
+
+          return users.updateOne({ _id }, { $set: { lastAccess: new Date } })
+            .then(result => {
+              if (!result.modifiedCount) throw Error('could not update user')
+
+              return _id.toString()
+            })
+        })
     })
 }

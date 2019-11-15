@@ -10,6 +10,7 @@ const jwt = require('jsonwebtoken')
 // PORT viene de un fichero a parte al igual que secret. Si port no viene del fichero, usaremos el port pasado por process, y sino el por defecto que es el 8080
 const { argv: [, , port = 8080], env: { SECRET, PORT = port || 8080 } } = process
 const tokenVerifier = require('./utils/token/token-verifier')(SECRET)
+const database = require('./utils/database')
 const api = express()
 const jsonBodyParser = bodyParser.json() // transforma los chunks en json
 

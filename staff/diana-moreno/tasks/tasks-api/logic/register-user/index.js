@@ -1,10 +1,9 @@
 const validate = require('../../utils/validate')
-const users = require('../../data/users')() // aunque se llame varias veces, realmente solo se ha generado una instancia del objeto, porque es un SINGLETONE
-const uuid = require('uuid/v4')
 const { ConflictError } = require('../../utils/errors')
+const database = require('../../utils/database')
 
 module.exports = function(name, surname, email, username, password) {
-  validate.string(name) // parte de errores síncronos se va al catch de los try
+  validate.string(name) // errores síncronos se va al catch de los try
   validate.string.notVoid('name', name)
   validate.string(surname)
   validate.string.notVoid('surname', surname)
@@ -16,21 +15,21 @@ module.exports = function(name, surname, email, username, password) {
   validate.string(password)
   validate.string.notVoid('password', password)
 
-  return new Promise((resolve, reject) => {
-    // comprueba si el usuario ya existe
-    const user = users.data.find(user => user.username === username)
 
-    // si existe, error // 409
-    if (user) return reject(new ConflictError(`user with username ${username} already exists`)) // error asíncrono
+  const client = database() // solo se le pasa la url por parámmetro una vez en index general gracias al singleton, ya que valor ya está inicializado las demás veces
 
-    const id = uuid() // se instala y requiere para generar id randoms
+  return client.connect()
+    .then(connection => {
+      const users = connection.db().collection('users')
 
-    // guarda los datos en la sesión de memoria
-    users.data.push({ id, name, surname, email, username, password })
+      return users.findOne({ username })
+        .then(user => {
+          if(user) throw new ConflictError(`user with username ${username} already exists`)
+          return users.insertOne({ name, surname, email, username, password })
+        })
+        .then(result => {
+          if(!result.insertedCount) throw Error('failed to create user')
+        })
 
-    // guarda los datos en el disco
-    users.persist() // persist es una promise, y se resulve con try catch
-      .then(resolve)
-      .catch(reject) // intentas guardar en disco y no ha funcionado // 500
-  })
+    })
 }
