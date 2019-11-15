@@ -4,7 +4,7 @@ const bodyParser = require('body-parser')
 const { name, version } = require('./package.json')
 const users = require('./data/users')()
 const tasks = require('./data/tasks')()
-const { registerUser, authenticateUser, retrieveUser } = require('./logic')
+const { registerUser, authenticateUser, retrieveUser, modifyTask, createTask, listTasks } = require('./logic')
 const { ConflictError, CredentialsError, NotFoundError } = require('./utils/errors')
 const jwt = require('jsonwebtoken')
 // PORT viene de un fichero a parte al igual que secret. Si port no viene del fichero, usaremos el port pasado por process, y sino el por defecto que es el 8080
@@ -88,8 +88,8 @@ api.get('/users', tokenVerifier, (req, res) => {
   }
 })
 
-
-api.post('/tasks', jsonBodyParser, (req, res) => {
+//token se le pasa por headers en authentication de Postman
+api.post('/tasks', tokenVerifier, jsonBodyParser, (req, res) => {
     try {
       const { id, body: { title, description } } = req
 
@@ -108,7 +108,7 @@ api.post('/tasks', jsonBodyParser, (req, res) => {
     }
 })
 
-api.get('/tasks', (req, res) => {
+api.get('/tasks', tokenVerifier, (req, res) => {
     try {
       const { id } = req
 
@@ -125,6 +125,24 @@ api.get('/tasks', (req, res) => {
     } catch ({ message }) {
         res.status(400).json({ message })
     }
+})
+
+api.put('/tasks', tokenVerifier, jsonBodyParser, (req, res)  => {
+  try {
+    const { id, body: { title, description } } = req
+    modifyTask(idTask, title, description)
+      .then(id => res.status(201).json({ id })) // no es un destructuring, es una creación de objeto
+      .catch(error => {
+          const { message } = error
+
+          if (error instanceof NotFoundError)
+              return res.status(404).json({ message })
+
+          res.status(500).json({ message })
+      })
+  } catch ({ message }) {
+      res.status(400).json({ message })
+  }
 })
 
 Promise.all([users.load(), tasks.load()]) // cuando se levanta el servidor

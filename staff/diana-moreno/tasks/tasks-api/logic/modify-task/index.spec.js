@@ -8,7 +8,7 @@ const uuid = require('uuid')
 describe('logic - modify task', () => {
   before(() => Promise.all([users.load(), tasks.load()]))
 
-  let id, name, surname, email, username, password, title, description
+  let id, name, surname, email, username, password, title, description, status, date, user, taskId
 
   beforeEach(() => {
     id = uuid()
@@ -20,77 +20,80 @@ describe('logic - modify task', () => {
 
     users.data.push({ id, name, surname, email, username, password })
 
+    taskId = uuid()
+    description = `description-${random()}`
+    title = `title-${random()}`
+
     tasks.data.push({
-      id: uuid(),
+      id: taskId,
       user: id,
-      title: `title-${random()}`,
-      description: `description-${random()}`,
+      title,
+      description,
       status: 'REVIEW',
       date: new Date
     })
-    let task = tasks[0]
-    let newTitle = task.data.title
-    newDescription = `description-${random()}`
   })
 
+// it.only
+  it('should succeed on modify title', () => {
+    title = `title-${random()}`
 
-  it('should succeed on modify title', () =>
-    modifyTask(id, newTitle, newDescription)
-    .then(taskId => {
-      expect(taskId).to.exist
-      expect(taskId).to.be.a('string')
-      expect(taskId).to.have.length.greaterThan(0)
+    return modifyTask(taskId, title, description)
+    .then(result => {
+      expect(result).to.exist
+      expect(result).to.be.a('string')
+      expect(result).to.have.length.greaterThan(0)
 
       const task = tasks.data.find(({ id }) => id === taskId)
 
       expect(task).to.exist
       expect(task.user).to.equal(id)
-      //expect(task.title).not.equal(newTitle) // cambia title
-      expect(task.description).not.equal(newDescription) // cambia description
+      expect(task.title).to.equal(title) // cambia title
       expect(task.status).to.equal('REVIEW')
       expect(task.date).to.exist
       expect(task.date).to.be.instanceOf(Date)
     })
-  )
-  // TODO other test cases
+  })
+
+  it('should succeed on modify description', () => {
+    description = `description-${random()}`
+
+    return modifyTask(taskId, title, description)
+    .then(result => {
+      expect(result).to.exist
+      expect(result).to.be.a('string')
+      expect(result).to.have.length.greaterThan(0)
+
+      const task = tasks.data.find(({ id }) => id === taskId)
+
+      expect(task).to.exist
+      expect(task.user).to.equal(id)
+      expect(task.description).to.equal(description) // cambia description
+      expect(task.status).to.equal('REVIEW')
+      expect(task.date).to.exist
+      expect(task.date).to.be.instanceOf(Date)
+    })
+  })
+
+  it('should succeed on modify title and description', () => {
+    title = `title-${random()}`
+    description = `description-${random()}`
+
+    return modifyTask(taskId, title, description)
+    .then(result => {
+      expect(result).to.exist
+      expect(result).to.be.a('string')
+      expect(result).to.have.length.greaterThan(0)
+
+      const task = tasks.data.find(({ id }) => id === taskId)
+
+      expect(task).to.exist
+      expect(task.user).to.equal(id)
+      expect(task.title).to.equal(title) // cambia title
+      expect(task.description).to.equal(description) // cambia description
+      expect(task.status).to.equal('REVIEW')
+      expect(task.date).to.exist
+      expect(task.date).to.be.instanceOf(Date)
+    })
+  })
 })
-
-
-
-  /*    it('should succeed on modify title', () =>
-          modifyTask(id, title, description)
-              .then(taskId => {
-                  expect(taskId).to.exist
-                  expect(taskId).to.be.a('string')
-                  expect(taskId).to.have.length.greaterThan(0)
-
-                  const task = tasks.data.find(({ id }) => id === taskId)
-
-                  expect(task).to.exist
-                  expect(task.user).to.equal(id)
-                  expect(task.title)not.equal(title) // cambia title
-                  expect(task.description).to.equal(description)
-                  expect(task.status).to.equal('TODO')
-                  expect(task.date).to.exist
-                  expect(task.date).to.be.instanceOf(Date)
-              })
-      )
-
-      it('should succeed on modify description', () =>
-          modifyTask(id, title, description)
-              .then(taskId => {
-                  expect(taskId).to.exist
-                  expect(taskId).to.be.a('string')
-                  expect(taskId).to.have.length.greaterThan(0)
-
-                  const task = tasks.data.find(({ id }) => id === taskId)
-
-                  expect(task).to.exist
-                  expect(task.user).to.equal(id)
-                  expect(task.title)to.equal(title)
-                  expect(task.description).not.equal(description) // cambia description
-                  expect(task.status).to.equal('TODO')
-                  expect(task.date).to.exist
-                  expect(task.date).to.be.instanceOf(Date)
-              })
-      )*/

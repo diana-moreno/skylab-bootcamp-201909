@@ -13,24 +13,16 @@ module.exports = function(id, title, description) {
   validate.string.notVoid('description', description)
 
   return new Promise((resolve, reject) => {
-    const user = users.data.find(user => user.id === id)
+    const task = tasks.data.find(task => task.id === id)
+    if (!task) return reject(new NotFoundError(`task with id ${id} not found`))
 
-    if (!user) return reject(new NotFoundError(`user with id ${id} not found`))
+    task.title = title
+    task.description = description
+    task.lastAccess = new Date // actualiza último acceso
 
-    const _tasks = tasks.data.filter(({ user }) => user === id)
-    const _task = _tasks[0]
-
-    if(title === '' && title !== _task.title) {
-      _task.title = title
-    }
-    if(description === '' && description !== _task.description) {
-      _task.description = description
-    }
-
-    _task.lastAccess = new Date // actualiza último acceso
 
     tasks.persist()
-      .then(() => resolve(_task.id)) // devuelve el id de la tarea
+      .then(() => resolve(task.id)) // devuelve el id de la tarea
       .catch(reject) // peta con error
   })
 }
