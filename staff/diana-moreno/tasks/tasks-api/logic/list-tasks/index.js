@@ -1,23 +1,33 @@
 const validate = require('../../utils/validate')
-const users = require('../../data/users')()
-const tasks = require('../../data/tasks')()
+const database = require('../../utils/database')
+const { ObjectId } = database
 const { NotFoundError } = require('../../utils/errors')
 
 module.exports = function(id) {
   validate.string(id)
   validate.string.notVoid('id', id)
 
-  return new Promise((resolve, reject) => {
-    const user = users.data.find(user => user.id === id)
+  const client = database()
+  return client.connect()
+    .then(connection => {
+      const db = connection.db()
 
-    if (!user) return reject(new NotFoundError(`user with id ${id} not found`))
+      users = db.collection('users')
+      tasks = db.collection('tasks')
 
-    const _tasks = tasks.data.filter(({ user }) => user === id)
+      return users.findOne({ _id: ObjectId(id) })
+        .then(user => {
+          if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-    _tasks.forEach(task => task.lastAccess = new Date) // actualiza último acceso
-
-    tasks.persist()
-      .then(() => resolve(_tasks))
-      .catch(reject)
-  })
+          return tasks.find({ user: ObjectId(id) }).toArray()
+            .then(list => {
+              list.forEach((elem) => {
+                tasks.updateOne({ _id: ObjectId(elem._id.toString()) }, { $set: { lastAccess: new Date } })
+              })
+            })
+            .then(() => {
+              return tasks.find({ user: ObjectId(id) }).toArray()
+            })
+        })
+    })
 }
