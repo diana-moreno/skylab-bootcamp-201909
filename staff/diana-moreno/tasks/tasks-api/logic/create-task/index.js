@@ -10,6 +10,9 @@ module.exports = function(id, title, description, status) {
   validate.string.notVoid('title', title)
   validate.string(description)
   validate.string.notVoid('description', description)
+  validate.string(status)
+  validate.string.notVoid('status', status)
+  validate.matches('status', status, 'TODO', 'DOING', 'REVIEW', 'DONE')
 
   const client = database()
 
