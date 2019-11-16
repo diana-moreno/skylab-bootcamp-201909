@@ -1,24 +1,23 @@
 const validate = require('../../utils/validate')
 const users = require('../../data/users')()
 const { NotFoundError } = require('../../utils/errors')
+const database = require('../../utils/database')
+const { ObjectId } = database
 
 module.exports = function(id) {
   validate.string(id) // 400
   validate.string.notVoid('id', id) // 400
 
-  return new Promise((resolve, reject) => {
-    const user = users.data.find(user => user.id === id)
+  const client = database()
+  return client.connect()
+    .then(connection => {
+      const users = connection.db().collection('users')
 
-    //401
-    if (!user) return reject(new NotFoundError(`user with id ${id} not found`))
-
-    user.lastAccess = new Date
-
-    users.persist()
-      .then(() => {
-        const { name, surname, email, username } = user // envía user destructurado
-        resolve({ id, name, surname, email, username })
-      })
-      //.catch(reject) // 500
-  })
+      return users.findOne({ _id: ObjectId(id) })
+        .then(user => {
+          if (!user) throw new NotFoundError(`user with id ${id} not found`)
+          const { name, surname, email, username } = user // envía user destructurado
+          return { id, name, surname, email, username }
+        })
+    })
 }
