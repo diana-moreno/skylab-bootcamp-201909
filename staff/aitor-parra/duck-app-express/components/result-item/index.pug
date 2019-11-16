@@ -9,4 +9,4 @@ mixin result-item(item, favPath, detailPath)
             span.item__fav
                 form(method="post" action=favPath)
                     input(type="hidden" name="id" value=id)
-                    button(type="submit")= isFav ? '🧡' : '💔'
+                    button(type="submit")= isFav ? '👍🏼' : '👎🏼'

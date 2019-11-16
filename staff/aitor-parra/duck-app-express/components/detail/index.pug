@@ -10,7 +10,10 @@ block body
         span.detail_fav
             form(method="POST" action=favPath)
                 input(type="hidden" name="id" value=item.id)
-                button(type="submit")= item.isFav ? '❤️' : '🖤'
+                button(type="submit")= item.isFav ? '👍🏼' : '👎🏼'
         a.detail__back(href= backPath) Go back
 
         //- const { id, title, image, description, link, price, isFav } = item
+
+       
+    

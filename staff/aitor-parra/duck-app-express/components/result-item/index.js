@@ -7,7 +7,7 @@ return `<li class="results__item">
                 <span class="item__fav">
                     <form method="post" action="${favPath}">
                         <input type="hidden" name="id" value="${id}">
-                        <button type="submit">${isFav ? '🧡' : '💔'}</button>
+                        <button type="submit">${isFav ? '👍🏼' : '👎🏼'}</button>
                     </form>
                 </span>
             </a>

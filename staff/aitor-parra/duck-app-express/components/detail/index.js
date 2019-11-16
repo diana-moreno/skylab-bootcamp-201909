@@ -10,7 +10,7 @@ module.exports = function ({ item: { id, title, image, description, price, link,
         <span class="detail_fav">
             <form method="post" action="${favPath}">
                 <input type="hidden" name="id" value="${id}">
-                <button type="submit">${isFav ? '❤️' : '🖤'}</button>
+                <button type="submit">${isFav ? '👍🏼' : '👎🏼'}</button>
             </form>
         </span>
         <a class="detail__back" href="${backPath}">Go back</a>
