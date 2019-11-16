@@ -47,36 +47,3 @@ module.exports = function(id, taskId, title, description, status) {
         })
     })
 }
-
-/*              title &&
-                tasks.updateOne({ _id: ObjectId(taskId) }, { $set: { title: title, lastAccess: new Date } })
-            })
-            .then(() => {
-              description &&
-                tasks.updateOne({ _id: ObjectId(taskId) }, { $set: { description: description, lastAccess: new Date } })
-
-            })
-            .then(() => {
-              status &&
-                tasks.updateOne({ _id: ObjectId(taskId) }, { $set: { status: status, lastAccess: new Date } })
-            })*/
-
-/*
-    return new Promise((resolve, reject) => {
-        const user = users.data.find(user => user.id === id)
-
-        if (!user) return reject(new NotFoundError(`user with id ${id} not found`))
-
-        const task = tasks.data.find(({ id }) => id === taskId)
-
-        if (!task) return reject(new NotFoundError(`user does not have task with id ${taskId}`))
-
-        if (task.user !== id) return reject(new ConflictError(`user with id ${id} does not correspond to task with id ${taskId}`))
-
-        title && (task.title = title)
-        description && (task.description = description)
-        status && (task.status = status)
-        task.lastAccess = new Date
-
-        tasks.persist().then(resolve).catch(reject)
-    })*/
