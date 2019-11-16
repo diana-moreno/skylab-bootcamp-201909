@@ -92,9 +92,9 @@ api.get('/users', tokenVerifier, (req, res) => {
 //token se le pasa por headers en authentication de Postman
 api.post('/tasks', tokenVerifier, jsonBodyParser, (req, res) => {
     try {
-      const { id, body: { title, description } } = req
+      const { id, body: { title, description, status } } = req
 
-      createTask(id, title, description)
+      createTask(id, title, description, status)
           .then(id => res.status(201).json({ id }))
           .catch(error => {
               const { message } = error
