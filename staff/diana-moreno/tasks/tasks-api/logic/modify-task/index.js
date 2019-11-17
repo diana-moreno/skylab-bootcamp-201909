@@ -38,9 +38,9 @@ module.exports = function(id, taskId, title, description, status) {
             .then((task) => {
               if (!task) throw new NotFoundError(`user does not have task with id ${taskId}`)
 
-              if(!title) title = task.title
-              if(!description) description = task.description
-              if(!status) status = task.status
+              if (!title) title = task.title
+              if (!description) description = task.description
+              if (!status) status = task.status
 
               tasks.updateOne({ _id: ObjectId(taskId) }, { $set: { title: title, description: description, status: status, lastAccess: new Date } })
             })

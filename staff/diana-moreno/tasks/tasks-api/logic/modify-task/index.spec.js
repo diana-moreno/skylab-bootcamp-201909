@@ -41,7 +41,7 @@ describe('logic - modify task', () => {
           user: ObjectId(id),
           title: `title-${random()}`,
           description: `description-${random()}`,
-          status: statuses[Math.floor(Math.random()*statuses.length)],
+          status: statuses[Math.floor(Math.random() * statuses.length)],
           date: new Date
         }
         return tasks.insertOne(task)
@@ -58,7 +58,7 @@ describe('logic - modify task', () => {
   it('should succeed on correct user and task data', () => {
     const newTitle = `new-title-${random()}`
     const newDescription = `new-description-${random()}`
-    const newStatus = statuses[Math.floor(Math.random()*statuses.length)]
+    const newStatus = statuses[Math.floor(Math.random() * statuses.length)]
 
     return modifyTask(id, taskId, newTitle, newDescription, newStatus)
       .then(response => {
@@ -98,7 +98,7 @@ describe('logic - modify task', () => {
       .then(task => sameTitle = task.title)
 
     const newDescription = `new-description-${random()}`
-    const newStatus = statuses[Math.floor(Math.random()*statuses.length)]
+    const newStatus = statuses[Math.floor(Math.random() * statuses.length)]
 
     return modifyTask(id, taskId, undefined, newDescription, newStatus)
       .then(response => {
@@ -131,9 +131,9 @@ describe('logic - modify task', () => {
   })
 
 
-    it('should succeed on correct user and new task data, except for description', () => {
+  it('should succeed on correct user and new task data, except for description', () => {
     const newTitle = `new-title-${random()}`
-    const newStatus = statuses[Math.floor(Math.random()*statuses.length)]
+    const newStatus = statuses[Math.floor(Math.random() * statuses.length)]
 
     return modifyTask(id, taskId, newTitle, undefined, newStatus)
       .then(response => {
@@ -163,10 +163,10 @@ describe('logic - modify task', () => {
             expect(task.lastAccess).to.be.an.instanceOf(Date)
           })
       })
-    })
+  })
 
 
-    it('should succeed on correct user and new task data, except for status', () => {
+  it('should succeed on correct user and new task data, except for status', () => {
     const newTitle = `new-title-${random()}`
     const newDescription = `new-description-${random()}`
 
@@ -198,62 +198,62 @@ describe('logic - modify task', () => {
             expect(task.lastAccess).to.be.an.instanceOf(Date)
           })
       })
-    })
+  })
 
-    it('should fail on unexisting user and correct task data', () => {
-        const id = "123456789123456789123456"
-        const newTitle = `new-title-${random()}`
-        const newDescription = `new-description-${random()}`
-        const newStatus = statuses[Math.floor(Math.random()*statuses.length)]
+  it('should fail on unexisting user and correct task data', () => {
+    const id = "123456789123456789123456"
+    const newTitle = `new-title-${random()}`
+    const newDescription = `new-description-${random()}`
+    const newStatus = statuses[Math.floor(Math.random() * statuses.length)]
 
-        return modifyTask(id, taskId, newTitle, newDescription, newStatus)
-            .then(() => { throw new Error('should not reach this point')})
-            .catch(error => {
-                expect(error).to.exist
-                expect(error).to.be.an.instanceOf(NotFoundError)
-                expect(error.message).to.equal(`user with id ${id} not found`)
-            })
-    })
+    return modifyTask(id, taskId, newTitle, newDescription, newStatus)
+      .then(() => { throw new Error('should not reach this point') })
+      .catch(error => {
+        expect(error).to.exist
+        expect(error).to.be.an.instanceOf(NotFoundError)
+        expect(error.message).to.equal(`user with id ${id} not found`)
+      })
+  })
 
-    it('should fail on correct user and unexisting task data', () => {
-        const taskId = '123456789123456789123456'
-        const newTitle = `new-title-${random()}`
-        const newDescription = `new-description-${random()}`
-        const newStatus = statuses[Math.floor(Math.random()*statuses.length)]
+  it('should fail on correct user and unexisting task data', () => {
+    const taskId = '123456789123456789123456'
+    const newTitle = `new-title-${random()}`
+    const newDescription = `new-description-${random()}`
+    const newStatus = statuses[Math.floor(Math.random() * statuses.length)]
 
-        return modifyTask(id, taskId, newTitle, newDescription, newStatus)
-            .then(() => { throw new Error('should not reach this point')})
-            .catch(error => {
-                expect(error).to.exist
-                expect(error).to.be.an.instanceOf(NotFoundError)
-                expect(error.message).to.equal(`user does not have task with id ${taskId}`)
-            })
-    })
+    return modifyTask(id, taskId, newTitle, newDescription, newStatus)
+      .then(() => { throw new Error('should not reach this point') })
+      .catch(error => {
+        expect(error).to.exist
+        expect(error).to.be.an.instanceOf(NotFoundError)
+        expect(error.message).to.equal(`user does not have task with id ${taskId}`)
+      })
+  })
 
 
-// FALLA
-    it('should fail on correct user and wrong task data', () => {
-        const taskId = '123456789123456789123456'
-        const newTitle = `new-title-${random()}`
-        const newDescription = `new-description-${random()}`
-        const newStatus = statuses[Math.floor(Math.random()*statuses.length)]
+  // FALLA
+  it('should fail on correct user and wrong task data', () => {
+    const taskId = '123456789123456789123456'
+    const newTitle = `new-title-${random()}`
+    const newDescription = `new-description-${random()}`
+    const newStatus = statuses[Math.floor(Math.random() * statuses.length)]
 
-        return modifyTask(id, taskId, newTitle, newDescription, newStatus)
-            .then(() => { throw new Error('should not reach this point')})
-            .catch(error => {
-                expect(error).to.exist
-                expect(error).to.be.an.instanceOf(ConflictError)
-                expect(error.message).to.equal(`user with id ${id} does not correspond to task with id ${taskId}`)
-            })
-    })
+    return modifyTask(id, taskId, newTitle, newDescription, newStatus)
+      .then(() => { throw new Error('should not reach this point') })
+      .catch(error => {
+        expect(error).to.exist
+        expect(error).to.be.an.instanceOf(ConflictError)
+        expect(error.message).to.equal(`user with id ${id} does not correspond to task with id ${taskId}`)
+      })
+  })
 
-    it('should fail on correct user and wrong task status', () => {
-        const newTitle = `new-title-${random()}`
-        const newDescription = `new-description-${random()}`
-        const newStatus = 'wrong-status'
+  it('should fail on correct user and wrong task status', () => {
+    const newTitle = `new-title-${random()}`
+    const newDescription = `new-description-${random()}`
+    const newStatus = 'wrong-status'
 
-        expect(() => modifyTask(id, taskId, newTitle, newDescription, newStatus)).to.throw(ContentError, `${newStatus} does not match any of the valid status values: ${statuses}`)
-    })
+    expect(() => modifyTask(id, taskId, newTitle, newDescription, newStatus)).to.throw(ContentError, `${newStatus} does not match any of the valid status values: ${statuses}`)
+  })
 
   after(() => client.close())
 })

@@ -24,11 +24,11 @@ module.exports = function(name, surname, email, username, password) {
 
       return users.findOne({ username })
         .then(user => {
-          if(user) throw new ConflictError(`user with username ${username} already exists`)
+          if (user) throw new ConflictError(`user with username ${username} already exists`)
           return users.insertOne({ name, surname, email, username, password })
         })
         .then(result => {
-          if(!result.insertedCount) throw Error('failed to create user')
+          if (!result.insertedCount) throw Error('failed to create user')
         })
 
     })

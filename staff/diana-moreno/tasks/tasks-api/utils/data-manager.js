@@ -9,7 +9,7 @@ class DataManager {
     this._path = path
   }
 
-  load() {// solo se llama una vez, que es cuando se traen los datos del disco
+  load() { // solo se llama una vez, que es cuando se traen los datos del disco
     // traer los datos del disco (readfile)
     return this._data ? Promise.resolve() : fs.readFile(this._path)
       .then(json => JSON.parse(json)) // los datos vienen en json format

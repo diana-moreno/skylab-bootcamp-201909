@@ -3,16 +3,13 @@ const { NotFoundError } = require('../../utils/errors')
 const database = require('../../utils/database')
 const { ObjectId } = database
 
-module.exports = function(id, title, description, status) {
+module.exports = function(id, title, description) {
   validate.string(id)
   validate.string.notVoid('id', id)
   validate.string(title)
   validate.string.notVoid('title', title)
   validate.string(description)
   validate.string.notVoid('description', description)
-  validate.string(status)
-  validate.string.notVoid('status', status)
-  validate.matches('status', status, 'TODO', 'DOING', 'REVIEW', 'DONE')
 
   const client = database()
 
@@ -31,7 +28,7 @@ module.exports = function(id, title, description, status) {
             user: ObjectId(id),
             title,
             description,
-            status,
+            status: 'TODO',
             date: new Date
           }
 

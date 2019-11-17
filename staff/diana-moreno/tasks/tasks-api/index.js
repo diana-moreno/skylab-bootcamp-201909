@@ -4,11 +4,11 @@ const bodyParser = require('body-parser')
 const { name, version } = require('./package.json')
 const users = require('./data/users')()
 const tasks = require('./data/tasks')()
-const { registerUser, authenticateUser, retrieveUser, modifyTask, createTask, listTasks } = require('./logic')
+const { registerUser, authenticateUser, retrieveUser, modifyTask, createTask, listTasks, removeTask } = require('./logic')
 const { ConflictError, CredentialsError, NotFoundError } = require('./utils/errors')
 const jwt = require('jsonwebtoken')
 // PORT viene de un fichero a parte al igual que secret. Si port no viene del fichero, usaremos el port pasado por process, y sino el por defecto que es el 8080
-const { argv: [, , port = 8080], env: { SECRET, PORT = port || 8080 } } = process
+const { argv: [, , port = 8080], env: { SECRET, PORT = port || 8080, DB_URL } } = process
 const tokenVerifier = require('./utils/token/token-verifier')(SECRET)
 const database = require('./utils/database')
 const api = express()
@@ -46,7 +46,7 @@ api.post('/auth', jsonBodyParser, (req, res) => {
         // estamos creando el token pasándole los datos que queremos, que son sub: id, el secreto y cuando caduca.
         const token = jwt.sign({ sub: id }, SECRET, { expiresIn: '1d' })
 
-//res.json es lo mismo que res.send(JSON.parse({ token }))
+        //res.json es lo mismo que res.send(JSON.parse({ token }))
         res.json({ token })
       })
       .catch(error => {
@@ -63,7 +63,7 @@ api.post('/auth', jsonBodyParser, (req, res) => {
   }
 })
 
-//'/users/:id' // id viene recogido del token
+//'/users/:id' // id ahora viene recogido del token
 api.get('/users', tokenVerifier, (req, res) => {
 
   try {
@@ -82,7 +82,7 @@ api.get('/users', tokenVerifier, (req, res) => {
   } catch (error) {
     const { message } = error
 
-    if(error instanceof CredentialsError || error instanceof JsonWebTokenError)
+    if (error instanceof CredentialsError || error instanceof JsonWebTokenError)
       return res.status(401).json({ message })
 
     res.status(400).json({ message })
@@ -91,62 +91,82 @@ api.get('/users', tokenVerifier, (req, res) => {
 
 //token se le pasa por headers en authentication de Postman
 api.post('/tasks', tokenVerifier, jsonBodyParser, (req, res) => {
-    try {
-      const { id, body: { title, description, status } } = req
-
-      createTask(id, title, description, status)
-          .then(id => res.status(201).json({ id }))
-          .catch(error => {
-              const { message } = error
-
-              if (error instanceof NotFoundError)
-                  return res.status(404).json({ message })
-
-              res.status(500).json({ message })
-          })
-    } catch ({ message }) {
-        res.status(400).json({ message })
-    }
-})
-
-api.get('/tasks', tokenVerifier, (req, res) => {
-    try {
-      const { id } = req
-
-      listTasks(id)
-          .then(tasks => res.json(tasks))
-          .catch(error => {
-              const { message } = error
-
-              if (error instanceof NotFoundError)
-                  return res.status(404).json({ message })
-
-              res.status(500).json({ message })
-          })
-    } catch ({ message }) {
-        res.status(400).json({ message })
-    }
-})
-
-api.put('/tasks', tokenVerifier, jsonBodyParser, (req, res)  => {
   try {
-    const { id, body: { title, description } } = req
-    modifyTask(idTask, title, description)
-      .then(id => res.status(201).json({ id })) // no es un destructuring, es una creación de objeto
+    const { id, body: { title, description, status } } = req
+
+    createTask(id, title, description, status)
+      .then(id => res.status(201).json({ id }))
       .catch(error => {
-          const { message } = error
+        const { message } = error
 
-          if (error instanceof NotFoundError)
-              return res.status(404).json({ message })
+        if (error instanceof NotFoundError)
+          return res.status(404).json({ message })
 
-          res.status(500).json({ message })
+        res.status(500).json({ message })
       })
   } catch ({ message }) {
-      res.status(400).json({ message })
+    res.status(400).json({ message })
   }
 })
 
-Promise.all([users.load(), tasks.load()]) // cuando se levanta el servidor
-    .then(() => api.listen(PORT, () => console.log(`${name} ${version} up and running on port ${PORT}`)))
+api.get('/tasks', tokenVerifier, (req, res) => {
+  try {
+    const { id } = req
 
+    listTasks(id)
+      .then(tasks => res.json(tasks))
+      .catch(error => {
+        const { message } = error
 
+        if (error instanceof NotFoundError)
+          return res.status(404).json({ message })
+
+        res.status(500).json({ message })
+      })
+  } catch ({ message }) {
+    res.status(400).json({ message })
+  }
+})
+
+api.patch('/tasks/:idTask', tokenVerifier, jsonBodyParser, (req, res) => {
+  try {
+    const { id, params: { idTask }, body: { title, description, status } } = req
+    modifyTask(id, idTask, title, description, status)
+      .then(() => res.end())
+      .catch(error => {
+        const { message } = error
+
+        if (error instanceof NotFoundError)
+          return res.status(404).json({ message })
+        if (error instanceof ConflictError)
+          return res.status(409).json({ message })
+
+        res.status(500).json({ message })
+      })
+  } catch ({ message }) {
+    res.status(400).json({ message })
+  }
+})
+
+api.delete('/tasks/:idTask', tokenVerifier, (req, res) => {
+  try {
+    const { id, params: { idTask } } = req
+
+    removeTask(id, idTask)
+      .then(id => res.end()) // res.end() ya lleva implícito un status 200
+      .catch(error => {
+        const { message } = error
+
+        if (error instanceof NotFoundError)
+          return res.status(404).json({ message })
+
+        res.status(500).json({ message })
+      })
+  } catch ({ message }) {
+    res.status(400).json({ message })
+  }
+})
+
+database(DB_URL)
+  .connect()
+  .then(() => api.listen(PORT, () => console.log(`${name} ${version} up and running on port ${PORT}`)))
