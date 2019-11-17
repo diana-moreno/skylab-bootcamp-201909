@@ -7,9 +7,7 @@ const database = require('../../utils/database')
 const { ObjectId } = database
 const { ContentError, CredentialsError, NotFoundError } = require('../../utils/errors')
 
-const uuid = require('uuid')
-
-describe.only('logic - list tasks', () => {
+describe('logic - list tasks', () => {
 
   let client, users, tasks
 

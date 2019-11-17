@@ -6,7 +6,7 @@ const retrieveUser = require('.')
 const { NotFoundError, ContentError } = require('../../utils/errors')
 const database = require('../../utils/database')
 
-describe.only('logic - retrieve user', () => {
+describe('logic - retrieve user', () => {
   let client, users
 
   before(() => {
