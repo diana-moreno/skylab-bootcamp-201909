@@ -30,13 +30,13 @@ describe('logic - create task', () => {
     username = `username-${random()}`
     password = `password-${random()}`
 
-    return users.insertOne({ name, surname, email, username, password })
+    return Promise.all([users.deleteMany(), tasks.deleteMany()])
+      .then(() => users.insertOne({ name, surname, email, username, password }))
       .then(result => {
         id = result.insertedId.toString()
 
         title = `title-${random()}`
         description = `description-${random()}`
-        status = `TODO`
       })
 
   })
@@ -104,5 +104,5 @@ describe('logic - create task', () => {
     expect(() => createTask(id, title, ' \t\r')).to.throw(ContentError, 'description is empty or blank')
   })
 
-  after(() => client.close())
+  after(() => Promise.all([users.deleteMany(), tasks.deleteMany()]).then(client.close))
 })
