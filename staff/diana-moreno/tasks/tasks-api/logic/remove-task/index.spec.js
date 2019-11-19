@@ -1,14 +1,15 @@
 require('dotenv').config()
 const { env: { DB_URL_TEST } } = process
 const { expect } = require('chai')
+const database = require('../../utils/database')
 const removeTask = require('.')
 const { random } = Math
-const database = require('../../utils/database')
+require('../../utils/array-random')
+const { NotFoundError, ConflictError, ContentError } = require('../../utils/errors')
+
 const { ObjectId } = database
-const { ContentError, CredentialsError, NotFoundError } = require('../../utils/errors')
 
-describe('logic - remove tasks', () => {
-
+describe('logic - remove task', () => {
   let client, users, tasks
 
   before(() => {
@@ -23,7 +24,8 @@ describe('logic - remove tasks', () => {
       })
   })
 
-  let id, taskId, name, surname, email, username, password
+  const statuses = ['TODO', 'DOING', 'REVIEW', 'DONE']
+  let id, name, surname, email, username, password, taskIds, titles, descriptions
 
   beforeEach(() => {
     name = `name-${random()}`
@@ -33,42 +35,92 @@ describe('logic - remove tasks', () => {
     password = `password-${random()}`
 
     return users.insertOne({ name, surname, email, username, password })
-      .then(user => {
-        id = user.insertedId.toString()
-        const task1 = {
-          user: ObjectId(id),
-          title: `title-${random()}`,
-          description: `description-${random()}`,
-          status: 'TODO',
-          date: new Date
+      .then(({ insertedId }) => id = insertedId.toString())
+      .then(() => {
+        taskIds = []
+        titles = []
+        descriptions = []
+
+        const insertions = []
+
+        for (let i = 0; i < 10; i++) {
+          const task = {
+            user: ObjectId(id),
+            title: `title-${random()}`,
+            description: `description-${random()}`,
+            status: 'REVIEW',
+            date: new Date
+          }
+
+          insertions.push(tasks.insertOne(task)
+            .then(result => taskIds.push(result.insertedId.toString())))
+
+          titles.push(task.title)
+          descriptions.push(task.description)
         }
-        return tasks.insertOne(task1)
-          .then(task => taskId = task.insertedId.toString())
+
+        for (let i = 0; i < 10; i++)
+          insertions.push(tasks.insertOne({
+            user: ObjectId(),
+            title: `title-${random()}`,
+            description: `description-${random()}`,
+            status: 'REVIEW',
+            date: new Date
+          }))
+
+        return Promise.all(insertions)
       })
   })
 
-  it('should succeed deleting on correct user and task data', () =>
-    removeTask(id, taskId)
-    .then(response => {
-      expect(response).to.be.undefined
-      expect(response).not.to.have.length
+  it('should succeed on correct user and task data', () => {
+    const taskId = taskIds.random()
 
-      return tasks.findOne({ _id: ObjectId(taskId) })
-        .then(task => {
-          expect(task).to.be.null
-        })
+    return removeTask(id, taskId)
+      .then(response => {
+        expect(response).to.not.exist
 
-    })
-  )
+        return tasks.findOne({ _id: ObjectId(taskId) })
+      })
+      .then(task => expect(task).to.not.exist)
+  })
 
-  it('should fail on incorrect user', () => {
-    const id = '123456789123456789123456'
+  it('should fail on unexisting user and correct task data', () => {
+    const id = ObjectId().toString()
+    const taskId = taskIds.random()
+
     return removeTask(id, taskId)
       .then(() => { throw new Error('should not reach this point') })
       .catch(error => {
         expect(error).to.exist
         expect(error).to.be.an.instanceOf(NotFoundError)
         expect(error.message).to.equal(`user with id ${id} not found`)
+      })
+  })
+
+  it('should fail on correct user and unexisting task data', () => {
+    const taskId = ObjectId().toString()
+
+    return removeTask(id, taskId)
+      .then(() => { throw new Error('should not reach this point') })
+      .catch(error => {
+        expect(error).to.exist
+        expect(error).to.be.an.instanceOf(NotFoundError)
+        expect(error.message).to.equal(`user does not have task with id ${taskId}`)
+      })
+  })
+
+  it('should fail on correct user and wrong task data', () => {
+    return tasks.findOne({ _id: { $nin: taskIds } })
+      .then(({ _id }) => {
+        const taskId = _id.toString()
+
+        return removeTask(id, taskId)
+          .then(() => { throw new Error('should not reach this point') })
+          .catch(error => {
+            expect(error).to.exist
+            expect(error).to.be.an.instanceOf(ConflictError)
+            expect(error.message).to.equal(`user with id ${id} does not correspond to task with id ${taskId}`)
+          })
       })
   })
 
@@ -93,4 +145,8 @@ describe('logic - remove tasks', () => {
     expect(() => removeTask(id, '')).to.throw(ContentError, 'task id is empty or blank')
     expect(() => removeTask(id, ' \t\r')).to.throw(ContentError, 'task id is empty or blank')
   })
+
+  // TODO other test cases
+
+  after(() => client.close())
 })

@@ -25,6 +25,36 @@ describe('logic - list tasks', () => {
 
   let id, name, surname, email, username, password
 
+  /*  beforeEach(() => {
+      name = `name-${random()}`
+      surname = `surname-${random()}`
+      email = `email-${random()}@mail.com`
+      username = `username-${random()}`
+      password = `password-${random()}`
+
+      return users.insertOne({ name, surname, email, username, password })
+        .then(user => {
+          id = user.insertedId.toString()
+          const task1 = {
+            user: ObjectId(id),
+            title: `title-${random()}`,
+            description: `description-${random()}`,
+            status: 'TODO',
+            date: new Date
+          }
+          tasks.insertOne(task1)
+
+          const task2 = {
+            user: ObjectId(id),
+            title: `title-${random()}`,
+            description: `description-${random()}`,
+            status: 'TODO',
+            date: new Date
+          }
+          tasks.insertOne(task2)
+        })
+    })*/
+
   beforeEach(() => {
     name = `name-${random()}`
     surname = `surname-${random()}`
@@ -33,25 +63,40 @@ describe('logic - list tasks', () => {
     password = `password-${random()}`
 
     return users.insertOne({ name, surname, email, username, password })
-      .then(user => {
-        id = user.insertedId.toString()
-        const task1 = {
-          user: ObjectId(id),
-          title: `title-${random()}`,
-          description: `description-${random()}`,
-          status: 'TODO',
-          date: new Date
-        }
-        tasks.insertOne(task1)
+      .then(({ insertedId }) => id = insertedId.toString())
+      .then(() => {
+        taskIds = []
+        titles = []
+        descriptions = []
 
-        const task2 = {
-          user: ObjectId(id),
-          title: `title-${random()}`,
-          description: `description-${random()}`,
-          status: 'TODO',
-          date: new Date
+        const insertions = []
+
+        for (let i = 0; i < 10; i++) {
+          const task = {
+            user: ObjectId(id),
+            title: `title-${random()}`,
+            description: `description-${random()}`,
+            status: 'REVIEW',
+            date: new Date
+          }
+
+          insertions.push(tasks.insertOne(task)
+            .then(result => taskIds.push(result.insertedId.toString())))
+
+          titles.push(task.title)
+          descriptions.push(task.description)
         }
-        tasks.insertOne(task2)
+
+        for (let i = 0; i < 10; i++)
+          insertions.push(tasks.insertOne({
+            user: ObjectId(),
+            title: `title-${random()}`,
+            description: `description-${random()}`,
+            status: 'REVIEW',
+            date: new Date
+          }))
+
+        return Promise.all(insertions)
       })
   })
 
@@ -61,7 +106,7 @@ describe('logic - list tasks', () => {
       expect(result).to.exist
       expect(result).to.have.length.greaterThan(0)
       expect(result).to.be.an.instanceOf(Array)
-      expect(result.length).to.be.equal(2)
+      expect(result.length).to.be.equal(10)
 
       result.forEach(task => {
         expect(task._id.toString()).to.exist

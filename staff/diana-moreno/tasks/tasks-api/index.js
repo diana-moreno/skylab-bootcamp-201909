@@ -2,17 +2,21 @@ require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const { name, version } = require('./package.json')
-const users = require('./data/users')()
-const tasks = require('./data/tasks')()
-const { registerUser, authenticateUser, retrieveUser, modifyTask, createTask, listTasks, removeTask } = require('./logic')
+const { registerUser, authenticateUser, retrieveUser, createTask, listTasks, modifyTask, removeTask } = require('./logic')
 const { ConflictError, CredentialsError, NotFoundError } = require('./utils/errors')
 const jwt = require('jsonwebtoken')
-// PORT viene de un fichero a parte al igual que secret. Si port no viene del fichero, usaremos el port pasado por process, y sino el por defecto que es el 8080
-const { argv: [, , port = 8080], env: { SECRET, PORT = port || 8080, DB_URL } } = process
-const tokenVerifier = require('./utils/token/token-verifier')(SECRET)
+const { argv: [, , port], env: { SECRET, PORT = port || 8080, DB_URL } } = process
+const tokenVerifier = require('./helpers/token-verifier')(SECRET)
 const database = require('./utils/database')
+const cors = require('./utils/cors')
 const api = express()
-const jsonBodyParser = bodyParser.json() // transforma los chunks en json
+const jsonBodyParser = bodyParser.json()
+
+api.use(cors) // pasa el middleware a todo
+
+api.options('*', cors, (req, res) => {
+  res.end()
+})
 
 
 // cuando se registra
@@ -70,7 +74,7 @@ api.get('/users', tokenVerifier, (req, res) => {
     const { id } = req
 
     retrieveUser(id)
-      .then(user => res.json({ user })) /// no entiendo este destructuring user.user???????
+      .then(user => res.json({ user })) no es un destructuring, es un objeto
       .catch(error => {
         const { message } = error
 
@@ -81,9 +85,6 @@ api.get('/users', tokenVerifier, (req, res) => {
       })
   } catch (error) {
     const { message } = error
-
-    if (error instanceof CredentialsError || error instanceof JsonWebTokenError)
-      return res.status(401).json({ message })
 
     res.status(400).json({ message })
   }
@@ -159,6 +160,8 @@ api.delete('/tasks/:idTask', tokenVerifier, (req, res) => {
 
         if (error instanceof NotFoundError)
           return res.status(404).json({ message })
+        if (error instanceof ConflictError)
+          return res.status(409).json({ message })
 
         res.status(500).json({ message })
       })
