@@ -19,8 +19,8 @@ module.exports = function(name, surname, email, username, password) {
   const client = database() // solo se le pasa la url por parámmetro una vez en index general gracias al singleton, ya que valor ya está inicializado las demás veces
 
   return client.connect()
-    .then(connection => {
-      const users = connection.db().collection('users')
+    .then(db => {
+      const users = db.collection('users')
 
       return users.findOne({ username })
         .then(user => {

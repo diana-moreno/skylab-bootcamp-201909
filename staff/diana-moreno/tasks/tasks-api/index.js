@@ -74,7 +74,7 @@ api.get('/users', tokenVerifier, (req, res) => {
     const { id } = req
 
     retrieveUser(id)
-      .then(user => res.json({ user })) no es un destructuring, es un objeto
+      .then(user => res.json({ user })) //no es un destructuring, es un objeto
       .catch(error => {
         const { message } = error
 

@@ -14,7 +14,7 @@ describe('logic - register user', () => {
     client = database(DB_URL_TEST)
 
     return client.connect()
-      .then(connection => users = connection.db().collection('users'))
+      .then(db => users = db.collection('users'))
   })
 
   let name, surname, email, username, password

@@ -13,7 +13,7 @@ describe('logic - retrieve user', () => {
     client = database(DB_URL_TEST)
 
     return client.connect()
-      .then(connection => users = connection.db().collection('users'))
+      .then(db => users = db.collection('users'))
   })
 
   let id, name, surname, email, username, password

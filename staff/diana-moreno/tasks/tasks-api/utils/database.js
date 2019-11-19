@@ -14,12 +14,16 @@ function database(url) {
       const connectOriginal = client.connect.bind(client)
 
       client.connect = function() { // está redefiniendo el método original para que al llamarlo, si ya existe, no cree uno nuevo (singleton)
-        return connectionSingleton
+/*        return connectionSingleton
           ? Promise.resolve(connectionSingleton)
           : connectOriginal()
               .then(_connection => connectionSingleton = _connection)
       }
-
+*/
+        return connectionSingleton
+          ? connectionSingleton
+          : connectionSingleton = connectOriginal().then(connection => connection.db())
+      }
       //hay que bindear el método close con el cliente, sino no funciona
       const closeOriginal = client.close.bind(client) // 0
       //const close = client.close // 1

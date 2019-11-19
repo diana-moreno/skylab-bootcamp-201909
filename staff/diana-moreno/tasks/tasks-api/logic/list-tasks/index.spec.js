@@ -15,9 +15,7 @@ describe('logic - list tasks', () => {
     client = database(DB_URL_TEST)
 
     return client.connect()
-      .then(connection => {
-        const db = connection.db()
-
+      .then(db => {
         users = db.collection('users')
         tasks = db.collection('tasks')
       })
