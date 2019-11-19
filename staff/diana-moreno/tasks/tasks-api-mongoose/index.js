@@ -13,9 +13,10 @@ const cors = require('./utils/cors')
 const api = express()
 const jsonBodyParser = bodyParser.json()
 
+// cors es solo para el navegador
 api.use(cors) // pasa el middleware a todo
 
-api.options('*', cors, (req, res) => {
+api.options('*', cors, (req, res) => { // se llama antes de cada endpoint
   res.end()
 })
 
@@ -171,6 +172,5 @@ api.delete('/tasks/:idTask', tokenVerifier, (req, res) => {
   }
 })
 
-database
-  .connect(DB_URL)
-  .then(() => api.listen(PORT, () => console.log(`${name} ${version} up and running on port ${PORT}`)))
+database.connect(DB_URL)
+ api.listen(PORT, () => console.log(`${name} ${version} up and running on port ${PORT}`))

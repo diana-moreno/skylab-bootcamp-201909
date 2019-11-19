@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const { ObjectId } = require('mongodb') // o mongoose?
 
 module.exports = {
   database: {
@@ -9,5 +10,6 @@ module.exports = {
       return mongoose.disconnect()
     }
   },
-  models: require('./models')
+  models: require('./models'),
+  ObjectId
 }

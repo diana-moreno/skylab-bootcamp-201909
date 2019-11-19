@@ -6,6 +6,7 @@ const { ObjectId } = database
 module.exports = function(id, title, description) {
   validate.string(id)
   validate.string.notVoid('id', id)
+  if (!ObjectId.isValid(id)) throw new ContentError(`${id} is not a valid id`)
   validate.string(title)
   validate.string.notVoid('title', title)
   validate.string(description)
