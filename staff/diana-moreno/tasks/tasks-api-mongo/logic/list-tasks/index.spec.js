@@ -23,36 +23,6 @@ describe('logic - list tasks', () => {
 
   let id, name, surname, email, username, password
 
-  /*  beforeEach(() => {
-      name = `name-${random()}`
-      surname = `surname-${random()}`
-      email = `email-${random()}@mail.com`
-      username = `username-${random()}`
-      password = `password-${random()}`
-
-      return users.insertOne({ name, surname, email, username, password })
-        .then(user => {
-          id = user.insertedId.toString()
-          const task1 = {
-            user: ObjectId(id),
-            title: `title-${random()}`,
-            description: `description-${random()}`,
-            status: 'TODO',
-            date: new Date
-          }
-          tasks.insertOne(task1)
-
-          const task2 = {
-            user: ObjectId(id),
-            title: `title-${random()}`,
-            description: `description-${random()}`,
-            status: 'TODO',
-            date: new Date
-          }
-          tasks.insertOne(task2)
-        })
-    })*/
-
   beforeEach(() => {
     name = `name-${random()}`
     surname = `surname-${random()}`
@@ -60,7 +30,8 @@ describe('logic - list tasks', () => {
     username = `username-${random()}`
     password = `password-${random()}`
 
-    return users.insertOne({ name, surname, email, username, password })
+    return Promise.all([users.deleteMany(), tasks.deleteMany()])
+      .then(() => users.insertOne({ name, surname, email, username, password }))
       .then(({ insertedId }) => id = insertedId.toString())
       .then(() => {
         taskIds = []
@@ -151,4 +122,6 @@ describe('logic - list tasks', () => {
     expect(() => listTasks('')).to.throw(ContentError, 'id is empty or blank')
     expect(() => listTasks(' \t\r')).to.throw(ContentError, 'id is empty or blank')
   })
+
+  after(() => Promise.all([users.deleteMany(), tasks.deleteMany()]).then(client.close))
 })

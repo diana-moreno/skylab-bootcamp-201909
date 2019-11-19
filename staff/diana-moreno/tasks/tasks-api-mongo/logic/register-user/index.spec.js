@@ -25,6 +25,8 @@ describe('logic - register user', () => {
     email = `email-${random()}@mail.com`
     username = `username-${random()}`
     password = `password-${random()}`
+
+    return users.deleteMany()
   })
 
   it('should succeed on correct credentials', () =>
@@ -113,5 +115,5 @@ describe('logic - register user', () => {
 
   // TODO other cases
 
-  after(() => client.close())
+    after(() => users.deleteMany().then(client.close))
 })

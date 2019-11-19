@@ -22,7 +22,6 @@ describe('logic - remove task', () => {
       })
   })
 
-  const statuses = ['TODO', 'DOING', 'REVIEW', 'DONE']
   let id, name, surname, email, username, password, taskIds, titles, descriptions
 
   beforeEach(() => {
@@ -32,7 +31,8 @@ describe('logic - remove task', () => {
     username = `username-${random()}`
     password = `password-${random()}`
 
-    return users.insertOne({ name, surname, email, username, password })
+    return Promise.all([users.deleteMany(), tasks.deleteMany()])
+      .then(() => users.insertOne({ name, surname, email, username, password }))
       .then(({ insertedId }) => id = insertedId.toString())
       .then(() => {
         taskIds = []
@@ -108,7 +108,7 @@ describe('logic - remove task', () => {
   })
 
   it('should fail on correct user and wrong task data', () => {
-    return tasks.findOne({ _id: { $nin: taskIds } })
+    return tasks.findOne({ _id: { $nin: taskIds.map(taskId => ObjectId(taskId)) } })
       .then(({ _id }) => {
         const taskId = _id.toString()
 
@@ -144,7 +144,5 @@ describe('logic - remove task', () => {
     expect(() => removeTask(id, ' \t\r')).to.throw(ContentError, 'task id is empty or blank')
   })
 
-  // TODO other test cases
-
-  after(() => client.close())
+  after(() => Promise.all([users.deleteMany(), tasks.deleteMany()]).then(client.close))
 })

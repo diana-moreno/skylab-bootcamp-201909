@@ -25,7 +25,8 @@ describe('logic - retrieve user', () => {
     username = `username-${random()}`
     password = `password-${random()}`
 
-    return users.insertOne({ name, surname, email, username, password })
+    return users.deleteMany()
+      .then(() => users.insertOne({ name, surname, email, username, password }))
       .then(({ insertedId }) => id = insertedId.toString())
   })
 
@@ -70,4 +71,5 @@ describe('logic - retrieve user', () => {
     expect(() => retrieveUser(' \t\r')).to.throw(ContentError, 'id is empty or blank')
   })
 
+  after(() => users.deleteMany().then(client.close))
 })
