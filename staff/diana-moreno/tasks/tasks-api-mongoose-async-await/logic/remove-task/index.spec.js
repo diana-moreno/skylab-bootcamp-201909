@@ -1,28 +1,31 @@
 require('dotenv').config()
 const { env: { DB_URL_TEST } } = process
 const { expect } = require('chai')
-const { ObjectId, database, models: { User, Task } } = require('../../data')
 const removeTask = require('.')
 const { random } = Math
-require('../../utils/array-random')
-const { NotFoundError, ConflictError, ContentError } = require('../../utils/errors')
+const { errors: { NotFoundError, ConflictError }, polyfills: { arrayRandom } } = require('tasks-util')
+const { database, ObjectId, models: { User, Task } } = require('tasks-data')
+
+arrayRandom()
 
 describe('logic - remove task', () => {
-  before(() => database.connect(DB_URL_TEST))
+    before(() => database.connect(DB_URL_TEST))
 
-  let id, name, surname, email, username, password, taskIds, titles, descriptions
+    let id, name, surname, email, username, password, taskIds, titles, descriptions
 
-  beforeEach(() => {
-    name = `name-${random()}`
-    surname = `surname-${random()}`
-    email = `email-${random()}@mail.com`
-    username = `username-${random()}`
-    password = `password-${random()}`
+    beforeEach(async () => {
+        name = `name-${random()}`
+        surname = `surname-${random()}`
+        email = `email-${random()}@mail.com`
+        username = `username-${random()}`
+        password = `password-${random()}`
 
-    return Promise.all([User.deleteMany(), Task.deleteMany()])
-      .then(() => User.create({ name, surname, email, username, password }))
-      .then(user => id = user.id)
-      .then(() => {
+        await Promise.all([User.deleteMany(), Task.deleteMany()])
+
+        const user = await User.create({ name, surname, email, username, password })
+
+        id = user.id
+
         taskIds = []
         titles = []
         descriptions = []
@@ -30,107 +33,91 @@ describe('logic - remove task', () => {
         const insertions = []
 
         for (let i = 0; i < 10; i++) {
-          const task = {
-            user: id,
-            title: `title-${random()}`,
-            description: `description-${random()}`,
-            status: 'REVIEW',
-            date: new Date
-          }
+            const task = {
+                user: id,
+                title: `title-${random()}`,
+                description: `description-${random()}`,
+                status: 'REVIEW',
+                date: new Date
+            }
 
-          insertions.push(Task.create(task)
-            .then(task => taskIds.push(task.id)))
+            insertions.push(Task.create(task)
+                .then(task => taskIds.push(task.id)))
 
-          titles.push(task.title)
-          descriptions.push(task.description)
+            titles.push(task.title)
+            descriptions.push(task.description)
         }
 
         for (let i = 0; i < 10; i++)
-          insertions.push(Task.create({
-            user: ObjectId(),
-            title: `title-${random()}`,
-            description: `description-${random()}`,
-            status: 'REVIEW',
-            date: new Date
-          }))
+            insertions.push(Task.create({
+                user: ObjectId(),
+                title: `title-${random()}`,
+                description: `description-${random()}`,
+                status: 'REVIEW',
+                date: new Date
+            }))
 
-        return Promise.all(insertions)
-      })
-  })
+        await Promise.all(insertions)
+    })
 
-  it('should succeed on correct user and task data', () => {
-    const taskId = taskIds.random()
+    it('should succeed on correct user and task data', async () => {
+        const taskId = taskIds.random()
 
-    return removeTask(id, taskId)
-      .then(response => {
+        const response = await removeTask(id, taskId)
+
         expect(response).to.not.exist
 
-        return Task.findById(taskId)
-      })
-      .then(task => expect(task).to.not.exist)
-  })
+        const task = await Task.findById(taskId)
 
-  it('should fail on unexisting user and correct task data', () => {
-    const id = ObjectId().toString()
-    const taskId = taskIds.random()
+        expect(task).to.not.exist
+    })
 
-    return removeTask(id, taskId)
-      .then(() => { throw new Error('should not reach this point') })
-      .catch(error => {
-        expect(error).to.exist
-        expect(error).to.be.an.instanceOf(NotFoundError)
-        expect(error.message).to.equal(`user with id ${id} not found`)
-      })
-  })
+    it('should fail on unexisting user and correct task data', async () => {
+        const id = ObjectId().toString()
+        const taskId = taskIds.random()
 
-  it('should fail on correct user and unexisting task data', () => {
-    const taskId = ObjectId().toString()
+        try {
+            await removeTask(id, taskId)
 
-    return removeTask(id, taskId)
-      .then(() => { throw new Error('should not reach this point') })
-      .catch(error => {
-        expect(error).to.exist
-        expect(error).to.be.an.instanceOf(NotFoundError)
-        expect(error.message).to.equal(`user does not have task with id ${taskId}`)
-      })
-  })
+            throw new Error('should not reach this point')
+        } catch (error) {
+            expect(error).to.exist
+            expect(error).to.be.an.instanceOf(NotFoundError)
+            expect(error.message).to.equal(`user with id ${id} not found`)
+        }
+    })
 
-  it('should fail on correct user and wrong task data', () => {
-    return Task.findOne({ _id: { $nin: taskIds.map(taskId => ObjectId(taskId)) } })
-      .then(({ _id }) => {
+    it('should fail on correct user and unexisting task data', async () => {
+        const taskId = ObjectId().toString()
+
+        try {
+            await removeTask(id, taskId)
+
+            throw new Error('should not reach this point')
+        } catch (error) {
+            expect(error).to.exist
+            expect(error).to.be.an.instanceOf(NotFoundError)
+            expect(error.message).to.equal(`user does not have task with id ${taskId}`)
+        }
+    })
+
+    it('should fail on correct user and wrong task data', async () => {
+        const { _id } = await Task.findOne({ _id: { $nin: taskIds.map(taskId => ObjectId(taskId)) } })
+
         const taskId = _id.toString()
 
-        return removeTask(id, taskId)
-          .then(() => { throw new Error('should not reach this point') })
-          .catch(error => {
+        try {
+            await removeTask(id, taskId)
+
+            throw new Error('should not reach this point')
+        } catch (error) {
             expect(error).to.exist
             expect(error).to.be.an.instanceOf(ConflictError)
             expect(error.message).to.equal(`user with id ${id} does not correspond to task with id ${taskId}`)
-          })
-      })
-  })
+        }
+    })
 
-  it('should fail on incorrect id or taskId type', () => {
-    expect(() => removeTask(1)).to.throw(TypeError, '1 is not a string')
-    expect(() => removeTask(true)).to.throw(TypeError, 'true is not a string')
-    expect(() => removeTask([])).to.throw(TypeError, ' is not a string')
-    expect(() => removeTask({})).to.throw(TypeError, '[object Object] is not a string')
-    expect(() => removeTask(undefined)).to.throw(TypeError, 'undefined is not a string')
-    expect(() => removeTask(null)).to.throw(TypeError, 'null is not a string')
+    // TODO other test cases
 
-    expect(() => removeTask('')).to.throw(ContentError, 'id is empty or blank')
-    expect(() => removeTask(' \t\r')).to.throw(ContentError, 'id is empty or blank')
-
-    expect(() => removeTask(id, 1)).to.throw(TypeError, '1 is not a string')
-    expect(() => removeTask(id, true)).to.throw(TypeError, 'true is not a string')
-    expect(() => removeTask(id, [])).to.throw(TypeError, ' is not a string')
-    expect(() => removeTask(id, {})).to.throw(TypeError, '[object Object] is not a string')
-    expect(() => removeTask(id, undefined)).to.throw(TypeError, 'undefined is not a string')
-    expect(() => removeTask(id, null)).to.throw(TypeError, 'null is not a string')
-
-    expect(() => removeTask(id, '')).to.throw(ContentError, 'task id is empty or blank')
-    expect(() => removeTask(id, ' \t\r')).to.throw(ContentError, 'task id is empty or blank')
-  })
-
-  after(() => Promise.all([User.deleteMany(), Task.deleteMany()]).then(database.disconnect))
+    after(() => Promise.all([User.deleteMany(), Task.deleteMany()]).then(database.disconnect))
 })

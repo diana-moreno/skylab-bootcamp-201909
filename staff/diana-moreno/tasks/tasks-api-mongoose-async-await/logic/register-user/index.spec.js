@@ -2,9 +2,9 @@ require('dotenv').config()
 const { env: { DB_URL_TEST } } = process
 const { expect } = require('chai')
 const registerUser = require('.')
-const { ContentError } = require('../../utils/errors')
 const { random } = Math
-const { database, models: { User } } = require('../../data')
+const { errors: { ContentError } } = require('tasks-util')
+const { database, models: { User } } = require('tasks-data')
 
 describe('logic - register user', () => {
     before(() => database.connect(DB_URL_TEST))
@@ -56,7 +56,6 @@ describe('logic - register user', () => {
         })
     })
 
-    // son errores sincronos, no hace falta async await
     it('should fail on incorrect name, surname, email, password, or expression type and content', () => {
         expect(() => registerUser(1)).to.throw(TypeError, '1 is not a string')
         expect(() => registerUser(true)).to.throw(TypeError, 'true is not a string')
