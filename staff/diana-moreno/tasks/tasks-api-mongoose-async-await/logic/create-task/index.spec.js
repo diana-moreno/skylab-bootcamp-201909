@@ -11,21 +11,20 @@ describe('logic - create task', () => {
 
   let id, name, surname, email, username, password, title, description, status
 
-  beforeEach(() => {
+  beforeEach(async () => {
     name = `name-${random()}`
     surname = `surname-${random()}`
     email = `email-${random()}@mail.com`
     username = `username-${random()}`
     password = `password-${random()}`
 
-    return (async () => {
-      await Promise.all([User.deleteMany(), Task.deleteMany()])
-      const user = await User.create({ name, surname, email, username, password })
-      id = user.id
-      // id = result.insertedId.toString() // mongoose sanifica el id
-      title = `title-${random()}`
-      description = `description-${random()}`
-    })
+    await Promise.all([User.deleteMany(), Task.deleteMany()])
+    const user = await User.create({ name, surname, email, username, password })
+    id = user.id
+    // id = result.insertedId.toString() // mongoose sanifica el id
+    title = `title-${random()}`
+    description = `description-${random()}`
+
   })
 
   it('should succeed on correct user and task data', async () => {
