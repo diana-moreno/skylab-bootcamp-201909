@@ -26,5 +26,3 @@
     "mocha": "^6.2.2"
   }
 }
-// npm i ../tasks-util
-// npm i ../tasks-data
