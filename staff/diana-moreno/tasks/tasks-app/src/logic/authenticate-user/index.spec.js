@@ -1,12 +1,11 @@
-require('dotenv').config()
-const { env: { REACT_APP_DB_URL_TEST: DB_URL_TEST } } = process
+const { env: { REACT_APP_TEST_DB_URL: TEST_DB_URL } } = process
 const authenticateUser = require('.')
 const { random } = Math
 const { errors: { ContentError, CredentialsError } } = require('tasks-util')
 const { database, models: { User } } = require('tasks-data')
 
 describe('logic - authenticate user', () => {
-    beforeAll(() => database.connect(DB_URL_TEST)) // Test Jest
+    beforeAll(() => database.connect(TEST_DB_URL))
 
     let id, name, surname, email, username, password
 
@@ -25,13 +24,17 @@ describe('logic - authenticate user', () => {
     })
 
     it('should succeed on correct credentials', async () => {
-        const userId = await authenticateUser(username, password)
+        const token = await authenticateUser(username, password)
 
-        expect(userId).toBeDefined()
-        expect(typeof userId).toBe('string')
-        expect(userId.length).toBeGreaterThan(0)
+        expect(token).toBeDefined()
+        expect(typeof token).toBe('string')
+        expect(token.length).toBeGreaterThan(0)
 
-        expect(userId).toBe(id)
+        const [, payload,] = token.split('.')
+
+        const { sub } = JSON.parse(atob(payload))
+
+        expect(id).toBe(sub)
     })
 
     describe('when wrong credentials', () => {
@@ -59,7 +62,7 @@ describe('logic - authenticate user', () => {
 
                 throw new Error('should not reach this point')
             } catch (error) {
-                expect(error).toBeDefined
+                expect(error).toBeDefined()
                 expect(error).toBeInstanceOf(CredentialsError)
 
                 const { message } = error
@@ -92,5 +95,5 @@ describe('logic - authenticate user', () => {
 
     // TODO other cases
 
-    after(() => User.deleteMany().then(database.disconnect))
+    afterAll(() => User.deleteMany().then(database.disconnect))
 })
