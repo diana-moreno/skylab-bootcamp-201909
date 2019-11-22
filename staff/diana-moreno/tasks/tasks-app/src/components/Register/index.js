@@ -20,6 +20,7 @@ export default function({ onRegister, onBack, error }) {
           placeholder="surname" />
         <input className='form__input' type="text" name="email"
           placeholder="email" />
+        <input className="form__input" type="username" name="username" placeholder="username" />
         <input className='form__input' type="password" name="password"
           placeholder="password" />
         <button className='form__button form__button--register'>Create account</button>
@@ -30,6 +31,7 @@ export default function({ onRegister, onBack, error }) {
 
                 onBack()
       }}>Go back</button>
+      {error && <Feedback message={error} />}
     </section>
   </>
 }

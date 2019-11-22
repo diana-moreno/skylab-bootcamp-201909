@@ -56,9 +56,9 @@ export default withRouter(function ({ history }) {
     }
 
     return <>
-        <Route exact path='/' render={() => <Login onLogin={handleLogin} onBack={handleGoBack} />} />
+        <Route exact path='/' render={() => <Login onLogin={handleLogin} onBack={handleGoBack} onRegister={handleGoToRegister} />} />
+        <Route path="/login" render={() => <Login onLogin={handleLogin} onBack={handleGoBack} onRegister={handleGoToRegister} />} />
         <Route path="/register" render={() => <Register onRegister={handleRegister} onBack={handleGoBack} />} />
-        <Route path="/login" render={() => <Login onLogin={handleLogin} onBack={handleGoBack} />} />
         <Route path="/tasks" render={() => <Board user={name} onLogout={handleLogout}/>} />
     </>
 })
