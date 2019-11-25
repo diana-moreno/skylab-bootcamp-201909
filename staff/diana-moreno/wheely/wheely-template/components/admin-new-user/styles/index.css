@@ -6,7 +6,6 @@ html {
 body {
   margin: 0;
   height: 100%;
-  background: whitesmoke;
   color: #585555;
 }
 
@@ -32,6 +31,7 @@ body {
   text-align: right;
   right: 1rem;
   top: 0;
+  letter-spacing: 0.2rem;
 }
 .navbar__checkbox {
   width: 40px;
@@ -123,6 +123,7 @@ body {
   width: 16rem;
   font-family: Comfortaa;
   color: #6c6464;
+  border: 1px solid #a0a0a0;
 }
 .register__form select {
   margin: 0.5rem;
@@ -134,6 +135,7 @@ body {
   background: white;
   color: #625f5f;
   font-family: Comfortaa;
+  border: 1px solid #a0a0a0;
 }
 .register__form button {
   font-size: 1rem;
