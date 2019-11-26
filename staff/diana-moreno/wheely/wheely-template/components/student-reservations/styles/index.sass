@@ -5,7 +5,6 @@ html
 body
   margin: 0
   height: 100%
-  background: whitesmoke
 
 .navbar
   display: flex
@@ -28,6 +27,7 @@ body
     text-align: right
     right: 1rem
     top: 0
+    letter-spacing: 0.2rem
 
   &__checkbox
     width: 40px
@@ -101,21 +101,24 @@ body
   margin-top: 2rem
   color: #585555
 
-.reservations__category-title
-  text-align: center
-  border-bottom: 1px solid
-  padding-bottom: 0.5rem
-  margin-bottom: 0
-
 .reservations__category-list
   list-style: none
   margin-left: 0
   padding: 0
   margin: 0
 
+.reservations__category-title
+  text-align: center
+
 .category__item
   display: flex
-  border-bottom: 1px solid
+  padding: 0.5rem 0
+  margin: 1rem 0
+  box-shadow: 0 2px 7px 2px rgba(0,0,0,0.04), 0 1px 3px 0 rgba(0,0,0,0.24)
+  border-radius: 7px
+
+.category__item
+  display: flex
 
   p
     margin: 0.5rem 0
