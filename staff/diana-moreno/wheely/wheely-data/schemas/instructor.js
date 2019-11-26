@@ -3,7 +3,7 @@ const { validators: { isEmail } } = require('wheely-utils')
 
 module.exports = new Schema({
   schedule: {
-    type: Object
+    type: Array
   },
   statistics: {
     type: Array
@@ -12,7 +12,6 @@ module.exports = new Schema({
     type: Array
   },
   students: {
-    type: Array,
-    required: true
+    type: Array
   }
 })

@@ -7,7 +7,6 @@ module.exports = new Schema({
     default: 0
   },
   practices: {
-    type: Array,
-    default: []
+    type: Array
   }
 })

@@ -14,8 +14,7 @@ module.exports = function(id) {
     user.lastAccess = new Date
 
     await user.save()
-
-    const { name, surname, email, profile, role, lastAccess } = user.toObject() // que es toObject??
+    const { name, surname, email, profile, role, lastAccess } = user.toObject()// toObject breaks the connection with the data base to avoid possible modifications
 
     return { id, name, surname, email, profile, role, lastAccess }
     // we don't want to retrieve the password, it's private!

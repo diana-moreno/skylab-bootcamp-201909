@@ -1,4 +1,4 @@
-require('dotenv').config()
+/*require('dotenv').config()
 const { env: { TEST_DB_URL } } = process
 const { expect } = require('chai')
 const listTasks = require('.')
@@ -92,3 +92,4 @@ describe('logic - list tasks', () => {
 
     after(() => Promise.all([User.deleteMany(), Task.deleteMany()]).then(database.disconnect))
 })
+*/

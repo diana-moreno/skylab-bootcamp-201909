@@ -3,56 +3,157 @@ const { env: { TEST_DB_URL } } = process
 const { expect } = require('chai')
 const { random } = Math
 const retrieveUser = require('.')
-const { errors: { NotFoundError } } = require('tasks-util')
-const { database, models: { User } } = require('tasks-data')
+const { errors: { NotFoundError } } = require('wheely-utils')
+const { database, models: { User, Student, Instructor } } = require('wheely-data')
 
 describe('logic - retrieve user', () => {
-    before(() => database.connect(TEST_DB_URL))
+  before(() => database.connect(TEST_DB_URL))
 
-    let id, name, surname, email, username, password
+  let roles = ['student', 'admin', 'instructor']
+  let id, name, surname, email, password, role
 
+  describe('when user is a student', () => {
     beforeEach(async () => {
-        name = `name-${random()}`
-        surname = `surname-${random()}`
-        email = `email-${random()}@mail.com`
-        username = `username-${random()}`
-        password = `password-${random()}`
+      name = `name-${random()}`
+      surname = `surname-${random()}`
+      email = `email-${random()}@mail.com`
+      password = `password-${random()}`
+      role = 'student'
 
-        await User.deleteMany()
+      await User.deleteMany()
 
-        const user = await User.create({ name, surname, email, username, password })
+      const user = await User.create({ name, surname, email, password, role })
+      user.profile = new Student()
+      await user.save()
 
-        id = user.id
+      id = user.id
     })
 
     it('should succeed on correct user id', async () => {
-        const user = await retrieveUser(id)
+      const user = await retrieveUser(id)
 
-        expect(user).to.exist
-        expect(user.id).to.equal(id)
-        expect(user._id).to.not.exist
-        expect(user.name).to.equal(name)
-        expect(user.surname).to.equal(surname)
-        expect(user.email).to.equal(email)
-        expect(user.username).to.equal(username)
-        expect(user.password).to.be.undefined
+      expect(user).to.exist
+      expect(user.id).to.equal(id)
+      expect(user._id).to.not.exist
+      expect(user.name).to.equal(name)
+      expect(user.surname).to.equal(surname)
+      expect(user.email).to.equal(email)
+      expect(user.password).to.be.undefined
+      expect(user.role).to.equal(role)
+      expect(user.profile).to.exist
+      expect(user.profile.credits).to.equal(0)
+      expect(user.profile.practices).to.exist
     })
 
     it('should fail on wrong user id', async () => {
-        const id = '012345678901234567890123'
+      const id = '012345678901234567890123'
 
-        try {
-            await retrieveUser(id)
+      try {
+        await retrieveUser(id)
 
-            throw Error('should not reach this point')
-        } catch (error) {
-            expect(error).to.exist
-            expect(error).to.be.an.instanceOf(NotFoundError)
-            expect(error.message).to.equal(`user with id ${id} not found`)
-        }
+        throw Error('should not reach this point')
+      } catch (error) {
+        expect(error).to.exist
+        expect(error).to.be.an.instanceOf(NotFoundError)
+        expect(error.message).to.equal(`user with id ${id} not found`)
+      }
+    })
+  })
+
+  describe('when user is an instructor', () => {
+    beforeEach(async () => {
+      name = `name-${random()}`
+      surname = `surname-${random()}`
+      email = `email-${random()}@mail.com`
+      password = `password-${random()}`
+      role = 'instructor'
+
+      await User.deleteMany()
+
+      const user = await User.create({ name, surname, email, password, role })
+      user.profile = new Instructor()
+      await user.save()
+
+      id = user.id
     })
 
-    // TODO other cases
+    it('should succeed on correct user id', async () => {
+      const user = await retrieveUser(id)
 
-    after(() => User.deleteMany().then(database.disconnect))
+      expect(user).to.exist
+      expect(user.id).to.equal(id)
+      expect(user._id).to.not.exist
+      expect(user.name).to.equal(name)
+      expect(user.surname).to.equal(surname)
+      expect(user.email).to.equal(email)
+      expect(user.password).to.be.undefined
+      expect(user.role).to.equal(role)
+      expect(user.profile).to.exist
+      expect(user.profile.schedule).to.exist
+      expect(user.profile.statistics).to.exist
+      expect(user.profile.practices).to.exist
+      expect(user.profile.students).to.exist
+      expect(user.profile.credits).to.equal(undefined)
+    })
+
+    it('should fail on wrong user id', async () => {
+      const id = '012345678901234567890123'
+
+      try {
+        await retrieveUser(id)
+
+        throw Error('should not reach this point')
+      } catch (error) {
+        expect(error).to.exist
+        expect(error).to.be.an.instanceOf(NotFoundError)
+        expect(error.message).to.equal(`user with id ${id} not found`)
+      }
+    })
+  })
+
+  describe('when user is an admin', () => {
+    beforeEach(async () => {
+      name = `name-${random()}`
+      surname = `surname-${random()}`
+      email = `email-${random()}@mail.com`
+      password = `password-${random()}`
+      role = 'admin'
+
+      await User.deleteMany()
+
+      const user = await User.create({ name, surname, email, password, role })
+
+      id = user.id
+    })
+
+    it('should succeed on correct user id', async () => {
+      const user = await retrieveUser(id)
+
+      expect(user).to.exist
+      expect(user.id).to.equal(id)
+      expect(user._id).to.not.exist
+      expect(user.name).to.equal(name)
+      expect(user.surname).to.equal(surname)
+      expect(user.email).to.equal(email)
+      expect(user.password).to.be.undefined
+      expect(user.role).to.equal(role)
+      expect(user.profile).to.equal(undefined)
+    })
+
+    it('should fail on wrong user id', async () => {
+      const id = '012345678901234567890123'
+
+      try {
+        await retrieveUser(id)
+
+        throw Error('should not reach this point')
+      } catch (error) {
+        expect(error).to.exist
+        expect(error).to.be.an.instanceOf(NotFoundError)
+        expect(error.message).to.equal(`user with id ${id} not found`)
+      }
+    })
+  })
+
+  after(() => User.deleteMany().then(database.disconnect))
 })
