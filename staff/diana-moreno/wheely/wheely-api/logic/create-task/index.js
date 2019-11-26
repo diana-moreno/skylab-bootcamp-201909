@@ -1,5 +1,5 @@
-const { validate, errors: { NotFoundError } } = require('tasks-util')
-const { ObjectId, models: { User, Task } } = require('tasks-data')
+const { validate, errors: { NotFoundError } } = require('wheely-util')
+const { ObjectId, models: { User, Task } } = require('wheely-data')
 
 module.exports = function (id, title, description) {
     validate.string(id)

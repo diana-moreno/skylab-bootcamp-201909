@@ -1,5 +1,5 @@
 {
-  "name": "wheely-data",
+  "name": "wheely-utils",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,9 +8,5 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "mongoose": "^5.7.12",
-    "wheely-utils": "file:../wheely-utils"
-  }
+  "license": "ISC"
 }
