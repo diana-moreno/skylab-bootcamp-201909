@@ -3,7 +3,7 @@ require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
 const { name, version } = require('./package.json')
-const { registerUser, authenticateUser, retrieveUser, deleteUser/*, createTask, listTasks, modifyTask, removeTask*/ } = require('./logic')
+const { registerUser, authenticateUser, retrieveUser, deleteUser, editUser/*, createTask, listTasks, modifyTask, removeTask*/ } = require('./logic')
 const jwt = require('jsonwebtoken')
 const { argv: [, , port], env: { SECRET, PORT = port || 8080, DB_URL } } = process
 const tokenVerifier = require('./helpers/token-verifier')(SECRET)
@@ -109,9 +109,28 @@ api.delete('/users', tokenVerifier, (req, res) => {
     const { id } = req
 
     deleteUser(id)
-      .then(() =>
-        res.end()
-      )
+      .then(() => res.end())
+      .catch(error => {
+        const { message } = error
+
+        if (error instanceof NotFoundError)
+          return res.status(404).json({ message })
+        if (error instanceof ConflictError)
+          return res.status(409).json({ message })
+
+        res.status(500).json({ message })
+      })
+  } catch ({ message }) {
+    res.status(400).json({ message })
+  }
+})
+
+api.patch('/users', jsonBodyParser, tokenVerifier, (req, res) => {
+  try {
+    const { id, body: { name, surname, email } } = req
+
+    editUser(id, name, surname, email)
+      .then(() => res.end() )
       .catch(error => {
         const { message } = error
 
@@ -134,8 +153,7 @@ api.delete('/users', tokenVerifier, (req, res) => {
 
 
 
-
-
+/*
 api.post('/tasks', tokenVerifier, jsonBodyParser, (req, res) => {
   try {
     const { id, body: { title, description } } = req
@@ -219,7 +237,7 @@ api.delete('/tasks/:taskId', tokenVerifier, (req, res) => {
     res.status(400).json({ message })
   }
 })
-
+*/
 database
   .connect(DB_URL)
   .then(() => api.listen(PORT, () => console.log(`${name} ${version} up and running on port ${PORT}`)))
