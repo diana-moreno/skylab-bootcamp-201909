@@ -1,32 +1,22 @@
 const { Schema, ObjectId } = require('mongoose')
 
 module.exports = new Schema({
-  user: {
-    type: ObjectId,
-    required: true,
-    ref: 'User'
-  },
-  title: {
-    type: String,
+  date: {
+    type: Date,
     required: true
   },
-  description: {
-    type: String,
+  reservation: {
+    type: Object,
     required: true
   },
   status: {
     type: String,
     required: true,
-    enum: ['TODO', 'DOING', 'REVIEW', 'DONE'],
-    default: 'TODO'
-
+    enum: ['pending', 'cancelled', 'done'],
+    default: 'pending'
   },
-  date: {
-    type: Date,
-    required: true,
-    default: Date.now
-  },
-  lastAccess: {
-    type: Date
+  feedback: {
+    type: Object,
+    required: true
   }
 })
