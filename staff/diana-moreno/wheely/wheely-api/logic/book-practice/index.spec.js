@@ -54,7 +54,7 @@ describe('logic - book a practice', () => {
     student = await User.findOne({ _id: studentId, role: 'student' })
     let newCredits = student.profile.credits - 1
 
-    const practiceId = await bookPractice(instructorId, studentId, price, date)
+    const practiceId = await bookPractice(instructorId, studentId, date)
     expect(practiceId).to.exist
     expect(practiceId).to.be.a('string')
     expect(practiceId).to.have.length.greaterThan(0)
@@ -79,7 +79,7 @@ describe('logic - book a practice', () => {
     expect(student.profile.credits).to.equal(newCredits)
   })
 
-/*  describe('logic - when user has no credits', () => {
+  describe('logic - when user has no credits', () => {
     beforeEach(async () => {
       // create an student
       name = `j-${random()}`
@@ -118,7 +118,7 @@ describe('logic - book a practice', () => {
 
     it('should fail when user has no credits available', async () => {
       try {
-        await bookPractice(instructorId, studentId, price, date)
+        await bookPractice(instructorId, studentId, date)
         throw Error('should not reach this point')
 
       } catch (error) {
@@ -168,7 +168,7 @@ describe('logic - book a practice', () => {
     })
     beforeEach(async () => {
       date = new Date("Wed, 27 July 2016 13:30:00")
-      let reservation = await Reservation.create({ price, instructorId, studentId })
+      let reservation = await Reservation.create({ instructorId, studentId })
       debugger
       practice = await Practice.create({ date, reservation })
 
@@ -179,10 +179,10 @@ describe('logic - book a practice', () => {
       date = new Date("Wed, 27 July 2016 13:30:00")
       // we try to create a new practice with the same data which is imposible
       try {
-        let practiceSaved = await Practice.findById(practiceId) // es necesario await?
+        let practiceSaved = await Practice.findById(practiceId)
         expect(practiceSaved).to.exist
 
-        await bookPractice(instructorId, studentId, price, date)
+        await bookPractice(instructorId, studentId, date)
         throw Error('should not reach this point')
 
       } catch (error) {
@@ -194,7 +194,7 @@ describe('logic - book a practice', () => {
       }
     })
 
-  })*/
+  })
 
   after(() => Promise.all([User.deleteMany(), Practice.deleteMany()]).then(database.disconnect))
 })

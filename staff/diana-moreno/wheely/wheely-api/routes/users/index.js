@@ -1,9 +1,9 @@
 const { Router } = require('express')
-const bodyParser = require('body-parser')
-const { registerUser, authenticateUser, retrieveUser, deleteUser, editUser/*, createTask, listTasks, modifyTask, removeTask*/ } = require('./logic')
+const { registerUser, authenticateUser, retrieveUser, deleteUser, editUser } = require('../../logic')
 const jwt = require('jsonwebtoken')
 const { env: { SECRET } } = process
-const tokenVerifier = require('./helpers/token-verifier')(SECRET)
+const tokenVerifier = require('../../helpers/token-verifier')(SECRET)
+const bodyParser = require('body-parser')
 const { errors: { NotFoundError, ConflictError, CredentialsError } } = require('wheely-utils')
 
 const jsonBodyParser = bodyParser.json()
