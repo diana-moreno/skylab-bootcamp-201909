@@ -16,7 +16,6 @@ module.exports = new Schema({
     default: 'pending'
   },
   feedback: {
-    type: Object,
-    required: true
+    type: Object
   }
 })

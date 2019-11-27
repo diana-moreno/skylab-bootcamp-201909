@@ -3,18 +3,19 @@ const { Schema, ObjectId } = require('mongoose')
 module.exports = new Schema({
   date: {
     type: Date,
-    required: true,
+
     default: Date.now
   },
   price: {
     type: Number,
-    required: true
+    required: true,
+    default: 1
   },
-  instructor: {
+  instructorId: {
     type: ObjectId,
     required: true
   },
-  student: {
+  studentId: {
     type: ObjectId,
     required: true
   },

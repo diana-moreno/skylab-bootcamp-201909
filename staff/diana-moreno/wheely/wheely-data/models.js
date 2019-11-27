@@ -1,5 +1,5 @@
 const { model } = require('mongoose')
-const { user, practice, student, instructor } = require('./schemas')
+const { user, practice, student, instructor, reservation } = require('./schemas')
 
 module.exports = {
     User: model('User', user),
@@ -7,4 +7,5 @@ module.exports = {
     Instructor: model('Instructor', instructor),
 /*    Admin: model('Admin', admin),*/
     Practice: model('Practice', practice),
+    Reservation: model('Reservation', reservation)
 }
