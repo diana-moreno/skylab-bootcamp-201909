@@ -1,5 +1,5 @@
 const { validate, errors: { NotFoundError, ConflictError } } = require('wheely-utils')
-const { ObjectId, models: { User, Practice, Reservation, Instructor } } = require('wheely-data')
+const { ObjectId, models: { User, Practice, Instructor } } = require('wheely-data')
 
 module.exports = function(userId) {
   // sincronous validate
@@ -23,9 +23,9 @@ module.exports = function(userId) {
     let donePractices
 
     if (student) {
-      donePractices = await Practice.find({ "reservation.studentId": ObjectId(userId), "status": 'done' })
+      donePractices = await Practice.find({ "studentId": ObjectId(userId), "status": 'done' }).populate('instructorId').populate('studentId')
     } else if (instructor) {
-      donePractices = await Practice.find({ "reservation.instructorId": ObjectId(userId), "status": 'done' })
+      donePractices = await Practice.find({ "instructorId": ObjectId(userId), "status": 'done' }).populate('instructorId').populate('studentId')
     }
 
     return donePractices

@@ -3,7 +3,7 @@ const { env: { TEST_DB_URL } } = process
 const { expect } = require('chai')
 const bookPractice = require('.')
 const { random } = Math
-const { database, models: { User, Practice, Student, Instructor, Reservation, Feedback } } = require('wheely-data')
+const { database, models: { User, Practice, Student, Instructor, Feedback } } = require('wheely-data')
 /*const moment = require('moment')
 const now = moment().format('MMMM Do YYYY, h:mm:ss a')*/
 
@@ -66,11 +66,10 @@ describe('logic - book a practice', () => {
     expect(practice.date).to.be.instanceOf(Date)
     expect(practice.date.getTime()).to.equal(date.getTime())
     expect(practice.status).to.equal(status)
-    expect(practice.reservation).to.exist
-    expect(practice.reservation.date).to.exist
-    expect(practice.reservation.price).to.equal(price)
-    expect(practice.reservation.instructorId.toString()).to.equal(instructorId)
-    expect(practice.reservation.studentId.toString()).to.equal(studentId)
+    expect(practice.date).to.exist
+    expect(practice.price).to.equal(price)
+    expect(practice.instructorId.toString()).to.equal(instructorId)
+    expect(practice.studentId.toString()).to.equal(studentId)
     expect(practice.feedback).to.equal(undefined)
 
     // retrieve the student to check how many credits he has after doing a reservation and if the practice is saved in his profile
@@ -175,8 +174,8 @@ describe('logic - book a practice', () => {
     })
     beforeEach(async () => {
       date = new Date("Wed, 27 July 2016 13:30:00")
-      let reservation = await Reservation.create({ instructorId, studentId })
-      practice = await Practice.create({ date, reservation })
+/*      let reservation = await Reservation.create({ instructorId, studentId })*/
+      practice = await Practice.create({ date, instructorId, studentId })
 
       practiceId = practice.id
     })

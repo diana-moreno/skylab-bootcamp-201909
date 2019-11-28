@@ -1,14 +1,14 @@
 require('dotenv').config()
 const { env: { TEST_DB_URL } } = process
 const { expect } = require('chai')
-const retrieveDonePractices = require('.')
+const retrieveCancelledPractices = require('.')
 const bookPractice = require('../book-practice')
 const { random } = Math
 const { database, models: { User, Practice, Student, Instructor, Reservation, Feedback } } = require('wheely-data')
 /*const moment = require('moment')
 const now = moment().format('MMMM Do YYYY, h:mm:ss a')*/
 
-describe('logic - retrieve done practices', () => {
+describe('logic - retrieve cancelled practices', () => {
   before(() => database.connect(TEST_DB_URL))
 
   let studentId, instructorId, name, surname, email, password, role, price, status, date, practId, credits, student, adminId
@@ -57,18 +57,14 @@ describe('logic - retrieve done practices', () => {
     price = 1
     status = 'cancelled'
     date = new Date("Wed, 27 July 2016 13:30:00")
-    let reservation = await Reservation.create({ instructorId, studentId })
-    practice = await Practice.create({ date, reservation, status })
-    practId = practice.id
+    await Practice.create({ date, instructorId, studentId, status })
 
     date = new Date("Wed, 28 July 2016 13:30:00")
-    reservation = await Reservation.create({ instructorId, studentId })
-    practice = await Practice.create({ date, reservation, status })
-    practId = practice.id
+    await Practice.create({ date, instructorId, studentId, status })
   })
 
   it('should succeed on retrieve the student practices', async () => {
-    practices = await retrieveDonePractices(studentId)
+    practices = await retrieveCancelledPractices(studentId)
 
     expect(practices).to.exist
     expect(practices[0].status).to.equal('cancelled')
@@ -76,8 +72,8 @@ describe('logic - retrieve done practices', () => {
   })
 
   it('should succeed on retrieve the instructor practices', async () => {
-    practices = await retrieveDonePractices(instructorId)
-debugger
+    practices = await retrieveCancelledPractices(instructorId)
+
     expect(practices).to.exist
     expect(practices[0].status).to.equal('cancelled')
     expect(practices[1].status).to.equal('cancelled')
@@ -86,7 +82,7 @@ debugger
   it('should fail on unexisting user', async () => {
     let fakeId = '012345678901234567890123'
     try {
-      await retrieveDonePractices(fakeId)
+      await retrieveCancelledPractices(fakeId)
 
       throw Error('should not reach this point')
 
@@ -101,7 +97,7 @@ debugger
 
   it('should fail on admin user', async () => {
     try {
-      await retrieveDonePractices(adminId)
+      await retrieveCancelledPractices(adminId)
 
       throw Error('should not reach this point')
 

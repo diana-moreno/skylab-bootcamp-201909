@@ -8,10 +8,4 @@ module.exports = {
     retrievePendingPractices: require('./retrieve-pending-practices'),
     retrieveDonePractices: require('./retrieve-done-practices'),
     retrieveCancelledPractices: require('./retrieve-cancelled-practices')
-/*
-    createTask: require('./create-task'),
-    listTasks: require('./list-tasks'),
-    modifyTask: require('./modify-task'),
-    removeTask: require('./remove-task')
-*/
 }

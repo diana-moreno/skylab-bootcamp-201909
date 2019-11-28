@@ -23,12 +23,11 @@ module.exports = function(userId) {
     let pendingPractices
 
     if (student) {
-      pendingPractices = await Practice.find({ "reservation.studentId": ObjectId(userId), "status": 'pending' }).populate({ path: 'instructors', populate: { path: 'instructors' }
-  });
-    } else if (instructor) {
-      pendingPractices = await Practice.find({ "reservation.instructorId": ObjectId(userId), "status": 'pending' })
-    }
+      pendingPractices = await Practice.find({ "studentId": ObjectId(userId), "status": 'pending' }).populate('instructorId').populate('studentId')
 debugger
+    } else if (instructor) {
+      pendingPractices = await Practice.find({ "instructorId": ObjectId(userId), "status": 'pending' }).populate('instructorId').populate('studentId')
+    }
     return pendingPractices
   })()
 }

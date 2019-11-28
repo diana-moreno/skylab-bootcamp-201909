@@ -1,5 +1,5 @@
 const { validate, errors: { NotFoundError, ConflictError } } = require('wheely-utils')
-const { ObjectId, models: { User, Practice, Reservation, Instructor } } = require('wheely-data')
+const { ObjectId, models: { User, Practice, Instructor } } = require('wheely-data')
 
 module.exports = function(instructorId, studentId, date) {
   // sincronous validate
@@ -29,12 +29,12 @@ module.exports = function(instructorId, studentId, date) {
       if (existingDate) throw new ConflictError(`practice with date ${date} already exists`)
 
       // create the practice with a reservation embebed
-      let reservation = await Reservation.create({ instructorId, studentId })
-      let practice = await Practice.create({ date, reservation })
+  /*    let reservation = await Reservation.create({ instructorId, studentId })*/
+      let practice = await Practice.create({ date, instructorId, studentId })
 
       // update instructor to add the new practice and the student
       // update student profile with the new practice and a credit less
-      student.profile.credits = student.profile.credits - practice.reservation.price
+      student.profile.credits = student.profile.credits - practice.price
       student.profile.practices.push(practice.id)
       instructor.profile.practices.push(practice.id)
       instructor.profile.students.push(studentId)

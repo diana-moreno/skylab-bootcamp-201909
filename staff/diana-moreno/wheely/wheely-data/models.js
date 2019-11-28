@@ -6,6 +6,6 @@ module.exports = {
     Student: model('Student', student),
     Instructor: model('Instructor', instructor),
 /*    Admin: model('Admin', admin),*/
-    Practice: model('Practice', practice),
-    Reservation: model('Reservation', reservation)
+    Practice: model('Practice', practice)
+/*    Reservation: model('Reservation', reservation)*/
 }

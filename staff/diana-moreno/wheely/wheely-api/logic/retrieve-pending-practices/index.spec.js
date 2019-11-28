@@ -57,12 +57,10 @@ describe('logic - retrieve pending practices', () => {
     price = 1
     status = 'pending'
     date = new Date("Wed, 27 July 2016 13:30:00")
-    let reservation = await Reservation.create({ instructorId, studentId })
-    practice = await Practice.create({ date, reservation })
+    await Practice.create({ date, instructorId, studentId })
 
     date = new Date("Wed, 28 July 2016 13:30:00")
-    reservation = await Reservation.create({ instructorId, studentId })
-    practice = await Practice.create({ date, reservation })
+    await Practice.create({ date, instructorId, studentId })
   })
 
   it('should succeed on retrieve the student practices', async () => {

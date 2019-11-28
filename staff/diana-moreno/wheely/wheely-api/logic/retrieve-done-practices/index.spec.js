@@ -4,7 +4,7 @@ const { expect } = require('chai')
 const retrieveDonePractices = require('.')
 const bookPractice = require('../book-practice')
 const { random } = Math
-const { database, models: { User, Practice, Student, Instructor, Reservation, Feedback } } = require('wheely-data')
+const { database, models: { User, Practice, Student, Instructor, Feedback } } = require('wheely-data')
 /*const moment = require('moment')
 const now = moment().format('MMMM Do YYYY, h:mm:ss a')*/
 
@@ -57,14 +57,11 @@ describe('logic - retrieve done practices', () => {
     price = 1
     status = 'done'
     date = new Date("Wed, 27 July 2016 13:30:00")
-    let reservation = await Reservation.create({ instructorId, studentId })
-    practice = await Practice.create({ date, reservation, status })
-    practId = practice.id
+
+    await Practice.create({ date, instructorId, studentId, status })
 
     date = new Date("Wed, 28 July 2016 13:30:00")
-    reservation = await Reservation.create({ instructorId, studentId })
-    practice = await Practice.create({ date, reservation, status })
-    practId = practice.id
+    await Practice.create({ date, instructorId, studentId, status })
   })
 
   it('should succeed on retrieve the student practices', async () => {
@@ -77,7 +74,7 @@ describe('logic - retrieve done practices', () => {
 
   it('should succeed on retrieve the instructor practices', async () => {
     practices = await retrieveDonePractices(instructorId)
-debugger
+
     expect(practices).to.exist
     expect(practices[0].status).to.equal('done')
     expect(practices[1].status).to.equal('done')
