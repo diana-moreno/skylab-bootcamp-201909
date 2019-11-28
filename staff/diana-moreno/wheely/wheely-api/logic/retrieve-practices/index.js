@@ -1,5 +1,5 @@
 const { validate, errors: { NotFoundError, ConflictError } } = require('wheely-utils')
-const { ObjectId, models: { User, Practice, Reservation, Instructor } } = require('wheely-data')
+const { ObjectId, models: { User, Practice, Instructor } } = require('wheely-data')
 
 module.exports = function(userId) {
   // sincronous validate
@@ -20,13 +20,13 @@ module.exports = function(userId) {
       throw new NotFoundError(`user with id ${userId} not found`)
     }
 
-    let pendingPractices
+    let practices
 
     if (student) {
-      pendingPractices = await Practice.find({ "studentId": ObjectId(userId), "status": 'pending' }).populate('instructorId').populate('studentId').lean()
+      practices = await Practice.find({ "studentId": ObjectId(userId) }).populate('instructorId').populate('studentId').lean()
     } else if (instructor) {
-      pendingPractices = await Practice.find({ "instructorId": ObjectId(userId), "status": 'pending' }).populate('instructorId').populate('studentId').lean()
+      practices = await Practice.find({ "instructorId": ObjectId(userId) }).populate('instructorId').populate('studentId').lean()
     }
-    return pendingPractices
+    return practices
   })()
 }

@@ -5,7 +5,11 @@ module.exports = {
     deleteUser: require('./delete-user'),
     editUser: require('./edit-user'),
     createPractice: require('./create-practice'),
-    retrievePendingPractices: require('./retrieve-pending-practices'),
-    retrieveDonePractices: require('./retrieve-done-practices'),
-    retrieveCancelledPractices: require('./retrieve-cancelled-practices')
+    retrieveProgression: require('./retrieve-progression'),
+    retrievePractices: require('./retrieve-practices'),
+    listUsers: require('./list-users'),
+    writeFeedback: require('./write-feedback')
 }
+
+/*    retrievePendingPractices: require('./retrieve-pending-practices'),
+    retrieveDonePractices: require('./retrieve-done-practices'),*/

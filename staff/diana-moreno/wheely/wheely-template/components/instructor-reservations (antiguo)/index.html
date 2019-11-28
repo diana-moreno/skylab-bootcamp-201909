@@ -34,32 +34,23 @@
         <ul class="navbar__menu">
           <li class='navbar__menu-item'>Home</li>
           <li class='navbar__menu-item'>Booking</li>
-          <li class='navbar__menu-item'>Your account</li>
-<!--           <li class='navbar__menu-item'>Progression</li> -->
+          <li class='navbar__menu-item'>Reservations</li>
+          <li class='navbar__menu-item'>Progression</li>
+          <li class='navbar__menu-item'>Credits</li>
         </ul>
       </div>
     </nav>
     <div class='greeting'>
-      <i class="material-icons greeting__rol-icon">school</i>
+      <i class="material-icons greeting__rol-icon">directions_car</i>
       <h3 class='greeting__name'>Diana Moreno</h3>
     </div>
     <h3 class='title'>Reservations</h3>
   </header>
 
   <section class='reservations'>
-
-      <form action="">
-        <select name="role">
-          <option value="pending">pending</option>
-          <option value="done">finished</option>
-          <option value="all">all</option>
-        </select>
-      <button className='form__button form__button--register'>Filter</button>
-      </form>
-
     <div class='reservations__category-container'>
       <div class='reservations__category'>
-
+        <h4 class='reservations__category-title'>Pending</h4>
         <ul class='reservations__category-list'>
           <li class='category__item'>
             <div class='category__item-icon'>
@@ -70,9 +61,6 @@
               <p>17:00</p>
               <p>Paco García</p>
             </div>
-            <div class='category__item-icon category__item-icon--cancel'>
-              <i class="material-icons">delete</i>
-            </div>
           </li>
           <li class='category__item'>
             <div class='category__item-icon'>
@@ -83,11 +71,13 @@
               <p>17:00</p>
               <p>Paco García</p>
             </div>
-            <div class='category__item-icon category__item-icon--cancel'>
-              <i class="material-icons">delete</i>
-            </div>
           </li>
-          <li class='category__item category__item--done'>
+        </ul>
+      </div>
+      <div class='reservations__category'>
+        <h4 class='reservations__category-title'>Historical</h4>
+        <ul class='reservations__category-list'>
+          <li class='category__item'>
             <div class='category__item-icon category__item-icon--done'>
               <i class="material-icons">done</i>
             </div>
@@ -97,7 +87,7 @@
               <p>Paco García</p>
             </div>
           </li>
-          <li class='category__item category__item--done'>
+          <li class='category__item'>
             <div class='category__item-icon category__item-icon--done'>
               <i class="material-icons">done</i>
             </div>

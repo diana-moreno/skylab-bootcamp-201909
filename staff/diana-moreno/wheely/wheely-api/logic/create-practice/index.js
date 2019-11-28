@@ -46,9 +46,9 @@ module.exports = function(instructorId, studentId, date) {
 
 
 
-let to = 'd7@hotmail.es'
+/*let to = 'd7@hotmail.es'
 sendEmail(to)
-
+*/
 
 
 

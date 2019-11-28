@@ -2,7 +2,7 @@ module.exports = {
   user: require('./user'),
   student: require('./student'),
   instructor: require('./instructor'),
-  practice: require('./practice'),
+  practice: require('./practice')/*,
   reservation: require('./reservation'),
-  feedback: require('./feedback')
+  feedback: require('./feedback')*/
 }
