@@ -23,7 +23,8 @@ module.exports = function(userId) {
     let pendingPractices
 
     if (student) {
-      pendingPractices = await Practice.find({ "reservation.studentId": ObjectId(userId), "status": 'pending' })
+      pendingPractices = await Practice.find({ "reservation.studentId": ObjectId(userId), "status": 'pending' }).populate({ path: 'instructors', populate: { path: 'instructors' }
+  });
     } else if (instructor) {
       pendingPractices = await Practice.find({ "reservation.instructorId": ObjectId(userId), "status": 'pending' })
     }
