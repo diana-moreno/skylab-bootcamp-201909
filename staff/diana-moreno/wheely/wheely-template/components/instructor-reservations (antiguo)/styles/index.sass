@@ -5,7 +5,6 @@ html
 body
   margin: 0
   height: 100%
-  color: #585555
 
 .navbar
   display: flex
@@ -60,8 +59,8 @@ body
     list-style-type: none
     transform-origin: 0% 0%
     transform: translate(-100%, 0)
-    margin-top: 7.5rem
-    padding: 1rem 0
+    margin-top: 9.5rem
+    padding: 0
     margin-left: -1rem
     text-align: center
 
@@ -90,40 +89,23 @@ body
 
 .title
   margin: 0
+  background: #dedbdb
   text-align: center
   padding: 1rem
   color: #585555
   font-weight: 400
 
-.reservations
-  form
-    display: flex
-    justify-content: center
-    margin: 1.5rem
-
-    select
-      font-size: 1rem
-      padding: 0.4rem
-      border: 1px solid #a0a0a0
-      border-top-left-radius: 7px
-      border-bottom-left-radius: 7px
-      font-family: Comfortaa
-      background: white
-      width: 15rem
-      color: #585555
-
-    button
-      font-size: 1rem
-      padding: 0.5rem
-      background-color: #17b0a2
-      border: none
-      color: white
-      border-top-right-radius: 7px
-      border-bottom-right-radius: 7px
-      font-family: Comfortaa
-
 .reservations__category-container
   padding: 0 1rem 1rem 1rem
+
+.reservations__category
+  margin-top: 2rem
+  color: #585555
+
+.reservations__category-title
+  text-align: center
+  padding-bottom: 0.5rem
+  margin-bottom: 0
 
 .reservations__category-list
   list-style: none
@@ -138,15 +120,8 @@ body
   box-shadow: 0 2px 7px 2px rgba(0,0,0,0.04), 0 1px 3px 0 rgba(0,0,0,0.24)
   border-radius: 7px
 
-  &-detail
-    width: 70%
-
   p
     margin: 0.2rem 0
-
-  &--done
-    background: #f1f1f1
-    box-shadow: none
 
 .category__item-icon
   width: 22%
@@ -157,10 +132,4 @@ body
   align-items: center
 
 .category__item-icon--done
-  color: #009688
-
-.category__item-icon--cancel
-  color: #da7171
-
-  i
-    font-size: 1.7rem
+    color: #009688

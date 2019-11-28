@@ -28,7 +28,6 @@ body
     text-align: right
     right: 1rem
     top: 0
-    letter-spacing: 0.2rem
 
   &__checkbox
     width: 40px
@@ -60,7 +59,7 @@ body
     list-style-type: none
     transform-origin: 0% 0%
     transform: translate(-100%, 0)
-    margin-top: 7.5rem
+    margin-top: 5rem
     padding: 1rem 0
     margin-left: -1rem
     text-align: center
@@ -90,77 +89,40 @@ body
 
 .title
   margin: 0
+  background: #e7e6e6
   text-align: center
   padding: 1rem
   color: #585555
-  font-weight: 400
-
-.reservations
-  form
-    display: flex
-    justify-content: center
-    margin: 1.5rem
-
-    select
-      font-size: 1rem
-      padding: 0.4rem
-      border: 1px solid #a0a0a0
-      border-top-left-radius: 7px
-      border-bottom-left-radius: 7px
-      font-family: Comfortaa
-      background: white
-      width: 15rem
-      color: #585555
-
-    button
-      font-size: 1rem
-      padding: 0.5rem
-      background-color: #17b0a2
-      border: none
-      color: white
-      border-top-right-radius: 7px
-      border-bottom-right-radius: 7px
-      font-family: Comfortaa
-
-.reservations__category-container
-  padding: 0 1rem 1rem 1rem
-
-.reservations__category-list
-  list-style: none
-  margin-left: 0
-  padding: 0
-  margin: 0
-
-.category__item
-  display: flex
-  padding: 0.5rem 0
-  margin: 1rem 0
+  letter-spacing: 0.1rem
   box-shadow: 0 2px 7px 2px rgba(0,0,0,0.04), 0 1px 3px 0 rgba(0,0,0,0.24)
-  border-radius: 7px
 
-  &-detail
-    width: 70%
+.detail-user
+  margin: 2rem
 
-  p
-    margin: 0.2rem 0
+  div
+    display: flex
+    align-items: center
 
-  &--done
-    background: #f1f1f1
-    box-shadow: none
+  &__icon
+    margin-right: 1rem
+    color: orange
+    cursor: pointer
 
-.category__item-icon
-  width: 22%
-  font-size: 2rem
-  color: #FF9800
-  display: flex
-  justify-content: center
-  align-items: center
+    &--blue
+      color: #03A9F4
 
-.category__item-icon--done
-  color: #009688
 
-.category__item-icon--cancel
-  color: #da7171
+  &__button
+    font-size: 1rem
+    display: block
+    color: white
+    background: #17b0a2
+    margin: 1rem 2rem
+    padding: 0.5rem 0.5rem
+    border: none
+    border-radius: 6px
+    width: 80%
+    font-family: Comfortaa
 
-  i
-    font-size: 1.7rem
+    &--red
+      background: #d46f67

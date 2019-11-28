@@ -6,8 +6,8 @@ module.exports = new Schema({
     required: true,
     default: Date.now
   },
-  message: {
-    type: Array,
+  feedback: {
+    type: String,
     required: true
   },
   valoration: {
