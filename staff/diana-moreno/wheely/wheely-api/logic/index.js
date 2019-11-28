@@ -4,7 +4,10 @@ module.exports = {
     retrieveUser: require('./retrieve-user'),
     deleteUser: require('./delete-user'),
     editUser: require('./edit-user'),
-    bookPractice: require('./book-practice')
+    bookPractice: require('./book-practice'),
+    retrievePendingPractices: require('./retrieve-pending-practices'),
+    retrieveDonePractices: require('./retrieve-done-practices'),
+    retrieveCancelledPractices: require('./retrieve-cancelled-practices')
 /*
     createTask: require('./create-task'),
     listTasks: require('./list-tasks'),

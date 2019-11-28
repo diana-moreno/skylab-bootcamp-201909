@@ -18,7 +18,7 @@ module.exports = function(instructorId, studentId, date) {
     if (!student) throw new NotFoundError(`user with id ${id} not found`)
 
     // check if the student has credits available
-    if (student.profile.credits > 0) {
+    if (student.profile.credits > 0) { // change to >0, this is only a test
 
       // check if instructor exists
       let instructor = await User.findOne({ _id: instructorId, role: 'instructor' })
@@ -32,19 +32,21 @@ module.exports = function(instructorId, studentId, date) {
       let reservation = await Reservation.create({ instructorId, studentId })
       let practice = await Practice.create({ date, reservation })
 
-      // update instructor to add the new practice
+      // update instructor to add the new practice and the student
       // update student profile with the new practice and a credit less
       student.profile.credits = student.profile.credits - practice.reservation.price
-      student.profile.practices = [...student.profile.practices, practice.id]
-      instructor.profile.practices = [...instructor.profile.practices, practice.id]
+      student.profile.practices.push(practice.id)
+      instructor.profile.practices.push(practice.id)
+      instructor.profile.students.push(studentId)
 
-      await User.update({ _id: studentId }, { $set: { 'profile.practices': student.profile.practices, 'profile.credits': student.profile.credits } }, { multi: true })
-      await User.update({ _id: instructorId }, { $set: { 'profile.practices': instructor.profile.practices } }, { multi: true })
+      await User.updateOne({ _id: studentId }, { $set: { 'profile.practices': student.profile.practices, 'profile.credits': student.profile.credits } }, { multi: true })
+      await User.updateOne({ _id: instructorId }, { $set: { 'profile.practices': instructor.profile.practices, 'profile.students': instructor.profile.students } }, { multi: true })
 
-      // returns the practice id
+      // returns the practice-id
       return practice.id
     } else {
       throw new ConflictError(`user has no credits`)
     }
   })()
 }
+// falta comprobar si la hora está disponible en el array de schedule del profesor, por ahora no la añado porque el profesor no tiene horarios aún

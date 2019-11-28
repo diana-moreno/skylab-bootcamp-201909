@@ -73,10 +73,17 @@ describe('logic - book a practice', () => {
     expect(practice.reservation.studentId.toString()).to.equal(studentId)
     expect(practice.feedback).to.equal(undefined)
 
-    // retrieve the student to check how many credits he has after doing a reservation
+    // retrieve the student to check how many credits he has after doing a reservation and if the practice is saved in his profile
     student = await User.findOne({ _id: studentId, role: 'student' })
 
     expect(student.profile.credits).to.equal(newCredits)
+    expect(student.profile.practices[0]).to.equal(practiceId)
+
+    // retrieve the instructor to check if the practice and the student has been saved in his profile
+    instructor = await User.findOne({ _id: instructorId, role: 'instructor' })
+
+    expect(instructor.profile.students[0]).to.equal(studentId)
+    expect(instructor.profile.practices[0]).to.equal(practiceId)
   })
 
   describe('logic - when user has no credits', () => {
@@ -169,7 +176,6 @@ describe('logic - book a practice', () => {
     beforeEach(async () => {
       date = new Date("Wed, 27 July 2016 13:30:00")
       let reservation = await Reservation.create({ instructorId, studentId })
-      debugger
       practice = await Practice.create({ date, reservation })
 
       practiceId = practice.id
