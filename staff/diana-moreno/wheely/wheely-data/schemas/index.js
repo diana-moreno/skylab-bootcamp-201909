@@ -1,7 +1,8 @@
 module.exports = {
-    user: require('./user'),
-    practice: require('./practice'),
-    student: require('./student'),
-    instructor: require('./instructor')
-/*    admin: require('./admin')*/
+  user: require('./user'),
+  student: require('./student'),
+  instructor: require('./instructor'),
+  practice: require('./practice'),
+  reservation: require('./reservation'),
+  feedback: require('./feedback')
 }

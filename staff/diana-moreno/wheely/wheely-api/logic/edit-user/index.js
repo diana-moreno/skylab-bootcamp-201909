@@ -1,5 +1,5 @@
 const { validate, errors: { ConflictError, NotFoundError } } = require('wheely-utils')
-const { ObjectId, models: { User, Student, Instructor, Admin } } = require('wheely-data')
+const { ObjectId, models: { User } } = require('wheely-data')
 
 module.exports = function(id, name, surname, email) {
   validate.string(id)
@@ -18,6 +18,10 @@ module.exports = function(id, name, surname, email) {
     validate.string.notVoid('e-mail', email)
     validate.email(email)
   }
+/*  if (password) {
+    validate.string(password)
+    validate.string.notVoid('password', password)
+  }*/
 
   return (async () => {
     const user = await User.findById(id)
@@ -29,6 +33,7 @@ module.exports = function(id, name, surname, email) {
     name && (update.name = name)
     surname && (update.surname = surname)
     email && (update.email = email)
+/*    password && (update.password = password)*/
     update.lastAccess = new Date
 
     await User.updateOne({ _id: ObjectId(id) }, { $set: update })

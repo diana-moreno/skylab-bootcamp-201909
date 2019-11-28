@@ -3,11 +3,9 @@ module.exports = {
     registerUser: require('./register-user'),
     retrieveUser: require('./retrieve-user'),
     deleteUser: require('./delete-user'),
-    editUser: require('./edit-user')
-/*
-    createTask: require('./create-task'),
-    listTasks: require('./list-tasks'),
-    modifyTask: require('./modify-task'),
-    removeTask: require('./remove-task')
-*/
+    editUser: require('./edit-user'),
+    createPractice: require('./create-practice'),
+    retrievePendingPractices: require('./retrieve-pending-practices'),
+    retrieveDonePractices: require('./retrieve-done-practices'),
+    retrieveCancelledPractices: require('./retrieve-cancelled-practices')
 }

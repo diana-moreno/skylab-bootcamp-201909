@@ -1,16 +1,16 @@
 const { Router } = require('express')
-const bodyParser = require('body-parser')
-const { registerUser, authenticateUser, retrieveUser, deleteUser, editUser/*, createTask, listTasks, modifyTask, removeTask*/ } = require('./logic')
+const { registerUser, authenticateUser, retrieveUser, deleteUser, editUser } = require('../../logic')
 const jwt = require('jsonwebtoken')
 const { env: { SECRET } } = process
-const tokenVerifier = require('./helpers/token-verifier')(SECRET)
+const tokenVerifier = require('../../helpers/token-verifier')(SECRET)
+const bodyParser = require('body-parser')
 const { errors: { NotFoundError, ConflictError, CredentialsError } } = require('wheely-utils')
 
 const jsonBodyParser = bodyParser.json()
 
 const router = Router()
 
-router.post('/users', jsonBodyParser, (req, res) => {
+router.post('/', jsonBodyParser, (req, res) => {
   const { body: { name, surname, email, password, role } } = req
 
   try {
@@ -70,7 +70,7 @@ router.post('/auth', jsonBodyParser, (req, res) => {
   }
 })
 
-router.get('/users', tokenVerifier, (req, res) => {
+router.get('/', tokenVerifier, (req, res) => {
   //tokenVerifier añade el id que reciben del token en header en req?
   try {
     const { id } = req
@@ -92,7 +92,7 @@ router.get('/users', tokenVerifier, (req, res) => {
   }
 })
 
-router.delete('/users', tokenVerifier, (req, res) => {
+router.delete('/', tokenVerifier, (req, res) => {
   try {
     const { id } = req
 
@@ -113,7 +113,7 @@ router.delete('/users', tokenVerifier, (req, res) => {
   }
 })
 
-router.patch('/users', jsonBodyParser, tokenVerifier, (req, res) => {
+router.patch('/', jsonBodyParser, tokenVerifier, (req, res) => {
   try {
     const { id, body: { name, surname, email } } = req
 
