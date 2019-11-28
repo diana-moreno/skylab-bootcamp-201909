@@ -24,7 +24,6 @@ module.exports = function(userId) {
 
     if (student) {
       pendingPractices = await Practice.find({ "studentId": ObjectId(userId), "status": 'pending' }).populate('instructorId').populate('studentId')
-debugger
     } else if (instructor) {
       pendingPractices = await Practice.find({ "instructorId": ObjectId(userId), "status": 'pending' }).populate('instructorId').populate('studentId')
     }

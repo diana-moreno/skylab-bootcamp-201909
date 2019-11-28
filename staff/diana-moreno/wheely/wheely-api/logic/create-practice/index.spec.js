@@ -1,7 +1,7 @@
 require('dotenv').config()
 const { env: { TEST_DB_URL } } = process
 const { expect } = require('chai')
-const bookPractice = require('.')
+const createPractice = require('.')
 const { random } = Math
 const { database, models: { User, Practice, Student, Instructor, Feedback } } = require('wheely-data')
 /*const moment = require('moment')
@@ -54,7 +54,7 @@ describe('logic - book a practice', () => {
     student = await User.findOne({ _id: studentId, role: 'student' })
     let newCredits = student.profile.credits - 1
 
-    const practiceId = await bookPractice(instructorId, studentId, date)
+    const practiceId = await createPractice(instructorId, studentId, date)
     expect(practiceId).to.exist
     expect(practiceId).to.be.a('string')
     expect(practiceId).to.have.length.greaterThan(0)
@@ -124,7 +124,7 @@ describe('logic - book a practice', () => {
 
     it('should fail when user has no credits available', async () => {
       try {
-        await bookPractice(instructorId, studentId, date)
+        await createPractice(instructorId, studentId, date)
         throw Error('should not reach this point')
 
       } catch (error) {
@@ -187,7 +187,7 @@ describe('logic - book a practice', () => {
         let practiceSaved = await Practice.findById(practiceId)
         expect(practiceSaved).to.exist
 
-        await bookPractice(instructorId, studentId, date)
+        await createPractice(instructorId, studentId, date)
         throw Error('should not reach this point')
 
       } catch (error) {

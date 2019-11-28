@@ -1,6 +1,8 @@
 const { validate, errors: { NotFoundError, ConflictError } } = require('wheely-utils')
 const { ObjectId, models: { User, Practice, Instructor } } = require('wheely-data')
 
+const sendEmail = require('../../helpers/send-email')
+
 module.exports = function(instructorId, studentId, date) {
   // sincronous validate
   validate.string(instructorId)
@@ -41,6 +43,14 @@ module.exports = function(instructorId, studentId, date) {
 
       await User.updateOne({ _id: studentId }, { $set: { 'profile.practices': student.profile.practices, 'profile.credits': student.profile.credits } }, { multi: true })
       await User.updateOne({ _id: instructorId }, { $set: { 'profile.practices': instructor.profile.practices, 'profile.students': instructor.profile.students } }, { multi: true })
+
+
+
+let to = 'd7@hotmail.es'
+sendEmail(to)
+
+
+
 
       // returns the practice-id
       return practice.id

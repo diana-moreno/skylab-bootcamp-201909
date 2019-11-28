@@ -2,7 +2,6 @@ require('dotenv').config()
 const { env: { TEST_DB_URL } } = process
 const { expect } = require('chai')
 const retrieveCancelledPractices = require('.')
-const bookPractice = require('../book-practice')
 const { random } = Math
 const { database, models: { User, Practice, Student, Instructor, Reservation, Feedback } } = require('wheely-data')
 /*const moment = require('moment')

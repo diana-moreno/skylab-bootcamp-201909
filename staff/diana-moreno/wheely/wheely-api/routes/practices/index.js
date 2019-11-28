@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const { bookPractice, retrieveReservations } = require('../../logic')
+const { createPractice, retrievePendingPractices, retrieveDonePractices, retrieveCancelledPractices } = require('../../logic')
 const jwt = require('jsonwebtoken')
 const { env: { SECRET } } = process
 const tokenVerifier = require('../../helpers/token-verifier')(SECRET)
@@ -11,9 +11,9 @@ const jsonBodyParser = bodyParser.json()
 const router = Router()
 
 router.post('/', jsonBodyParser, tokenVerifier, (req, res) => {
-  const { id, body: { instructorId, date } } = req
   try {
-    bookPractice(instructorId, id, date)
+  const { id, body: { instructorId, date } } = req
+    createPractice(instructorId, id, date)
       .then(() => res.status(201).end())
       .catch(error => {
         const { message } = error
