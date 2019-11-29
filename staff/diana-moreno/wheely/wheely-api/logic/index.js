@@ -8,7 +8,8 @@ module.exports = {
     retrieveProgression: require('./retrieve-progression'),
     retrievePractices: require('./retrieve-practices'),
     listUsers: require('./list-users'),
-    writeFeedback: require('./write-feedback')
+    writeFeedback: require('./write-feedback'),
+    cancelPractice: require('./cancelPractice')
 }
 
 /*    retrievePendingPractices: require('./retrieve-pending-practices'),

@@ -29,8 +29,8 @@ module.exports = function(instructorId, studentId, practiceId, feedback, valorat
     let instructor = await User.findOne({ _id: instructorId, role: 'instructor' })
     if (!instructor) throw new NotFoundError(`user with id ${instructorId} not found`)
 
-    // check if the practice exists
-    let practice = await Practice.findOne({ _id: practiceId })
+    // check if the practice exists and matches with student and instructor
+    let practice = await Practice.findOne({ _id: practiceId, studentId: studentId, instructorId: instructorId })
     if (!practice) throw new ConflictError(`practice with id ${practiceId} does not exists`)
 
     // check if the practice has feedback and valoration
@@ -38,7 +38,7 @@ module.exports = function(instructorId, studentId, practiceId, feedback, valorat
       throw new ConflictError(`practice with id ${practiceId} has been already valorated`)
     }
 
-    //update practice with feedback and valoration
+    //update practice with new feedback and valoration
     await Practice.updateOne({ _id: practiceId }, { $set: { 'feedback': feedback, 'valoration': valoration } }, { multi: true })
 
     //return the updated practice

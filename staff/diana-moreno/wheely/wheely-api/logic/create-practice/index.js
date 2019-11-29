@@ -30,7 +30,7 @@ module.exports = function(instructorId, studentId, date) {
       let existingDate = await Practice.findOne({ date: date })
       if (existingDate) throw new ConflictError(`practice with date ${date} already exists`)
 
-      // create the practice with a reservation embebed
+      // create the practice
   /*    let reservation = await Reservation.create({ instructorId, studentId })*/
       let practice = await Practice.create({ date, instructorId, studentId })
 
