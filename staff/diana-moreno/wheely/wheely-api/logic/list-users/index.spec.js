@@ -4,12 +4,12 @@ const { expect } = require('chai')
 const listUsers = require('.')
 const { random, floor } = Math
 const { errors: { ContentError } } = require('wheely-utils')
-const { database, models: { User } } = require('wheely-data')
+const { database, models: { User, Practice, Student, Instructor, Admin } } = require('wheely-data')
 
 describe('logic - list users', () => {
   before(() => database.connect(TEST_DB_URL))
 
-  let roles = ['admin', 'instructor', 'student']
+  let roles = ['admin', 'instructor']
   let name, surname, email, password, role, names, surnames, emails, passwords, ids
 
   beforeEach(async () => {
@@ -37,10 +37,8 @@ describe('logic - list users', () => {
       emails.push(currentUser.email)
       passwords.push(currentUser.password)
       ids.push(currentUser._id.toString())
-
     }
     await Promise.all(insertions)
-
   })
 
   it('should succeed on correct user', async () => {
@@ -137,6 +135,63 @@ describe('logic - list users', () => {
 
     expect(() => listUsers('')).to.throw(ContentError, 'id is empty or blank')
     expect(() => listUsers(' \t\r')).to.throw(ContentError, 'id is empty or blank')
+  })
+
+  describe('logic - when instructor retrieves his students', () => {
+
+    let studentId, instructorId, name, surname, email, password, role, price, status, date, credits, student, practiceId, feedback, valoration
+
+    beforeEach(async () => {
+      // create an student
+      name = `j-${random()}`
+      surname = `surname-${random()}`
+      email = `email-${random()}@mail.com`
+      password = `password-${random()}`
+      role = 'student'
+
+      await Promise.all([User.deleteMany(), Practice.deleteMany()])
+
+      let student = await User.create({ name, surname, email, password, role })
+      student.profile = new Student()
+      student.profile.credits = 3
+      credits = 3
+      await student.save()
+      studentId = student.id
+
+      // create an instructor
+      name = `name-${random()}`
+      surname = `surname-${random()}`
+      email = `email-${random()}@mail.com`
+      password = `password-${random()}`
+      role = 'instructor'
+
+      let instructor = await User.create({ name, surname, email, password, role })
+      instructor.profile = new Instructor()
+      await instructor.save()
+      instructorId = instructor.id
+
+      // create practice
+      price = 1
+      date = new Date("Wed, 27 July 2016 13:30:00")
+      let practice = await Practice.create({ date, instructorId, studentId })
+
+      date = new Date("Wed, 28 July 2016 13:30:00")
+      practice = await Practice.create({ date, instructorId, studentId })
+
+
+      date = new Date("Wed, 29 July 2016 13:30:00")
+      practice = await Practice.create({ date, instructorId, studentId })
+      practice.status = 'feedback'
+      practice.save()
+
+    })
+
+    it('should succeed on correct user', async () => {
+      const users = await listUsers(instructorId)
+debugger
+      expect(users).to.exist
+
+    })
   })
 
   after(() => Promise.all([User.deleteMany()]).then(database.disconnect))

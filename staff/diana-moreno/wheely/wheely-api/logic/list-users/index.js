@@ -15,7 +15,16 @@ module.exports = function(id) {
       throw new NotFoundError(`user with id ${id} not found`)
     }
 
-    const users = await User.find().lean()
+    let users
+
+    if (admin) {
+      users = await User.find().lean()
+    } else if (instructor) {
+      users = await Practice
+        .find({ "instructorId": ObjectId(id), "status": 'pending' }, { "studentId": 1 })
+        .populate('studentId')
+        .lean()
+    }
 
     return users
   })()

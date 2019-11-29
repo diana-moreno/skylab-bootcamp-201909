@@ -24,7 +24,7 @@ module.exports = function(userId) {
 
     // retrieves only the practices of the student that has been done and has a feedback
     if (student) {
-      practices = await Practice.find({ "studentId": ObjectId(userId), "status": 'done', "feedback": { $exists: true, $ne: null } }).populate('instructorId').populate('studentId').lean()
+      practices = await Practice.find({ "studentId": ObjectId(userId), "status": 'done'}).populate('instructorId').populate('studentId').lean()
     }
     return practices
   })()

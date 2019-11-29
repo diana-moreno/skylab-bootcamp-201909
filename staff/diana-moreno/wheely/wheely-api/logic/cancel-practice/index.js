@@ -31,15 +31,13 @@ module.exports = function(instructorId, studentId, practiceId) {
     // check if the practice is pending (otherside is not possible to cancel)
     if (practice.status !== 'pending') {
       throw new ConflictError(`practice with id ${practiceId} is not possible to cancel`)
-    } else {
-
     }
 
     //delete practice from practices collection
     await Practice.deleteOne({ _id: ObjectId(practiceId) })
 
     // delete practice in student account
-    debugger
+
     const index1 = student.profile.practices.findIndex(practice => practice === practiceId)
     if (index1 < 0) throw new NotFoundError(`practice with id ${practiceId} not found`)
     student.profile.practices.splice(index1, 1)
@@ -47,15 +45,12 @@ module.exports = function(instructorId, studentId, practiceId) {
     await User.updateOne({ _id: studentId }, { $set: { 'profile.practices': student.profile.practices } }, { multi: true })
 
     // delete practice in instructor account
-    debugger
+
     const index2 = instructor.profile.practices.findIndex(practice => practice === practiceId)
     if (index2 < 0) throw new NotFoundError(`practice with id ${practiceId} not found`)
     instructor.profile.practices.splice(index2, 1)
 
     await User.updateOne({ _id: instructorId }, { $set: { 'profile.practices': instructor.profile.practices } }, { multi: true })
-
-    debugger
-
   })()
 }
 

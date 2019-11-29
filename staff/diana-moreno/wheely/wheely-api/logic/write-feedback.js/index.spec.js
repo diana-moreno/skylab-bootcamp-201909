@@ -62,7 +62,7 @@ describe('logic - write feedback', () => {
     expect(practiceFeedback.date).to.exist
     expect(practiceFeedback.date).to.be.instanceOf(Date)
     expect(practiceFeedback.date.getTime()).to.equal(date.getTime())
-    expect(practiceFeedback.status).to.equal(status)
+    expect(practiceFeedback.status).to.equal('done')
     expect(practiceFeedback.date).to.exist
     expect(practiceFeedback.price).to.equal(price)
     expect(practiceFeedback.instructorId.toString()).to.equal(instructorId)

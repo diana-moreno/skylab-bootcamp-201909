@@ -13,6 +13,8 @@ module.exports = function(instructorId, studentId, date) {
   validate.string.notVoid('studentId', studentId)
   if (!ObjectId.isValid(studentId)) throw new ContentError(`${studentId} is not a valid id`)
 
+  validate.date(date)
+
   return (async () => {
 
     // check if student exists
@@ -31,7 +33,6 @@ module.exports = function(instructorId, studentId, date) {
       if (existingDate) throw new ConflictError(`practice with date ${date} already exists`)
 
       // create the practice
-  /*    let reservation = await Reservation.create({ instructorId, studentId })*/
       let practice = await Practice.create({ date, instructorId, studentId })
 
       // update instructor to add the new practice and the student

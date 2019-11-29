@@ -64,9 +64,6 @@ describe('logic - register user', () => {
       expect(user.profile).to.exist
       expect(user.profile.credits).to.exist
       expect(user.profile.practices).to.exist
-      expect(user.profile.schedule).to.equal(undefined)
-      expect(user.profile.statistics).to.equal(undefined)
-      expect(user.profile.students).to.equal(undefined)
     })
   })
 
@@ -95,10 +92,6 @@ describe('logic - register user', () => {
       expect(user.password).to.equal(password)
       expect(user.role).to.equal(role)
       expect(user.profile).to.exist
-      expect(user.profile.schedule).to.exist
-      expect(user.profile.statistics).to.exist
-      expect(user.profile.practices).to.exist
-      expect(user.profile.students).to.exist
       expect(user.profile.credits).to.equal(undefined)
     })
   })
@@ -128,12 +121,6 @@ describe('logic - register user', () => {
       expect(user.password).to.equal(password)
       expect(user.role).to.equal(role)
       expect(user.profile).to.exist
-      expect(user.profile.schedule).to.equal(undefined)
-      expect(user.profile.statistics).to.equal(undefined)
-      expect(user.profile.practices).to.equal(undefined)
-      expect(user.profile.students).to.equal(undefined)
-      expect(user.profile.credits).to.equal(undefined)
-      expect(user.profile.practices).to.equal(undefined)
     })
   })
 

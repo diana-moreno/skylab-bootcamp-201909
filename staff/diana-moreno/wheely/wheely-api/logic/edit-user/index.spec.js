@@ -136,10 +136,6 @@ describe('logic - edit user', () => {
       expect(user.password).to.equal(password)
       expect(user.role).to.equal(role)
       expect(user.profile).to.exist
-      expect(user.profile.schedule).to.exist
-      expect(user.profile.statistics).to.exist
-      expect(user.profile.practices).to.exist
-      expect(user.profile.students).to.exist
       expect(user.profile.credits).to.equal(undefined)
     })
 
@@ -159,10 +155,6 @@ describe('logic - edit user', () => {
       expect(user.password).to.equal(password)
       expect(user.role).to.equal(role)
       expect(user.profile).to.exist
-      expect(user.profile.schedule).to.exist
-      expect(user.profile.statistics).to.exist
-      expect(user.profile.practices).to.exist
-      expect(user.profile.students).to.exist
       expect(user.profile.credits).to.equal(undefined)
     })
 
@@ -182,10 +174,6 @@ describe('logic - edit user', () => {
       expect(user.password).to.equal(password)
       expect(user.role).to.equal(role)
       expect(user.profile).to.exist
-      expect(user.profile.schedule).to.exist
-      expect(user.profile.statistics).to.exist
-      expect(user.profile.practices).to.exist
-      expect(user.profile.students).to.exist
       expect(user.profile.credits).to.equal(undefined)
     })
 

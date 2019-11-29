@@ -42,7 +42,6 @@ describe('logic - retrieve user', () => {
       expect(user.role).to.equal(role)
       expect(user.profile).to.exist
       expect(user.profile.credits).to.equal(0)
-      expect(user.profile.practices).to.exist
     })
 
     it('should fail on wrong user id', async () => {
@@ -89,10 +88,6 @@ describe('logic - retrieve user', () => {
       expect(user.password).to.be.undefined
       expect(user.role).to.equal(role)
       expect(user.profile).to.exist
-      expect(user.profile.schedule).to.exist
-      expect(user.profile.statistics).to.exist
-      expect(user.profile.practices).to.exist
-      expect(user.profile.students).to.exist
       expect(user.profile.credits).to.equal(undefined)
     })
 
