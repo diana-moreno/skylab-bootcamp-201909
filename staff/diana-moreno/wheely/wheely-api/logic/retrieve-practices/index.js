@@ -7,8 +7,10 @@ module.exports = function(userId, query) {
   validate.string.notVoid('userId', userId)
   if (!ObjectId.isValid(userId)) throw new ContentError(`${userId} is not a valid id`)
 
-  validate.string(query)
-  validate.string.notVoid('query', query)
+  if(query) {
+    validate.string(query)
+    validate.string.notVoid('query', query)
+  }
 
   return (async () => {
     //check if the user exists
@@ -27,7 +29,7 @@ module.exports = function(userId, query) {
     // return different practices array depending on the query selected by the user
     if (instructor && query === 'feedback') {
       practices = await Practice
-        .find({ "studentId": ObjectId(userId), "status": 'done', "feedback": { $exists: false } })
+        .find({ "instructorId": ObjectId(userId), "status": 'feedback' })
         .populate('instructorId')
         .populate('studentId')
         .lean()
@@ -45,10 +47,10 @@ module.exports = function(userId, query) {
         .lean()
     } else if(instructor && query === 'done') {
       practices = await Practice
-      .find({ "instructorId": ObjectId(userId), "status": 'done' })
-      .populate('instructorId')
-      .populate('studentId')
-      .lean()
+        .find({ "instructorId": ObjectId(userId), "status": 'done' })
+        .populate('instructorId')
+        .populate('studentId')
+        .lean()
     } else if(student && query === 'pending') {
       practices = await Practice
         .find({ "studentId": ObjectId(userId), "status": 'pending' })
@@ -57,7 +59,7 @@ module.exports = function(userId, query) {
         .lean()
     } else if(student && query === 'done') {
       practices = await Practice
-        .find({ "studentId": ObjectId(userId), "status": 'done' })
+        .find({ "studentId": ObjectId(userId), "status": {$in: ['done', 'feedback']} })
         .populate('instructorId')
         .populate('studentId')
         .lean()

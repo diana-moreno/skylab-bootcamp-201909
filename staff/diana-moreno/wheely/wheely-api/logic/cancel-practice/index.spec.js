@@ -60,13 +60,13 @@ describe('logic - cancel practice', () => {
   it('should succeed on correct users and pending practice', async () => {
     let practice = await Practice.findOne({ _id: practiceId })
     expect(practice).to.exist
-    debugger
+
 
     /*    await User.updateOne({ _id: ObjectId(id) }, { $set: { "wishes.$[wish]": wish } }, { arrayFilters: [{ "wish._id": ObjectId(wishId) }] })
      */
     await cancelPractice(instructorId, studentId, practiceId)
     practice = await Practice.findOne({ _id: practiceId })
-debugger
+
     expect(practice).to.equal(null)
   })
 
