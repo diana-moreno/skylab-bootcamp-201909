@@ -26,7 +26,7 @@ module.exports = function(instructorId, studentId, practiceId) {
 
     // check if the practice exists and matches with student and instructor
     let practice = await Practice.findOne({ _id: practiceId, studentId: studentId, instructorId: instructorId })
-    if (!practice) throw new ConflictError(`practice with id ${practiceId} does not exists`)
+    if (!practice) throw new NotFoundError(`practice with id ${practiceId} not found`)
 
     // check if the practice is pending (otherside is not possible to cancel)
     if (practice.status !== 'pending') {
@@ -38,28 +38,29 @@ module.exports = function(instructorId, studentId, practiceId) {
     //delete practice from practices collection
     await Practice.deleteOne({ _id: ObjectId(practiceId) })
 
-    // delete practice from users collection, for student and instructor
-debugger
-    let a = await User.findOne({ _id: ObjectId(studentId)})
-    const index = a.profile.practices.findIndex(practice=>practice===practiceId)
-    if(index<0) throw new Error('ha ido mal')
-    a.profile.practices.splice(index, 1)
+    // delete practice in student account
+    debugger
+    const index1 = student.profile.practices.findIndex(practice => practice === practiceId)
+    if (index1 < 0) throw new NotFoundError(`practice with id ${practiceId} not found`)
+    student.profile.practices.splice(index1, 1)
+
+    await User.updateOne({ _id: studentId }, { $set: { 'profile.practices': student.profile.practices } }, { multi: true })
+
+    // delete practice in instructor account
+    debugger
+    const index2 = instructor.profile.practices.findIndex(practice => practice === practiceId)
+    if (index2 < 0) throw new NotFoundError(`practice with id ${practiceId} not found`)
+    instructor.profile.practices.splice(index2, 1)
+
+    await User.updateOne({ _id: instructorId }, { $set: { 'profile.practices': instructor.profile.practices } }, { multi: true })
 
     debugger
-/*    await a.save()
-console.log(a)
-debugger*/
-
-/*          student.profile.credits = student.profile.credits - practice.price
-      student.profile.practices.push(practice.id)
-      instructor.profile.practices.push(practice.id)
-      instructor.profile.students.push(studentId)*/
-
-      await User.updateOne({ _id: studentId }, { $set: { 'profile.practices': a.profile.practices} }, { multi: true })
-debugger
 
   })()
 }
+
+//realmente es necesrio que usuario tenga prácticas, en su ficha???
+//i
 
 
 // al alumno hay que eliminarle la practica

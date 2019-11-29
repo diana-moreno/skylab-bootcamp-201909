@@ -83,7 +83,7 @@ debugger
       expect(error.message).to.exist
       expect(typeof error.message).to.equal('string')
       expect(error.message.length).to.be.greaterThan(0)
-      expect(error.message).to.equal(`practice with id ${fakeId} does not exists`)
+      expect(error.message).to.equal(`practice with id ${fakeId} not found`)
     }
   })
 
