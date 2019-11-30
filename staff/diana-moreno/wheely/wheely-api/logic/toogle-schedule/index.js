@@ -1,8 +1,7 @@
 const { validate, errors: { NotFoundError, ConflictError } } = require('wheely-utils')
 const { ObjectId, models: { User, Practice, Instructor, Day, Week } } = require('wheely-data')
-const moment = require('moment')
 
-module.exports = function(adminId, instructorId, day1) {
+module.exports = function(adminId, instructorId, indexDay, hour) {
   // sincronous validate
   validate.string(instructorId)
   validate.string.notVoid('instructorId', instructorId)
@@ -21,58 +20,51 @@ module.exports = function(adminId, instructorId, day1) {
     // check if instructor exists
     let instructor = await User.findOne({ _id: instructorId, role: 'instructor' })
     if (!instructor) throw new NotFoundError(`user with id ${instructorId} not found`)
-    debugger
 
-    instructor.profile.schedule = new Week()
-    let day = new Day(day1)
+/*      let day0 = new Day({ index: 0, hours: [] })
+      let day1 = new Day({ index: 1, hours: [] })
+      let day2 = new Day({ index: 2, hours: [] })
+      let day3 = new Day({ index: 3, hours: [] })
+      let day4 = new Day({ index: 4, hours: [] })
+      let day5 = new Day({ index: 5, hours: [] })
+      let day6 = new Day({ index: 6, hours: [] })
+      instructor.profile.schedule.days.push(day0, day1, day2, day3, day4, day5, day6)*/
 
-    instructor.profile.schedule.days.push(day)
-    instructor.profile.schedule.days.push(day)
+    if (!instructor.profile.schedule) {
+      instructor.profile.schedule = new Week()
+      let firstDay = new Day({ index: indexDay, hours: [hour] })
+      instructor.profile.schedule.days.push(firstDay)
 
-    //set first day to monday
-    var d = moment().weekday('Monday');
+      await User.updateOne({ _id: instructorId }, { $set: { 'profile.schedule': instructor.profile.schedule } }, { multi: true })
+    } else {
+      instructor.profile.schedule.days.forEach(day => {
+        if (day.index === indexDay) {
+          let indexFound = day.hours.indexOf(hour)
+          if (indexFound < 0) {
+            day.hours.push(hour)
+          } else {
+            day.hours.splice(indexFound, 1)
+          }
+        } else { // esto no debe ir aqui
+          let newDay = new Day({ index: indexDay, hours: [hour] })
+          instructor.profile.schedule.days.push(newDay)
+        }
+      })
+      await User.updateOne({ _id: instructorId }, { $set: { 'profile.schedule': instructor.profile.schedule } }, { multi: true })
 
-    const now = moment()/*.format('MMMM Do YYYY, h:mm:ss a')*/
-    let monday = moment().day(1)
-    let tuesday = moment().day(2)
-    let wednesday = moment().day(3)
-    let thursday = moment().day(4)
-    let friday = moment().day(5)
-    let saturday = moment().day(6)
-    let sunday = moment().day(0)
-
-    if(monday - now < 0) {
-      monday = moment().day(0 + 7)
     }
 
-let myday = '11-25-2020' // recibiré un string como este del frontend
-let dayofweek = moment(myday).day() // puedo saber qué día de la semana es, 0:domingo
-let myhour = '9:00' // recibiré un string como este del frontend
-let concat = myday.concat(' ').concat(myhour) // concateno los strings
-let mydate = moment(concat, 'MM-DD-YYYY hh:mm A') // transformación de los strings a date
-//moment('05-17-2018 23:40 AM', 'MM-DD-YYYY hh:mm A')
+    /*      let day = new Day(day1)
+
+          instructor.profile.schedule.days.push(day)
+          instructor.profile.schedule.days.push(day)
+    */
+
+    /*   await User.updateOne({ _id: instructorId }, { $set: { 'profile.schedule': instructor.profile.schedule } }, { multi: true })*/
+
+
 
     debugger
-
-
-
-    /*      day = {
-            index: 0,
-            hour: 11
-          }*/
-    /*      await instructor.save()
-
-          student.profile.credits = student.profile.credits - practice.price
-          student.profile.practices.push(practice.id)
-          instructor.profile.practices.push(practice.id)
-          instructor.profile.students.push(studentId)*/
-
-    await User.updateOne({ _id: instructorId }, { $set: { 'profile.schedule': instructor.profile.schedule } }, { multi: true })
-
-
-
-    // check if instructor has already the date
-    /*   let dates = instructor.profile.schedule*/
     return instructor
   })()
 }
