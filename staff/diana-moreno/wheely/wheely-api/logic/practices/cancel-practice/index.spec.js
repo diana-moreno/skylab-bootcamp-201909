@@ -42,7 +42,7 @@ describe('logic - cancel practice', () => {
 
     // create practice
     price = 1
-    date = new Date("Wed, 27 July 2016 13:30:00")
+    date = new Date("Wed, 27 July 2030 13:30:00")
     let practice = await Practice.create({ date, instructorId, studentId })
     practiceId = practice.id
 
@@ -108,37 +108,37 @@ describe('logic - cancel practice', () => {
     }
   })
 
-    it('should fail on incorrect student id and practice done', async () => {
-      let fakeId = '01234567890123'
-      try {
-        await cancelPractice(instructorId, fakeId, practiceId)
-        throw Error('should not reach this point')
+  it('should fail on incorrect student id and practice done', async () => {
+    let fakeId = '01234567890123'
+    try {
+      await cancelPractice(instructorId, fakeId, practiceId)
+      throw Error('should not reach this point')
 
-      } catch (error) {
-        expect(error).to.exist
-        expect(error.message).to.exist
-        expect(typeof error.message).to.equal('string')
-        expect(error.message.length).to.be.greaterThan(0)
-        expect(error).to.be.an.instanceOf(ContentError)
-        expect(error.message).to.equal(`${fakeId} is not a valid id`)
-      }
-    })
+    } catch (error) {
+      expect(error).to.exist
+      expect(error.message).to.exist
+      expect(typeof error.message).to.equal('string')
+      expect(error.message.length).to.be.greaterThan(0)
+      expect(error).to.be.an.instanceOf(ContentError)
+      expect(error.message).to.equal(`${fakeId} is not a valid id`)
+    }
+  })
 
-    it('should fail on incorrect instructor id and practice done', async () => {
-      let fakeId = '01234567890123'
-      try {
-        await cancelPractice(fakeId, studentId, practiceId)
-        throw Error('should not reach this point')
+  it('should fail on incorrect instructor id and practice done', async () => {
+    let fakeId = '01234567890123'
+    try {
+      await cancelPractice(fakeId, studentId, practiceId)
+      throw Error('should not reach this point')
 
-      } catch (error) {
-        expect(error).to.exist
-        expect(error.message).to.exist
-        expect(typeof error.message).to.equal('string')
-        expect(error.message.length).to.be.greaterThan(0)
-        expect(error).to.be.an.instanceOf(ContentError)
-        expect(error.message).to.equal(`${fakeId} is not a valid id`)
-      }
-    })
+    } catch (error) {
+      expect(error).to.exist
+      expect(error.message).to.exist
+      expect(typeof error.message).to.equal('string')
+      expect(error.message.length).to.be.greaterThan(0)
+      expect(error).to.be.an.instanceOf(ContentError)
+      expect(error.message).to.equal(`${fakeId} is not a valid id`)
+    }
+  })
 
   describe('when practice is done', () => {
     beforeEach(async () => {
@@ -171,7 +171,7 @@ describe('logic - cancel practice', () => {
       // create practice
       price = 1
       status = 'done'
-      date = new Date("Wed, 27 July 2016 13:30:00")
+      date = new Date("Wed, 27 July 2025 13:30:00")
       let practice = await Practice.create({ date, instructorId, studentId, status })
       practiceId = practice.id
     })
@@ -221,6 +221,59 @@ describe('logic - cancel practice', () => {
     })
 
   })
+
+  describe('when rest lest than 24h for the practice', () => {
+    beforeEach(async () => {
+      // create an student
+      name = `j-${random()}`
+      surname = `surname-${random()}`
+      email = `email-${random()}@mail.com`
+      password = `password-${random()}`
+      role = 'student'
+
+      await Promise.all([User.deleteMany(), Practice.deleteMany()])
+
+      let student = await User.create({ name, surname, email, password, role })
+      student.profile = new Student()
+      await student.save()
+      studentId = student.id
+
+      // create an instructor
+      name = `name-${random()}`
+      surname = `surname-${random()}`
+      email = `email-${random()}@mail.com`
+      password = `password-${random()}`
+      role = 'instructor'
+
+      let instructor = await User.create({ name, surname, email, password, role })
+      instructor.profile = new Instructor()
+      await instructor.save()
+      instructorId = instructor.id
+
+      // create practice
+      price = 1
+      status = 'pending'
+      date = new Date("Wed, 27 July 2016 13:30:00")
+      let practice = await Practice.create({ date, instructorId, studentId, status })
+      practiceId = practice.id
+    })
+
+    it('should fail on trying to cancel with less than 24h of advance', async () => {
+      try {
+        await cancelPractice(instructorId, studentId, practiceId)
+        throw Error('should not reach this point')
+
+      } catch (error) {
+        expect(error).to.exist
+        expect(error.message).to.exist
+        expect(typeof error.message).to.equal('string')
+        expect(error.message.length).to.be.greaterThan(0)
+        expect(error.message).to.equal(`practice with id ${practiceId} is not possible to cancel`)
+      }
+    })
+  })
+
+
 
   it('should fail on incorrect instructorId, studentId, practiceId type or content', () => {
     expect(() => cancelPractice(1)).to.throw(TypeError, '1 is not a string')

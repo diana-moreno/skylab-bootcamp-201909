@@ -1,5 +1,6 @@
 const { validate, errors: { NotFoundError, ConflictError, ContentError } } = require('wheely-utils')
 const { ObjectId, models: { User, Practice, Instructor } } = require('wheely-data')
+const moment = require('moment')
 
 module.exports = function(instructorId, studentId, practiceId) {
   // sincronous validate
@@ -30,6 +31,11 @@ module.exports = function(instructorId, studentId, practiceId) {
 
     // check if the practice is pending (otherside is not possible to cancel)
     if (practice.status !== 'pending') {
+      throw new ConflictError(`practice with id ${practiceId} is not possible to cancel`)
+    }
+debugger
+    // check if remain at least 24h to allow cancel the practice
+    if(moment(new Date()).add(1,'days') > moment(practice.date)) {
       throw new ConflictError(`practice with id ${practiceId} is not possible to cancel`)
     }
 
