@@ -97,7 +97,6 @@ describe('logic - write feedback', () => {
       throw Error('should not reach this point')
 
     } catch (error) {
-      debugger
       expect(error).to.exist
       expect(error.message).to.exist
       expect(typeof error.message).to.equal('string')

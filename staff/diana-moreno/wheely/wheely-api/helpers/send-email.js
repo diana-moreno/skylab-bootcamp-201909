@@ -1,7 +1,6 @@
 const { env: { userEmail, passwordEmail } } = process
 var nodemailer = require('nodemailer');
 
-
 module.exports = async function(to) { // añadir subject
   var transporter = nodemailer.createTransport({
     service: 'gmail',

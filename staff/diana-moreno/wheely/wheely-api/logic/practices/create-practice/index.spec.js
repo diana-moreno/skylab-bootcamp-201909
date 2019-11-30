@@ -5,6 +5,8 @@ const createPractice = require('.')
 const { random } = Math
 const { database, models: { User, Practice, Student, Instructor, Feedback } } = require('wheely-data')
 const { validate, errors: { NotFoundError, ConflictError, ContentError } } = require('wheely-utils')
+const moment = require('moment')
+
 
 describe('logic - book a practice', () => {
   before(() => database.connect(TEST_DB_URL))
@@ -44,7 +46,7 @@ describe('logic - book a practice', () => {
     // practice's features
     price = 1
     status = 'pending'
-    date = new Date()
+    date = moment().day(8)
 
   })
 
@@ -63,7 +65,7 @@ describe('logic - book a practice', () => {
     expect(practice).to.exist
     expect(practice.date).to.exist
     expect(practice.date).to.be.instanceOf(Date)
-    expect(practice.date.getTime()).to.equal(date.getTime())
+    expect(practice.date.getTime()).to.equal(new Date(date).getTime())
     expect(practice.status).to.equal(status)
     expect(practice.date).to.exist
     expect(practice.price).to.equal(price)
@@ -90,6 +92,21 @@ describe('logic - book a practice', () => {
       expect(error.message.length).to.be.greaterThan(0)
       expect(error).to.be.an.instanceOf(NotFoundError)
       expect(error.message).to.equal(`user with id ${fakeId} not found`)
+    }
+  })
+
+  it('should fail on expired date', async () => {
+    let expiredDate = moment().day(-1)
+    try {
+      await createPractice(instructorId, studentId, expiredDate)
+      throw Error('should not reach this point')
+
+    } catch (error) {
+      expect(error).to.exist
+      expect(error.message).to.exist
+      expect(typeof error.message).to.equal('string')
+      expect(error.message.length).to.be.greaterThan(0)
+      expect(error.message).to.equal(`practice with date ${expiredDate} has expired`)
     }
   })
 
@@ -244,12 +261,12 @@ describe('logic - book a practice', () => {
     expect(() => createPractice(instructorId, '')).to.throw(ContentError, 'studentId is empty or blank')
     expect(() => createPractice(instructorId, ' \t\r')).to.throw(ContentError, 'studentId is empty or blank')
 
-    expect(() => createPractice(instructorId, studentId, 1)).to.throw(TypeError, '1 is not a Date')
+/*    expect(() => createPractice(instructorId, studentId, 1)).to.throw(TypeError, '1 is not a Date')
     expect(() => createPractice(instructorId, studentId, true)).to.throw(TypeError, 'true is not a Date')
     expect(() => createPractice(instructorId, studentId, [])).to.throw(TypeError, ' is not a Date')
     expect(() => createPractice(instructorId, studentId, {})).to.throw(TypeError, '[object Object] is not a Date')
     expect(() => createPractice(instructorId, studentId, undefined)).to.throw(TypeError, 'undefined is not a Date')
-    expect(() => createPractice(instructorId, studentId, null)).to.throw(TypeError, 'null is not a Date')
+    expect(() => createPractice(instructorId, studentId, null)).to.throw(TypeError, 'null is not a Date')*/
   })
 
   after(() => Promise.all([User.deleteMany(), Practice.deleteMany()]).then(database.disconnect))

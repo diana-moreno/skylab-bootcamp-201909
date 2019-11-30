@@ -34,7 +34,6 @@ describe('logic - delete user', () => {
       await deleteUser(id)
       user = await User.findOne({ id })
       expect(user).to.equal(null)
-      expect(user.pro).to.equal(null)
     })
 
     it('should fail on wrong user id', async () => {

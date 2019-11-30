@@ -1,7 +1,7 @@
 const { validate, errors: { NotFoundError, ConflictError } } = require('wheely-utils')
 const { ObjectId, models: { User, Practice } } = require('wheely-data')
-
-const sendEmail = require('../../helpers/send-email')
+const moment = require('moment')
+const sendEmail = require('../../../helpers/send-email')
 
 module.exports = function(instructorId, studentId, date) {
   // sincronous validate
@@ -14,7 +14,7 @@ module.exports = function(instructorId, studentId, date) {
   if (!ObjectId.isValid(studentId)) throw new ContentError(`${studentId} is not a valid id`)
 
  /* validate.date(date)*/
-  validate.instanceOf(Date, date)
+/*  validate.instanceOf(Date, date)*/
 
   return (async () => {
 
@@ -33,8 +33,14 @@ module.exports = function(instructorId, studentId, date) {
       let existingDate = await Practice.findOne({ date: date })
       if (existingDate) throw new ConflictError(`practice with date ${date} already exists`)
 
+    // check if the practice has expired
+      if(moment(date) < moment()) {
+        throw new ConflictError(`practice with date ${date} has expired`)
+      }
+
       // create the practice
       let practice = await Practice.create({ date, instructorId, studentId })
+
 
       // update student profile with a credit less
       student.profile.credits = student.profile.credits - practice.price

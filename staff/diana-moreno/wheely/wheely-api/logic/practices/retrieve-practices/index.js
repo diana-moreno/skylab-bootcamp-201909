@@ -26,7 +26,7 @@ module.exports = function(userId, query) {
 
     let practices
 
-    // return different practices array depending on the query selected by the user
+    // return different practices array depending on the query selected by the user (permission control)
     if (instructor && query === 'feedback') {
       practices = await Practice
         .find({ "instructorId": ObjectId(userId), "status": 'feedback' })

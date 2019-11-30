@@ -9,8 +9,8 @@ const { database, models: { User, Practice, Student, Instructor, Admin } } = req
 describe('logic - list users', () => {
   before(() => database.connect(TEST_DB_URL))
 
-  let roles = ['admin']
-  let name, surname, email, password, role, names, surnames, emails, passwords, ids
+  let roles = ['admin', 'student', 'instructor']
+  let name, surname, email, password, role, names, surnames, emails, passwords, ids, adminId
 
   beforeEach(async () => {
     await Promise.all([User.deleteMany()])
@@ -39,15 +39,28 @@ describe('logic - list users', () => {
       ids.push(currentUser._id.toString())
     }
     await Promise.all(insertions)
+
+    //create an admin who wants to list the other users
+    let admin = await User.create({
+        name: `name-${random()}`,
+        surname: `surname-${random()}`,
+        email: `email-${random()}@mail.com`,
+        password: `password-${random()}`,
+        role: 'admin'
+    })
+    names.push(admin.name)
+    surnames.push(admin.surname)
+    emails.push(admin.email)
+    passwords.push(admin.password)
+    adminId = admin.id
   })
 
-  it('should succeed on admin retrieving users', async () => {
+  it('should succeed on admin retrieving all users', async () => {
     // we need the id of the user who want to list
-    let id = ids[0]
-    const users = await listUsers(id)
+    const users = await listUsers(adminId)
 
     expect(users).to.exist
-    expect(users).to.have.lengthOf(10)
+    expect(users).to.have.lengthOf(11) // 10 in loop and 1 admin
 
     users.forEach(user => {
       expect(user._id).to.exist
@@ -72,6 +85,42 @@ describe('logic - list users', () => {
       expect(user.email).to.have.length.greaterThan(0)
       expect(user.email).be.oneOf(emails)
 
+    })
+  })
+
+  it('should succeed on admin retrieving only instructor users', async () => {
+    const users = await listUsers(adminId, 'instructors')
+
+    expect(users).to.exist
+/*    expect(users).to.have.lengthOf(10)*/
+
+    users.forEach(user => {
+      expect(user._id).to.exist
+
+      expect(user.name).to.exist
+      expect(user.name).to.be.a('string')
+      expect(user.name).to.have.length.greaterThan(0)
+      expect(user.name).be.oneOf(names)
+
+      expect(user.surname).to.exist
+      expect(user.surname).to.be.a('string')
+      expect(user.surname).to.have.length.greaterThan(0)
+      expect(user.surname).be.oneOf(surnames)
+
+      expect(user.password).to.exist
+      expect(user.password).to.be.a('string')
+      expect(user.password).to.have.length.greaterThan(0)
+      expect(user.password).be.oneOf(passwords)
+
+      expect(user.email).to.exist
+      expect(user.email).to.be.a('string')
+      expect(user.email).to.have.length.greaterThan(0)
+      expect(user.email).be.oneOf(emails)
+
+      expect(user.role).to.exist
+      expect(user.role).to.be.a('string')
+      expect(user.role).to.have.length.greaterThan(0)
+      expect(user.role).to.equal('instructor')
     })
   })
 
@@ -188,7 +237,6 @@ describe('logic - list users', () => {
 
     it('should succeed on correct user', async () => {
       const users = await listUsers(instructorId)
-debugger
       expect(users).to.exist
 
     })
