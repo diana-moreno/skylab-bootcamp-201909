@@ -45,7 +45,6 @@ describe('logic - edit user', () => {
       expect(user.role).to.equal(role)
       expect(user.profile).to.exist
       expect(user.profile.credits).to.equal(0)
-      expect(user.profile.practices).to.exist
     })
 
     it('should succeed on edit surname and correct user id', async () => {
@@ -65,7 +64,6 @@ describe('logic - edit user', () => {
       expect(user.role).to.equal(role)
       expect(user.profile).to.exist
       expect(user.profile.credits).to.equal(0)
-      expect(user.profile.practices).to.exist
     })
 
     it('should succeed on edit email and correct user id', async () => {
@@ -85,7 +83,6 @@ describe('logic - edit user', () => {
       expect(user.role).to.equal(role)
       expect(user.profile).to.exist
       expect(user.profile.credits).to.equal(0)
-      expect(user.profile.practices).to.exist
     })
 
     it('should fail on wrong user id', async () => {

@@ -273,8 +273,6 @@ describe('logic - cancel practice', () => {
     })
   })
 
-
-
   it('should fail on incorrect instructorId, studentId, practiceId type or content', () => {
     expect(() => cancelPractice(1)).to.throw(TypeError, '1 is not a string')
     expect(() => cancelPractice(true)).to.throw(TypeError, 'true is not a string')

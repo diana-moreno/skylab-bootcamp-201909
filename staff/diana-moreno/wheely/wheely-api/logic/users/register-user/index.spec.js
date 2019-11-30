@@ -63,7 +63,6 @@ describe('logic - register user', () => {
       expect(user.role).to.equal(role)
       expect(user.profile).to.exist
       expect(user.profile.credits).to.exist
-      expect(user.profile.practices).to.exist
     })
   })
 

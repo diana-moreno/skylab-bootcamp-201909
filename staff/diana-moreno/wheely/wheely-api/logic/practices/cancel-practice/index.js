@@ -33,7 +33,7 @@ module.exports = function(instructorId, studentId, practiceId) {
     if (practice.status !== 'pending') {
       throw new ConflictError(`practice with id ${practiceId} is not possible to cancel`)
     }
-debugger
+
     // check if remain at least 24h to allow cancel the practice
     if(moment(new Date()).add(1,'days') > moment(practice.date)) {
       throw new ConflictError(`practice with id ${practiceId} is not possible to cancel`)

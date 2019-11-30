@@ -8,11 +8,11 @@ module.exports = new Schema({
   },
   statistics: {
     type: Array
-  },
+  }/*,
   practices: {
     type: Array
   },
   students: {
     type: Array
-  }
+  }*/
 })

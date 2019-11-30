@@ -26,10 +26,3 @@ module.exports = function(name, surname, email, password, role) {
     await user.save()
   })()
 }
-
-/*    if(role === 'admin') new Admin()
-    {
-      let students = await User.find({role: "student"} , {name:0})
-      user.profile = new Admin()
-
-    }*/
