@@ -9,7 +9,7 @@ const { database, models: { User, Practice, Student, Instructor, Admin } } = req
 describe('logic - list users', () => {
   before(() => database.connect(TEST_DB_URL))
 
-  let roles = ['admin', 'instructor']
+  let roles = ['admin']
   let name, surname, email, password, role, names, surnames, emails, passwords, ids
 
   beforeEach(async () => {
@@ -28,7 +28,7 @@ describe('logic - list users', () => {
         surname: `surname-${random()}`,
         email: `email-${random()}@mail.com`,
         password: `password-${random()}`,
-        role: roles[floor(random() * 2)]
+        role: roles[floor(random() * 1)]
       }
       let currentUser = await User.create(user)
       insertions.push(currentUser)
@@ -41,7 +41,7 @@ describe('logic - list users', () => {
     await Promise.all(insertions)
   })
 
-  it('should succeed on correct user', async () => {
+  it('should succeed on admin retrieving users', async () => {
     // we need the id of the user who want to list
     let id = ids[0]
     const users = await listUsers(id)

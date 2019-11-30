@@ -10,8 +10,8 @@ module.exports = function(adminId, instructorId, indexDay, hour) {
   validate.string(adminId)
   validate.string.notVoid('adminId', adminId)
   if (!ObjectId.isValid(adminId)) throw new ContentError(`${adminId} is not a valid id`)
-  /*
-    validate.date(date)*/
+
+// lacks validate indexDay and hour
 
   return (async () => {
     // check if admin exists
@@ -21,50 +21,31 @@ module.exports = function(adminId, instructorId, indexDay, hour) {
     let instructor = await User.findOne({ _id: instructorId, role: 'instructor' })
     if (!instructor) throw new NotFoundError(`user with id ${instructorId} not found`)
 
-/*      let day0 = new Day({ index: 0, hours: [] })
-      let day1 = new Day({ index: 1, hours: [] })
-      let day2 = new Day({ index: 2, hours: [] })
-      let day3 = new Day({ index: 3, hours: [] })
-      let day4 = new Day({ index: 4, hours: [] })
-      let day5 = new Day({ index: 5, hours: [] })
-      let day6 = new Day({ index: 6, hours: [] })
-      instructor.profile.schedule.days.push(day0, day1, day2, day3, day4, day5, day6)*/
-
+    // the first time, creates the schedule with all day of the week
     if (!instructor.profile.schedule) {
       instructor.profile.schedule = new Week()
-      let firstDay = new Day({ index: indexDay, hours: [hour] })
-      instructor.profile.schedule.days.push(firstDay)
-
-      await User.updateOne({ _id: instructorId }, { $set: { 'profile.schedule': instructor.profile.schedule } }, { multi: true })
-    } else {
-      instructor.profile.schedule.days.forEach(day => {
-        if (day.index === indexDay) {
-          let indexFound = day.hours.indexOf(hour)
-          if (indexFound < 0) {
-            day.hours.push(hour)
-          } else {
-            day.hours.splice(indexFound, 1)
-          }
-        } else { // esto no debe ir aqui
-          let newDay = new Day({ index: indexDay, hours: [hour] })
-          instructor.profile.schedule.days.push(newDay)
-        }
-      })
-      await User.updateOne({ _id: instructorId }, { $set: { 'profile.schedule': instructor.profile.schedule } }, { multi: true })
-
+      for (let i = 0; i < 7; i++) {
+        instructor.profile.schedule.days.push(new Day({ index: i, hours: [] }))
+      }
+      await instructor.save()
     }
 
-    /*      let day = new Day(day1)
+    // then searchs if the day exists to add in the hour if no exists, but if exists, deletes the hour (makes a toogle)
+    instructor.profile.schedule.days.forEach(async (day) => {
+      if (day.index === indexDay) {
+        let indexFound = day.hours.indexOf(hour)
+        if (indexFound < 0) {
+          day.hours.push(hour)
+        } else {
+          day.hours.splice(indexFound, 1)
+        }
+      }
+      await User.updateOne({ _id: instructorId }, { $set: { 'profile.schedule': instructor.profile.schedule } }, { multi: true })
+    })
 
-          instructor.profile.schedule.days.push(day)
-          instructor.profile.schedule.days.push(day)
-    */
+    // retrieves the updated instructor account and returns it
+    instructor = await User.findOne({ _id: instructorId, role: 'instructor' })
 
-    /*   await User.updateOne({ _id: instructorId }, { $set: { 'profile.schedule': instructor.profile.schedule } }, { multi: true })*/
-
-
-
-    debugger
     return instructor
   })()
 }

@@ -9,9 +9,6 @@ module.exports = {
     retrievePractices: require('./retrieve-practices'),
     listUsers: require('./list-users'),
     writeFeedback: require('./write-feedback'),
-    cancelPractice: require('./cancelPractice'),
-    toogleSchedule: require('/toogle-schedule')
+    toogleSchedule: require('/toogle-schedule'),
+    cancelPractice: require('./cancelPractice')
 }
-
-/*    retrievePendingPractices: require('./retrieve-pending-practices'),
-    retrieveDonePractices: require('./retrieve-done-practices'),*/
