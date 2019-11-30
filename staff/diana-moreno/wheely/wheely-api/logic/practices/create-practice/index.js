@@ -48,10 +48,14 @@ module.exports = function(instructorId, studentId, date) {
       await User.updateOne({ _id: studentId }, { $set: { 'profile.credits': student.profile.credits } }, { multi: true })
 
 
-      /*let to = 'd7@hotmail.es'
-      sendEmail(to)
-      */
+      // send email to both student and instructor
+      let instructorName = instructor.name.concat(' ').concat(instructor.surname)
+      let studentName = student.name.concat(' ').concat(student.surname)
+      let toStudent = student.email
+      let toInstructor = instructor.email // instructor email
+      let [dateEmail, time] = moment(date).format('DD-MM-YYYY HH:mm:ss').split(' ')
 
+      sendEmail(toStudent, toInstructor, dateEmail, time, instructorName, studentName)
 
 
       // returns the practice-id
