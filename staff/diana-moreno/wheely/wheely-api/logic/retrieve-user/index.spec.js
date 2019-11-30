@@ -3,7 +3,7 @@ const { env: { TEST_DB_URL } } = process
 const { expect } = require('chai')
 const { random } = Math
 const retrieveUser = require('.')
-const { errors: { NotFoundError } } = require('wheely-utils')
+const { errors: { NotFoundError, ContentError } } = require('wheely-utils')
 const { database, models: { User, Student, Instructor } } = require('wheely-data')
 
 describe('logic - retrieve user', () => {
@@ -148,6 +148,23 @@ describe('logic - retrieve user', () => {
         expect(error.message).to.equal(`user with id ${id} not found`)
       }
     })
+
+    it('should fail on incorrect user id', async () => {
+      let fakeId = '01234567890123'
+      try {
+        await retrieveUser(fakeId)
+        throw Error('should not reach this point')
+
+      } catch (error) {
+        expect(error).to.exist
+        expect(error.message).to.exist
+        expect(typeof error.message).to.equal('string')
+        expect(error.message.length).to.be.greaterThan(0)
+        expect(error).to.be.an.instanceOf(ContentError)
+        expect(error.message).to.equal(`${fakeId} is not a valid id`)
+      }
+    })
+
   })
 
   after(() => User.deleteMany().then(database.disconnect))

@@ -3,7 +3,7 @@ const { env: { TEST_DB_URL } } = process
 const { expect } = require('chai')
 const { random, floor } = Math
 const deleteUser = require('.')
-const { errors: { NotFoundError } } = require('wheely-utils')
+const { errors: { NotFoundError, ContentError } } = require('wheely-utils')
 const { database, models: { User, Student, Instructor } } = require('wheely-data')
 
 describe('logic - delete user', () => {
@@ -34,6 +34,7 @@ describe('logic - delete user', () => {
       await deleteUser(id)
       user = await User.findOne({ id })
       expect(user).to.equal(null)
+      expect(user.pro).to.equal(null)
     })
 
     it('should fail on wrong user id', async () => {
@@ -47,6 +48,20 @@ describe('logic - delete user', () => {
         expect(error).to.exist
         expect(error).to.be.an.instanceOf(NotFoundError)
         expect(error.message).to.equal(`user with id ${id} not found`)
+      }
+    })
+
+    it('should fail on wrong id type', async () => {
+      const id = '0123890123'
+
+      try {
+        await deleteUser(id)
+
+        throw Error('should not reach this point')
+      } catch (error) {
+        expect(error).to.exist
+        expect(error).to.be.an.instanceOf(ContentError)
+        expect(error.message).to.equal(`${id} is not a valid id`)
       }
     })
 

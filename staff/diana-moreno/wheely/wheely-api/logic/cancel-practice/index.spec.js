@@ -46,31 +46,22 @@ describe('logic - cancel practice', () => {
     let practice = await Practice.create({ date, instructorId, studentId })
     practiceId = practice.id
 
-    // update instructor to add the new practice and the student
-    // update student profile with the new practice and a credit less
+    // update student profile with a credit less
     student.profile.credits = student.profile.credits - practice.price
-    student.profile.practices.push(practiceId)
-    instructor.profile.practices.push(practiceId)
-    instructor.profile.students.push(studentId)
 
-    await User.updateOne({ _id: studentId }, { $set: { 'profile.practices': student.profile.practices, 'profile.credits': student.profile.credits } }, { multi: true })
-    await User.updateOne({ _id: instructorId }, { $set: { 'profile.practices': instructor.profile.practices, 'profile.students': instructor.profile.students } }, { multi: true })
+    await User.updateOne({ _id: studentId }, { $set: { 'profile.credits': student.profile.credits } }, { multi: true })
+
   })
 
   it('should succeed on correct users and pending practice', async () => {
     let practice = await Practice.findOne({ _id: practiceId })
     expect(practice).to.exist
 
-
-    /*    await User.updateOne({ _id: ObjectId(id) }, { $set: { "wishes.$[wish]": wish } }, { arrayFilters: [{ "wish._id": ObjectId(wishId) }] })
-     */
     await cancelPractice(instructorId, studentId, practiceId)
     practice = await Practice.findOne({ _id: practiceId })
 
     expect(practice).to.equal(null)
   })
-
-  // should fail when practice has already feedback and valoration
 
   it('should fail on unexisting practice', async () => {
     let fakeId = '012345678901234567890123'
@@ -116,6 +107,38 @@ describe('logic - cancel practice', () => {
       expect(error.message).to.equal(`user with id ${fakeId} not found`)
     }
   })
+
+    it('should fail on incorrect student id and practice done', async () => {
+      let fakeId = '01234567890123'
+      try {
+        await cancelPractice(instructorId, fakeId, practiceId)
+        throw Error('should not reach this point')
+
+      } catch (error) {
+        expect(error).to.exist
+        expect(error.message).to.exist
+        expect(typeof error.message).to.equal('string')
+        expect(error.message.length).to.be.greaterThan(0)
+        expect(error).to.be.an.instanceOf(ContentError)
+        expect(error.message).to.equal(`${fakeId} is not a valid id`)
+      }
+    })
+
+    it('should fail on incorrect instructor id and practice done', async () => {
+      let fakeId = '01234567890123'
+      try {
+        await cancelPractice(fakeId, studentId, practiceId)
+        throw Error('should not reach this point')
+
+      } catch (error) {
+        expect(error).to.exist
+        expect(error.message).to.exist
+        expect(typeof error.message).to.equal('string')
+        expect(error.message.length).to.be.greaterThan(0)
+        expect(error).to.be.an.instanceOf(ContentError)
+        expect(error.message).to.equal(`${fakeId} is not a valid id`)
+      }
+    })
 
   describe('when practice is done', () => {
     beforeEach(async () => {

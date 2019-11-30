@@ -1,5 +1,5 @@
 const { validate, errors: { NotFoundError, ConflictError } } = require('wheely-utils')
-const { ObjectId, models: { User, Practice, Instructor } } = require('wheely-data')
+const { ObjectId, models: { User, Practice } } = require('wheely-data')
 
 const sendEmail = require('../../helpers/send-email')
 
@@ -13,16 +13,17 @@ module.exports = function(instructorId, studentId, date) {
   validate.string.notVoid('studentId', studentId)
   if (!ObjectId.isValid(studentId)) throw new ContentError(`${studentId} is not a valid id`)
 
-  validate.date(date)
+ /* validate.date(date)*/
+  validate.instanceOf(Date, date)
 
   return (async () => {
 
     // check if student exists
     let student = await User.findOne({ _id: studentId, role: 'student' })
-    if (!student) throw new NotFoundError(`user with id ${id} not found`)
+    if (!student) throw new NotFoundError(`user with id ${studentId} not found`)
 
     // check if the student has credits available
-    if (student.profile.credits > 0) { // change to >0, this is only a test
+    if (student.profile.credits > 0) {
 
       // check if instructor exists
       let instructor = await User.findOne({ _id: instructorId, role: 'instructor' })
@@ -35,21 +36,15 @@ module.exports = function(instructorId, studentId, date) {
       // create the practice
       let practice = await Practice.create({ date, instructorId, studentId })
 
-      // update instructor to add the new practice and the student
-      // update student profile with the new practice and a credit less
+      // update student profile with a credit less
       student.profile.credits = student.profile.credits - practice.price
-      student.profile.practices.push(practice.id)
-      instructor.profile.practices.push(practice.id)
-      instructor.profile.students.push(studentId)
 
-      await User.updateOne({ _id: studentId }, { $set: { 'profile.practices': student.profile.practices, 'profile.credits': student.profile.credits } }, { multi: true })
-      await User.updateOne({ _id: instructorId }, { $set: { 'profile.practices': instructor.profile.practices, 'profile.students': instructor.profile.students } }, { multi: true })
+      await User.updateOne({ _id: studentId }, { $set: { 'profile.credits': student.profile.credits } }, { multi: true })
 
 
-
-/*let to = 'd7@hotmail.es'
-sendEmail(to)
-*/
+      /*let to = 'd7@hotmail.es'
+      sendEmail(to)
+      */
 
 
 

@@ -4,8 +4,7 @@ const { expect } = require('chai')
 const createPractice = require('.')
 const { random } = Math
 const { database, models: { User, Practice, Student, Instructor, Feedback } } = require('wheely-data')
-/*const moment = require('moment')
-const now = moment().format('MMMM Do YYYY, h:mm:ss a')*/
+const { validate, errors: { NotFoundError, ConflictError, ContentError } } = require('wheely-utils')
 
 describe('logic - book a practice', () => {
   before(() => database.connect(TEST_DB_URL))
@@ -72,17 +71,42 @@ describe('logic - book a practice', () => {
     expect(practice.studentId.toString()).to.equal(studentId)
     expect(practice.feedback).to.equal(undefined)
 
-    // retrieve the student to check how many credits he has after doing a reservation and if the practice is saved in his profile
+    // retrieve the student to check how many credits has after doing a reservation
     student = await User.findOne({ _id: studentId, role: 'student' })
-
     expect(student.profile.credits).to.equal(newCredits)
-    expect(student.profile.practices[0]).to.equal(practiceId)
+  })
 
-    // retrieve the instructor to check if the practice and the student has been saved in his profile
-    instructor = await User.findOne({ _id: instructorId, role: 'instructor' })
+  it('should fail on unexisting student', async () => {
+    let fakeId = '012345678901234567890123'
+    try {
+      await createPractice(instructorId, fakeId, date)
 
-    expect(instructor.profile.students[0]).to.equal(studentId)
-    expect(instructor.profile.practices[0]).to.equal(practiceId)
+      throw Error('should not reach this point')
+
+    } catch (error) {
+      expect(error).to.exist
+      expect(error.message).to.exist
+      expect(typeof error.message).to.equal('string')
+      expect(error.message.length).to.be.greaterThan(0)
+      expect(error).to.be.an.instanceOf(NotFoundError)
+      expect(error.message).to.equal(`user with id ${fakeId} not found`)
+    }
+  })
+
+  it('should fail on unexisting instructor', async () => {
+    let fakeId = '012345678901234567890123'
+    try {
+      await createPractice(fakeId, studentId, date)
+
+      throw Error('should not reach this point')
+
+    } catch (error) {
+      expect(error).to.exist
+      expect(error.message).to.exist
+      expect(typeof error.message).to.equal('string')
+      expect(error.message.length).to.be.greaterThan(0)
+      expect(error.message).to.equal(`user with id ${fakeId} not found`)
+    }
   })
 
   describe('logic - when user has no credits', () => {
@@ -199,6 +223,33 @@ describe('logic - book a practice', () => {
       }
     })
 
+  })
+
+  it('should fail on incorrect instructorId, studentId, practiceId type or content', () => {
+    expect(() => createPractice(1)).to.throw(TypeError, '1 is not a string')
+    expect(() => createPractice(true)).to.throw(TypeError, 'true is not a string')
+    expect(() => createPractice([])).to.throw(TypeError, ' is not a string')
+    expect(() => createPractice({})).to.throw(TypeError, '[object Object] is not a string')
+    expect(() => createPractice(undefined)).to.throw(TypeError, 'undefined is not a string')
+    expect(() => createPractice(null)).to.throw(TypeError, 'null is not a string')
+
+    expect(() => createPractice('')).to.throw(ContentError, 'instructorId is empty or blank')
+
+    expect(() => createPractice(instructorId, 1)).to.throw(TypeError, '1 is not a string')
+    expect(() => createPractice(instructorId, true)).to.throw(TypeError, 'true is not a string')
+    expect(() => createPractice(instructorId, [])).to.throw(TypeError, ' is not a string')
+    expect(() => createPractice(instructorId, {})).to.throw(TypeError, '[object Object] is not a string')
+    expect(() => createPractice(instructorId, undefined)).to.throw(TypeError, 'undefined is not a string')
+    expect(() => createPractice(instructorId, null)).to.throw(TypeError, 'null is not a string')
+    expect(() => createPractice(instructorId, '')).to.throw(ContentError, 'studentId is empty or blank')
+    expect(() => createPractice(instructorId, ' \t\r')).to.throw(ContentError, 'studentId is empty or blank')
+
+    expect(() => createPractice(instructorId, studentId, 1)).to.throw(TypeError, '1 is not a Date')
+    expect(() => createPractice(instructorId, studentId, true)).to.throw(TypeError, 'true is not a Date')
+    expect(() => createPractice(instructorId, studentId, [])).to.throw(TypeError, ' is not a Date')
+    expect(() => createPractice(instructorId, studentId, {})).to.throw(TypeError, '[object Object] is not a Date')
+    expect(() => createPractice(instructorId, studentId, undefined)).to.throw(TypeError, 'undefined is not a Date')
+    expect(() => createPractice(instructorId, studentId, null)).to.throw(TypeError, 'null is not a Date')
   })
 
   after(() => Promise.all([User.deleteMany(), Practice.deleteMany()]).then(database.disconnect))

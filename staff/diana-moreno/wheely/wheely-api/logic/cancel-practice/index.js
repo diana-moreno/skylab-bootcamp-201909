@@ -1,4 +1,4 @@
-const { validate, errors: { NotFoundError, ConflictError } } = require('wheely-utils')
+const { validate, errors: { NotFoundError, ConflictError, ContentError } } = require('wheely-utils')
 const { ObjectId, models: { User, Practice, Instructor } } = require('wheely-data')
 
 module.exports = function(instructorId, studentId, practiceId) {
@@ -35,36 +35,5 @@ module.exports = function(instructorId, studentId, practiceId) {
 
     //delete practice from practices collection
     await Practice.deleteOne({ _id: ObjectId(practiceId) })
-
-    // delete practice in student account
-
-    const index1 = student.profile.practices.findIndex(practice => practice === practiceId)
-    if (index1 < 0) throw new NotFoundError(`practice with id ${practiceId} not found`)
-    student.profile.practices.splice(index1, 1)
-
-    await User.updateOne({ _id: studentId }, { $set: { 'profile.practices': student.profile.practices } }, { multi: true })
-
-    // delete practice in instructor account
-
-    const index2 = instructor.profile.practices.findIndex(practice => practice === practiceId)
-    if (index2 < 0) throw new NotFoundError(`practice with id ${practiceId} not found`)
-    instructor.profile.practices.splice(index2, 1)
-
-    await User.updateOne({ _id: instructorId }, { $set: { 'profile.practices': instructor.profile.practices } }, { multi: true })
   })()
 }
-
-//realmente es necesrio que usuario tenga prácticas, en su ficha???
-//i
-
-
-// al alumno hay que eliminarle la practica
-// al profesor hay que eliminarle la practica
-// al profesor hay que eliminarle el alumno si no tiene más prácticas con él
-
-/*
-    let a = await User.updateOne(
-      { _id: ObjectId(studentId) },
-      { $set: { "profile.$practices" : practices} },
-      { $pull: { practices: practiceId }}
-    )*/
