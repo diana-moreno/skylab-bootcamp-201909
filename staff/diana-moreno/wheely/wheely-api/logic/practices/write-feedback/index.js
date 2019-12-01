@@ -33,7 +33,7 @@ module.exports = function(instructorId, studentId, practiceId, feedback, valorat
     let practice = await Practice.findOne({ _id: practiceId, studentId: studentId, instructorId: instructorId })
     if (!practice) throw new ConflictError(`practice with id ${practiceId} does not exists`)
 
-    // check if the practice has feedback and valoration
+    // check if the practice has already feedback and valoration
     if(practice.feedback || practice.valoration) {
       throw new ConflictError(`practice with id ${practiceId} has been already valorated`)
     }

@@ -18,16 +18,13 @@ module.exports = function(id, name, surname, email) {
     validate.string.notVoid('e-mail', email)
     validate.email(email)
   }
-/*  if (password) {
-    validate.string(password)
-    validate.string.notVoid('password', password)
-  }*/
 
   return (async () => {
+    // check if user exists
     const user = await User.findById(id)
-
     if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
+    //update data
     const update = {}
 
     name && (update.name = name)

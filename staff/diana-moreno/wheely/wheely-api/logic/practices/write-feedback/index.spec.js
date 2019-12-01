@@ -3,13 +3,13 @@ const { env: { TEST_DB_URL } } = process
 const { expect } = require('chai')
 const writeFeedback = require('.')
 const { random } = Math
-const { database, models: { User, Practice, Student, Instructor, Feedback } } = require('wheely-data')
-const { validate, errors: { NotFoundError, ConflictError, ContentError } } = require('wheely-utils')
+const { database, models: { User, Practice, Student, Instructor } } = require('wheely-data')
+const { validate, errors: { ContentError } } = require('wheely-utils')
 
 describe('logic - write feedback', () => {
   before(() => database.connect(TEST_DB_URL))
 
-  let studentId, instructorId, name, surname, email, password, role, price, status, date, credits, student, practiceId, feedback, valoration
+  let studentId, instructorId, practiceId, name, surname, email, password, role, price, status, date, valoration, feedback, fakeId = '012345678901234567890123'
 
   beforeEach(async () => {
     // create an student
@@ -24,8 +24,6 @@ describe('logic - write feedback', () => {
     let student = await User.create({ name, surname, email, password, role })
     student.profile = new Student()
     student.profile.credits = 3
-    credits = 3
-
     await student.save()
     studentId = student.id
 
@@ -40,10 +38,10 @@ describe('logic - write feedback', () => {
     instructor.profile = new Instructor()
     await instructor.save()
     instructorId = instructor.id
+
     // create practice
-    price = 1
     status = 'done'
-    date = new Date("Wed, 27 July 2016 13:30:00")
+    date = new Date("Wed, 27 July 2050 13:30:00")
     let practice = await Practice.create({ date, instructorId, studentId, status })
     practiceId = practice.id
 
@@ -64,17 +62,14 @@ describe('logic - write feedback', () => {
     expect(practiceFeedback.date.getTime()).to.equal(date.getTime())
     expect(practiceFeedback.status).to.equal('done')
     expect(practiceFeedback.date).to.exist
-    expect(practiceFeedback.price).to.equal(price)
+    expect(practiceFeedback.price).to.equal(1)
     expect(practiceFeedback.instructorId.toString()).to.equal(instructorId)
     expect(practiceFeedback.studentId.toString()).to.equal(studentId)
     expect(practiceFeedback.feedback).to.equal('Very well managing the clutch')
     expect(practiceFeedback.valoration).to.equal('good')
   })
 
-  // should fail when practice has already feedback and valoration
-
   it('should fail on unexisting practice', async () => {
-    let fakeId = '012345678901234567890123'
     try {
       let practiceFeedback = await writeFeedback(instructorId, studentId, fakeId, feedback, valoration)
 
@@ -90,7 +85,6 @@ describe('logic - write feedback', () => {
   })
 
   it('should fail on unexisting student', async () => {
-    let fakeId = '012345678901234567890123'
     try {
       let practiceFeedback = await writeFeedback(instructorId, fakeId, practiceId, feedback, valoration)
 
@@ -106,7 +100,6 @@ describe('logic - write feedback', () => {
   })
 
   it('should fail on unexisting instructor', async () => {
-    let fakeId = '012345678901234567890123'
     try {
       let practiceFeedback = await writeFeedback(fakeId, studentId, practiceId, feedback, valoration)
 
@@ -135,7 +128,6 @@ describe('logic - write feedback', () => {
       let student = await User.create({ name, surname, email, password, role })
       student.profile = new Student()
       student.profile.credits = 3
-      credits = 3
 
       await student.save()
       studentId = student.id
@@ -153,9 +145,8 @@ describe('logic - write feedback', () => {
       instructorId = instructor.id
 
       // create practice
-      price = 1
       status = 'done'
-      date = new Date("Wed, 29 July 2016 13:30:00")
+      date = new Date("Wed, 29 July 2050 13:30:00")
       feedback = 'Very bad managing the clutch'
       valoration = 'bad'
       let practice = await Practice.create({ date, instructorId, studentId, status, feedback, valoration })

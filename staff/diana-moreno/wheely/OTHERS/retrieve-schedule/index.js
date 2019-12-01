@@ -20,7 +20,10 @@ module.exports = function(instructorId) { // hace falta el id de quien lo pide?
       const today = Number(moment().day())
 
       if (scheduleDb[weekday].hours.length > 0) {
-        const day = moment().day(i + today, 'day')
+        let dayHour = moment().day(i + today, 'day')
+        debugger
+/*        let [day, ] = dayHour.format('DD-MM-YYYY HH:mm:ss').split(' ')*/
+        let day = dayHour.format('L')
         const hours = scheduleDb[weekday].hours
         calendar.push({
           day,
@@ -30,7 +33,8 @@ module.exports = function(instructorId) { // hace falta el id de quien lo pide?
     }
 
     // checks if the first day of the array is today. If is today, removes from the array of hours, the hours that are past (to no offer a new practice in the past)
-    if (calendar[0].day.format('L') == moment().format('L')) {
+
+    if (calendar[0].day == moment().format('L')) {
       const [, now] = moment().format('DD-MM-YYYY HH:mm:ss').split(' ')
       const timeNow = moment(now, "H:mm"); // parse string to moment hour
 
@@ -43,6 +47,9 @@ module.exports = function(instructorId) { // hace falta el id de quien lo pide?
         }
       })
     }
+
+    // save calendar in db instructor
+    await User.updateOne({ _id: instructorId }, { $set: { 'profile.calendar' : calendar}}, { multi: true })
 
     return calendar
   })()

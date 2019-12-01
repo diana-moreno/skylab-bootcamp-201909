@@ -3,14 +3,12 @@ const { env: { TEST_DB_URL } } = process
 const { expect } = require('chai')
 const updatePractices = require('.')
 const { random } = Math
-const { database, models: { User, Practice, Student, Instructor, Reservation, Feedback } } = require('wheely-data')
-/*const moment = require('moment')
-const now = moment().format('MMMM Do YYYY, h:mm:ss a')*/
+const { database, models: { User, Practice, Student, Instructor } } = require('wheely-data')
 
 describe('logic - update status practices', () => {
   before(() => database.connect(TEST_DB_URL))
 
-  let studentId, instructorId, name, surname, email, password, role, price, status, date, practId, credits, student, adminId, feedback, puntuation, practices
+  let studentId, instructorId, name, surname, email, password, role, price, status, date
 
   beforeEach(async () => {
     // create an student
@@ -25,7 +23,6 @@ describe('logic - update status practices', () => {
     let student = await User.create({ name, surname, email, password, role })
     student.profile = new Student()
     student.profile.credits = 3
-    credits = 3
 
     await student.save()
     studentId = student.id
@@ -37,7 +34,7 @@ describe('logic - update status practices', () => {
     password = `password-${random()}`
     role = 'instructor'
 
-    let instructor = await User.create({ name, surname, email, password, role })
+    let instructor = await User.create({ name, surname, email, password, role})
     instructor.profile = new Instructor()
     await instructor.save()
     instructorId = instructor.id

@@ -10,21 +10,31 @@ describe('logic - register user', () => {
   before(() => database.connect(TEST_DB_URL))
 
   let roles = ['student', 'admin', 'instructor']
-  let name, surname, email, password, role
+  let name, surname, email, password, role, adminId
 
-  beforeEach(() => {
+  beforeEach(async () => {
     name = `name-${random()}`
     surname = `surname-${random()}`
     email = `email-${random()}@mail.com`
     password = `password-${random()}`
     role = roles[floor(random() * roles.length)]
 
-    return User.deleteMany()
+    await User.deleteMany()
+
+    // create an admin
+    let admin = await User.create({
+      name: `name-${random()}`,
+      surname: `surname-${random()}`,
+      email: `email-${random()}@mail.com`,
+      password: `password-${random()}`,
+      role: 'admin'
+    })
+    adminId = admin.id
+    admin.save()
   })
 
   it('should succeed on correct credentials for common data between users', async () => {
-    const response = await registerUser(name, surname, email, password, role)
-
+    const response = await registerUser(adminId, name, surname, email, password, role)
     expect(response).to.be.undefined
 
     const user = await User.findOne({ email })
@@ -38,18 +48,30 @@ describe('logic - register user', () => {
   })
 
   describe('when user is a student', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       name = `name-${random()}`
       surname = `surname-${random()}`
       email = `email-${random()}@mail.com`
       password = `password-${random()}`
       role = 'student'
 
-      return User.deleteMany()
+      await User.deleteMany()
+
+      // create an admin
+      let admin = await User.create({
+        name: `name-${random()}`,
+        surname: `surname-${random()}`,
+        email: `email-${random()}@mail.com`,
+        password: `password-${random()}`,
+        role: 'admin'
+      })
+      admin.save()
+      adminId = admin.id
     })
 
     it('should succeed on correct credentials ', async () => {
-      const response = await registerUser(name, surname, email, password, role)
+      debugger
+      const response = await registerUser(adminId, name, surname, email, password, role)
 
       expect(response).to.be.undefined
 
@@ -67,18 +89,28 @@ describe('logic - register user', () => {
   })
 
   describe('when user is an instructor', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       name = `name-${random()}`
       surname = `surname-${random()}`
       email = `email-${random()}@mail.com`
       password = `password-${random()}`
       role = 'instructor'
 
-      return User.deleteMany()
+      await User.deleteMany()
+      // create an admin
+      let admin = await User.create({
+        name: `name-${random()}`,
+        surname: `surname-${random()}`,
+        email: `email-${random()}@mail.com`,
+        password: `password-${random()}`,
+        role: 'admin'
+      })
+      adminId = admin.id
+      admin.save()
     })
 
     it('should succeed on correct credentials ', async () => {
-      const response = await registerUser(name, surname, email, password, role)
+      const response = await registerUser(adminId, name, surname, email, password, role)
 
       expect(response).to.be.undefined
 
@@ -96,18 +128,28 @@ describe('logic - register user', () => {
   })
 
   describe('when user is an admin', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       name = `name-${random()}`
       surname = `surname-${random()}`
       email = `email-${random()}@mail.com`
       password = `password-${random()}`
       role = 'admin'
 
-      return User.deleteMany()
+      await User.deleteMany()
+      // create an admin
+      let admin = await User.create({
+        name: `name-${random()}`,
+        surname: `surname-${random()}`,
+        email: `email-${random()}@mail.com`,
+        password: `password-${random()}`,
+        role: 'admin'
+      })
+      adminId = admin.id
+      admin.save()
     })
 
     it('should succeed on correct credentials ', async () => {
-      const response = await registerUser(name, surname, email, password, role)
+      const response = await registerUser(adminId, name, surname, email, password, role)
 
       expect(response).to.be.undefined
 
@@ -128,12 +170,11 @@ describe('logic - register user', () => {
 
     it('should fail on already existing user', async () => {
       try {
-        await registerUser(name, surname, email, password, role)
-
+        await registerUser(adminId, name, surname, email, password, role)
         throw Error('should not reach this point')
+
       } catch (error) {
         expect(error).to.exist
-
         expect(error.message).to.exist
         expect(typeof error.message).to.equal('string')
         expect(error.message.length).to.be.greaterThan(0)
@@ -150,31 +191,38 @@ describe('logic - register user', () => {
     expect(() => registerUser(undefined)).to.throw(TypeError, 'undefined is not a string')
     expect(() => registerUser(null)).to.throw(TypeError, 'null is not a string')
 
-    expect(() => registerUser('')).to.throw(ContentError, 'name is empty or blank')
-    expect(() => registerUser(' \t\r')).to.throw(ContentError, 'name is empty or blank')
+    expect(() => registerUser(adminId, 1)).to.throw(TypeError, '1 is not a string')
+    expect(() => registerUser(adminId, true)).to.throw(TypeError, 'true is not a string')
+    expect(() => registerUser(adminId, [])).to.throw(TypeError, ' is not a string')
+    expect(() => registerUser(adminId, {})).to.throw(TypeError, '[object Object] is not a string')
+    expect(() => registerUser(adminId, undefined)).to.throw(TypeError, 'undefined is not a string')
+    expect(() => registerUser(adminId, null)).to.throw(TypeError, 'null is not a string')
 
-    expect(() => registerUser(name, 1)).to.throw(TypeError, '1 is not a string')
-    expect(() => registerUser(name, true)).to.throw(TypeError, 'true is not a string')
-    expect(() => registerUser(name, [])).to.throw(TypeError, ' is not a string')
-    expect(() => registerUser(name, {})).to.throw(TypeError, '[object Object] is not a string')
-    expect(() => registerUser(name, undefined)).to.throw(TypeError, 'undefined is not a string')
-    expect(() => registerUser(name, null)).to.throw(TypeError, 'null is not a string')
+    expect(() => registerUser(adminId, '')).to.throw(ContentError, 'name is empty or blank')
+    expect(() => registerUser(adminId, ' \t\r')).to.throw(ContentError, 'name is empty or blank')
 
-    expect(() => registerUser(name, '')).to.throw(ContentError, 'surname is empty or blank')
-    expect(() => registerUser(name, ' \t\r')).to.throw(ContentError, 'surname is empty or blank')
+    expect(() => registerUser(adminId, name, 1)).to.throw(TypeError, '1 is not a string')
+    expect(() => registerUser(adminId, name, true)).to.throw(TypeError, 'true is not a string')
+    expect(() => registerUser(adminId, name, [])).to.throw(TypeError, ' is not a string')
+    expect(() => registerUser(adminId, name, {})).to.throw(TypeError, '[object Object] is not a string')
+    expect(() => registerUser(adminId, name, undefined)).to.throw(TypeError, 'undefined is not a string')
+    expect(() => registerUser(adminId, name, null)).to.throw(TypeError, 'null is not a string')
 
-    expect(() => registerUser(name, surname, 1)).to.throw(TypeError, '1 is not a string')
-    expect(() => registerUser(name, surname, true)).to.throw(TypeError, 'true is not a string')
-    expect(() => registerUser(name, surname, [])).to.throw(TypeError, ' is not a string')
-    expect(() => registerUser(name, surname, {})).to.throw(TypeError, '[object Object] is not a string')
-    expect(() => registerUser(name, surname, undefined)).to.throw(TypeError, 'undefined is not a string')
-    expect(() => registerUser(name, surname, null)).to.throw(TypeError, 'null is not a string')
+    expect(() => registerUser(adminId, name, '')).to.throw(ContentError, 'surname is empty or blank')
+    expect(() => registerUser(adminId, name, ' \t\r')).to.throw(ContentError, 'surname is empty or blank')
 
-    expect(() => registerUser(name, surname, '')).to.throw(ContentError, 'e-mail is empty or blank')
-    expect(() => registerUser(name, surname, ' \t\r')).to.throw(ContentError, 'e-mail is empty or blank')
+    expect(() => registerUser(adminId, name, surname, 1)).to.throw(TypeError, '1 is not a string')
+    expect(() => registerUser(adminId, name, surname, true)).to.throw(TypeError, 'true is not a string')
+    expect(() => registerUser(adminId, name, surname, [])).to.throw(TypeError, ' is not a string')
+    expect(() => registerUser(adminId, name, surname, {})).to.throw(TypeError, '[object Object] is not a string')
+    expect(() => registerUser(adminId, name, surname, undefined)).to.throw(TypeError, 'undefined is not a string')
+    expect(() => registerUser(adminId, name, surname, null)).to.throw(TypeError, 'null is not a string')
 
-    expect(() => registerUser(name, surname, email, '')).to.throw(ContentError, 'password is empty or blank')
-    expect(() => registerUser(name, surname, email, ' \t\r')).to.throw(ContentError, 'password is empty or blank')
+    expect(() => registerUser(adminId, name, surname, '')).to.throw(ContentError, 'e-mail is empty or blank')
+    expect(() => registerUser(adminId, name, surname, ' \t\r')).to.throw(ContentError, 'e-mail is empty or blank')
+
+    expect(() => registerUser(adminId, name, surname, email, '')).to.throw(ContentError, 'password is empty or blank')
+    expect(() => registerUser(adminId, name, surname, email, ' \t\r')).to.throw(ContentError, 'password is empty or blank')
   })
 
   after(() => User.deleteMany().then(database.disconnect))

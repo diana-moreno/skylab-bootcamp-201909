@@ -5,10 +5,11 @@ const Week = require('./week')
 module.exports = new Schema({
   schedule: {
     type: Week
-  },
+  }
+  /*
   statistics: {
     type: Array
-  }/*,
+  },
   practices: {
     type: Array
   },

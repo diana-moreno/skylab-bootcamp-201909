@@ -1,10 +1,8 @@
 const { ObjectId, models: { User, Practice } } = require('wheely-data')
 const moment = require('moment')
-/*const now = moment().format('MMMM Do YYYY, h:mm:ss a')*/
 
 module.exports = function() {
   return (async () => {
-
     // search all pending practices
     let pendingPractices = await Practice
         .find({ "status": 'pending' })
@@ -21,7 +19,5 @@ module.exports = function() {
     pendingPractices = await Practice
       .find({ "status": 'pending' })
       .lean()
-
-    return pendingPractices
   })()
 }

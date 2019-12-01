@@ -1,7 +1,7 @@
 require('dotenv').config()
 const { env: { TEST_DB_URL } } = process
 const { expect } = require('chai')
-const toogleSchedule = require('.')
+const toggleSchedule = require('.')
 const { random } = Math
 const { database, models: { User, Practice, Student, Instructor } } = require('wheely-data')
 
@@ -46,10 +46,10 @@ describe('logic - toogle schedule instructor', () => {
     const hour3 = '09:00'
     const hour4 = '09:00'
 
-    instructor = await toogleSchedule(adminId, instructorId, indexDay1, hour1)
-    instructor = await toogleSchedule(adminId, instructorId, indexDay2, hour2)
-    instructor = await toogleSchedule(adminId, instructorId, indexDay3, hour3)
-    instructor = await toogleSchedule(adminId, instructorId, indexDay4, hour4)
+    instructor = await toggleSchedule(adminId, instructorId, indexDay1, hour1)
+    instructor = await toggleSchedule(adminId, instructorId, indexDay2, hour2)
+    instructor = await toggleSchedule(adminId, instructorId, indexDay3, hour3)
+    instructor = await toggleSchedule(adminId, instructorId, indexDay4, hour4)
 debugger
     expect(instructor).to.exist
     expect(instructor.profile).to.exist
@@ -61,7 +61,7 @@ debugger
     let indexDay4 = 2
     let fakeId = '012345678901234567890123'
     try {
-      instructor = await toogleSchedule(adminId, fakeId, indexDay4, hour4)
+      instructor = await toggleSchedule(adminId, fakeId, indexDay4, hour4)
 
       throw Error('should not reach this point')
 
@@ -79,7 +79,7 @@ debugger
     let indexDay4 = 2
     let fakeId = '012345678901234567890123'
     try {
-      instructor = await toogleSchedule(fakeId, instructorId, indexDay4, hour4)
+      instructor = await toggleSchedule(fakeId, instructorId, indexDay4, hour4)
 
       throw Error('should not reach this point')
 

@@ -87,11 +87,10 @@ describe('logic - edit user', () => {
 
     it('should fail on wrong user id', async () => {
       const id = '012345678901234567890123'
-
       try {
         await editUser(id)
-
         throw Error('should not reach this point')
+
       } catch (error) {
         expect(error).to.exist
         expect(error).to.be.an.instanceOf(NotFoundError)
@@ -176,11 +175,10 @@ describe('logic - edit user', () => {
 
     it('should fail on wrong user id', async () => {
       const id = '012345678901234567890123'
-
       try {
         await editUser(id)
-
         throw Error('should not reach this point')
+
       } catch (error) {
         expect(error).to.exist
         expect(error).to.be.an.instanceOf(NotFoundError)
@@ -256,11 +254,10 @@ describe('logic - edit user', () => {
 
     it('should fail on wrong user id', async () => {
       const id = '012345678901234567890123'
-
       try {
         await editUser(id)
-
         throw Error('should not reach this point')
+
       } catch (error) {
         expect(error).to.exist
         expect(error).to.be.an.instanceOf(NotFoundError)
@@ -282,7 +279,7 @@ describe('logic - edit user', () => {
     user.profile = new Student()
     await user.save()
 
-    id = user.id // por que no es _id??
+    id = user.id
   })
 
   after(() => User.deleteMany().then(database.disconnect))

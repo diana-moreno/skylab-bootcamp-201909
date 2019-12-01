@@ -64,27 +64,22 @@ describe('logic - list users', () => {
 
     users.forEach(user => {
       expect(user._id).to.exist
-
       expect(user.name).to.exist
       expect(user.name).to.be.a('string')
       expect(user.name).to.have.length.greaterThan(0)
       expect(user.name).be.oneOf(names)
-
       expect(user.surname).to.exist
       expect(user.surname).to.be.a('string')
       expect(user.surname).to.have.length.greaterThan(0)
       expect(user.surname).be.oneOf(surnames)
-
       expect(user.password).to.exist
       expect(user.password).to.be.a('string')
       expect(user.password).to.have.length.greaterThan(0)
       expect(user.password).be.oneOf(passwords)
-
       expect(user.email).to.exist
       expect(user.email).to.be.a('string')
       expect(user.email).to.have.length.greaterThan(0)
       expect(user.email).be.oneOf(emails)
-
     })
   })
 
@@ -92,7 +87,6 @@ describe('logic - list users', () => {
     let fakeId = '012345678901234567890123'
     try {
       await listUsers(fakeId)
-
       throw Error('should not reach this point')
 
     } catch (error) {
@@ -125,7 +119,6 @@ describe('logic - list users', () => {
     it('should fail on student user', async () => {
       try {
         await listUsers(studentId)
-
         throw Error('should not reach this point')
 
       } catch (error) {
@@ -145,7 +138,6 @@ describe('logic - list users', () => {
     expect(() => listUsers({})).to.throw(TypeError, '[object Object] is not a string')
     expect(() => listUsers(undefined)).to.throw(TypeError, 'undefined is not a string')
     expect(() => listUsers(null)).to.throw(TypeError, 'null is not a string')
-
     expect(() => listUsers('')).to.throw(ContentError, 'id is empty or blank')
     expect(() => listUsers(' \t\r')).to.throw(ContentError, 'id is empty or blank')
   })
@@ -183,14 +175,12 @@ describe('logic - list users', () => {
       await instructor.save()
       instructorId = instructor.id
 
-      // create practice
-      price = 1
+      // create 3 practices
       date = new Date("Wed, 27 July 2016 13:30:00")
       let practice = await Practice.create({ date, instructorId, studentId })
 
       date = new Date("Wed, 28 July 2016 13:30:00")
       practice = await Practice.create({ date, instructorId, studentId })
-
 
       date = new Date("Wed, 29 July 2016 13:30:00")
       practice = await Practice.create({ date, instructorId, studentId })

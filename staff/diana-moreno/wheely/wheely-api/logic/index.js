@@ -5,12 +5,14 @@ module.exports = {
   deleteUser: require('./users/delete-user'),
   editUser: require('./users/edit-user'),
   listUsers: require('./users/list-users'),
-  retrieveProgression: require('./practices/retrieve-progression'),
+  addCredits: require('./users/add-credits'),
   createPractice: require('./practices/create-practice'),
-  retrievePractices: require('./practices/retrieve-practices'),
+  listPractices: require('./practices/list-practices'),
   writeFeedback: require('./practices/write-feedback'),
   cancelPractice: require('./practices/cancel-practice'),
   updatePractices: require('./practices/update-practices'),
-  toogleSchedule: require('./schedule/toogle-schedule'),
-  retrieveAvailableSchedule: require('./schedule/retrieve-available-schedule')
+  toggleSchedule: require('./schedule/toggle-schedule'),
 }
+
+/*  retrieveSchedule: require('./schedule/retrieve-schedule')*/
+/*  retrieveProgression: require('./users/retrieve-progression'),*/

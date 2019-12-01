@@ -10,6 +10,7 @@ module.exports = function(id) {
     let student = await User.findOne({ _id: id, role: 'student' })
     let instructor = await User.findOne({ _id: id, role: 'instructor' })
     let admin = await User.findOne({ _id: id, role: 'admin' })
+
     if (student) throw new ConflictError(`user with id ${id} has no permision`)
     if (!student && !instructor && !admin) {
       throw new NotFoundError(`user with id ${id} not found`)

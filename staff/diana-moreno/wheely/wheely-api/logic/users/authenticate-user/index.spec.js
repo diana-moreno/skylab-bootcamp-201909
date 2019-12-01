@@ -22,7 +22,6 @@ describe('logic - authenticate user', () => {
     await User.deleteMany()
 
     const user = await User.create({ name, surname, email, password, role })
-
     id = user.id
   })
 
@@ -32,7 +31,6 @@ describe('logic - authenticate user', () => {
     expect(userId).to.exist
     expect(typeof userId).to.equal('string')
     expect(userId.length).to.be.greaterThan(0)
-
     expect(userId).to.equal(id)
   })
 
@@ -47,7 +45,6 @@ describe('logic - authenticate user', () => {
       } catch (error) {
         expect(error).to.exist
         expect(error).to.be.an.instanceOf(CredentialsError)
-
         const { message } = error
         expect(message).to.equal(`wrong credentials`)
       }

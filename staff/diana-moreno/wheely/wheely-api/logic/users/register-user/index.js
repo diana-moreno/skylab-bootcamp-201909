@@ -1,7 +1,10 @@
-const { validate, errors: { ConflictError } } = require('wheely-utils')
-const { models: { User, Student, Instructor } } = require('wheely-data')
+const { validate, errors: { ConflictError, NotFoundError } } = require('wheely-utils')
+const { ObjectId, models: { User, Student, Instructor } } = require('wheely-data')
 
-module.exports = function(name, surname, email, password, role) {
+module.exports = function(adminId, name, surname, email, password, role) {
+  validate.string(adminId)
+  validate.string.notVoid('adminId', adminId)
+  if (!ObjectId.isValid(adminId)) throw new ContentError(`${adminId} is not a valid id`)
   validate.string(name)
   validate.string.notVoid('name', name)
   validate.string(surname)
@@ -15,14 +18,23 @@ module.exports = function(name, surname, email, password, role) {
   validate.string.notVoid('role', role)
 
   return (async () => {
-    let user = await User.findOne({ email })
-    if(user) throw new ConflictError(`user with email ${email} already exists`)
+    // checks if admin is an admin
+    let admin = await User.findOne({ _id: adminId, role: 'admin' })
+    if (!admin) throw new NotFoundError(`user with id ${adminId} not found`)
 
+    // checks if user already exists
+    let user = await User.findOne({ email })
+    if (user) throw new ConflictError(`user with email ${email} already exists`)
+
+    // create new user depending on the role
     user = await User.create({ name, surname, email, password, role })
-    // create saves in database but new User not.
-    if(role === 'student') user.profile = new Student()
-    if(role === 'instructor') user.profile = new Instructor()
+    if (role === 'student') user.profile = new Student()
+    if (role === 'instructor') user.profile = new Instructor()
 
     await user.save()
   })()
 }
+
+
+
+

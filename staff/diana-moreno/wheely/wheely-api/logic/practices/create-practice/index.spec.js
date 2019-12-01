@@ -3,7 +3,7 @@ const { env: { TEST_DB_URL } } = process
 const { expect } = require('chai')
 const createPractice = require('.')
 const { random } = Math
-const { database, models: { User, Practice, Student, Instructor, Feedback } } = require('wheely-data')
+const { database, models: { User, Practice, Student, Instructor, Week, Day } } = require('wheely-data')
 const { validate, errors: { NotFoundError, ConflictError, ContentError } } = require('wheely-utils')
 const moment = require('moment')
 
@@ -11,7 +11,7 @@ const moment = require('moment')
 describe('logic - book a practice', () => {
   before(() => database.connect(TEST_DB_URL))
 
-  let studentId, instructorId, name, surname, email, password, role, price, status, date, practId, credits, student
+  let studentId, instructorId, name, surname, email, password, price, role, status, date, credits
 
   beforeEach(async () => {
     // create an student
@@ -26,7 +26,6 @@ describe('logic - book a practice', () => {
     let student = await User.create({ name, surname, email, password, role })
     student.profile = new Student()
     student.profile.credits = 3
-    credits = 3
 
     await student.save()
     studentId = student.id
@@ -38,21 +37,31 @@ describe('logic - book a practice', () => {
     password = `password-${random()}`
     role = 'instructor'
 
-    let instructor = await User.create({ name, surname, email, password, role })
+    let instructor = await User.create({ name, surname, email, password, role})
     instructor.profile = new Instructor()
     await instructor.save()
+
+    // create a test schedule for instructor, he works every day 11-13h
+    if (!instructor.profile.schedule) {
+      instructor.profile.schedule = new Week()
+      for (let i = 0; i < 7; i++) {
+        instructor.profile.schedule.days.push(new Day({ index: i, hours: ['11:00', '12:00'] }))
+      }
+      await instructor.save()
+    }
     instructorId = instructor.id
+    await User.updateOne({ _id: instructorId }, { $set: { 'profile.schedule': instructor.profile.schedule } }, { multi: true })
 
     // practice's features
     price = 1
     status = 'pending'
-    date = moment().day(8)
+    date = "Mon, 2 December 2050 12:00:00"
 
   })
 
   it('should succeed when student has credits', async () => {
     // calculate the newCredits the student should have after doing a reservation
-    student = await User.findOne({ _id: studentId, role: 'student' })
+    let student = await User.findOne({ _id: studentId, role: 'student' })
     let newCredits = student.profile.credits - 1
 
     const practiceId = await createPractice(instructorId, studentId, date)
@@ -76,6 +85,22 @@ describe('logic - book a practice', () => {
     // retrieve the student to check how many credits has after doing a reservation
     student = await User.findOne({ _id: studentId, role: 'student' })
     expect(student.profile.credits).to.equal(newCredits)
+  })
+
+  it('should fail when the instructor does not have this date in his schedule', async () => {
+    date = "Mon, 2 December 2050 19:00:00"
+    try {
+      await createPractice(instructorId, studentId, date)
+      throw Error('should not reach this point')
+
+    } catch (error) {
+      expect(error).to.exist
+      expect(error.message).to.exist
+      expect(typeof error.message).to.equal('string')
+      expect(error.message.length).to.be.greaterThan(0)
+      expect(error).to.be.an.instanceOf(ConflictError)
+      expect(error.message).to.equal(`instructor has not available date ${date}`)
+    }
   })
 
   it('should fail on unexisting student', async () => {
@@ -160,7 +185,6 @@ describe('logic - book a practice', () => {
       price = 1
       status = 'pending'
       date = new Date()
-
     })
 
     it('should fail when user has no credits available', async () => {
@@ -211,19 +235,17 @@ describe('logic - book a practice', () => {
       price = 1
       status = 'pending'
       date = new Date()
-
     })
-    beforeEach(async () => {
-      date = new Date("Wed, 27 July 2016 13:30:00")
-/*      let reservation = await Reservation.create({ instructorId, studentId })*/
-      practice = await Practice.create({ date, instructorId, studentId })
 
+    beforeEach(async () => {
+      date = new Date("Wed, 27 July 2050 13:00:00")
+      practice = await Practice.create({ date, instructorId, studentId })
       practiceId = practice.id
     })
 
     it('should fail on already existing practice', async () => {
-      date = new Date("Wed, 27 July 2016 13:30:00")
       // we try to create a new practice with the same data which is imposible
+      date = new Date("Wed, 27 July 2050 13:00:00")
       try {
         let practiceSaved = await Practice.findById(practiceId)
         expect(practiceSaved).to.exist
@@ -260,13 +282,6 @@ describe('logic - book a practice', () => {
     expect(() => createPractice(instructorId, null)).to.throw(TypeError, 'null is not a string')
     expect(() => createPractice(instructorId, '')).to.throw(ContentError, 'studentId is empty or blank')
     expect(() => createPractice(instructorId, ' \t\r')).to.throw(ContentError, 'studentId is empty or blank')
-
-/*    expect(() => createPractice(instructorId, studentId, 1)).to.throw(TypeError, '1 is not a Date')
-    expect(() => createPractice(instructorId, studentId, true)).to.throw(TypeError, 'true is not a Date')
-    expect(() => createPractice(instructorId, studentId, [])).to.throw(TypeError, ' is not a Date')
-    expect(() => createPractice(instructorId, studentId, {})).to.throw(TypeError, '[object Object] is not a Date')
-    expect(() => createPractice(instructorId, studentId, undefined)).to.throw(TypeError, 'undefined is not a Date')
-    expect(() => createPractice(instructorId, studentId, null)).to.throw(TypeError, 'null is not a Date')*/
   })
 
   after(() => Promise.all([User.deleteMany(), Practice.deleteMany()]).then(database.disconnect))

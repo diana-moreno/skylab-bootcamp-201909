@@ -1,7 +1,7 @@
 require('dotenv').config()
 const { env: { TEST_DB_URL } } = process
 const { expect } = require('chai')
-const toogleSchedule = require('../toogle-schedule')
+const toggleSchedule = require('../toggle-schedule')
 const retrieveAvailableSchedule = require('.')
 const { random } = Math
 const { database, models: { User, Practice, Student, Instructor } } = require('wheely-data')

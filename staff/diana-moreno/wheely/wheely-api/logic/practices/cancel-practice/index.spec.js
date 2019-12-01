@@ -3,13 +3,14 @@ const { env: { TEST_DB_URL } } = process
 const { expect } = require('chai')
 const cancelPractice = require('.')
 const { random } = Math
-const { database, models: { User, Practice, Student, Instructor, Feedback } } = require('wheely-data')
-const { validate, errors: { NotFoundError, ConflictError, ContentError } } = require('wheely-utils')
+const { database, models: { User, Practice, Student, Instructor } } = require('wheely-data')
+const { validate, errors: { ContentError } } = require('wheely-utils')
 
 describe('logic - cancel practice', () => {
   before(() => database.connect(TEST_DB_URL))
 
-  let studentId, instructorId, name, surname, email, password, role, price, status, date, credits, student, practiceId, feedback, valoration
+  let studentId, instructorId, name, surname, email, password, role, status, date, credits, practiceId, unexistingId = '012345678901234567890123',
+    fakeId = '123456'
 
   beforeEach(async () => {
     // create an student
@@ -24,7 +25,6 @@ describe('logic - cancel practice', () => {
     let student = await User.create({ name, surname, email, password, role })
     student.profile = new Student()
     student.profile.credits = 3
-    credits = 3
     await student.save()
     studentId = student.id
 
@@ -41,7 +41,6 @@ describe('logic - cancel practice', () => {
     instructorId = instructor.id
 
     // create practice
-    price = 1
     date = new Date("Wed, 27 July 2030 13:30:00")
     let practice = await Practice.create({ date, instructorId, studentId })
     practiceId = practice.id
@@ -58,15 +57,14 @@ describe('logic - cancel practice', () => {
     expect(practice).to.exist
 
     await cancelPractice(instructorId, studentId, practiceId)
-    practice = await Practice.findOne({ _id: practiceId })
 
+    practice = await Practice.findOne({ _id: practiceId })
     expect(practice).to.equal(null)
   })
 
   it('should fail on unexisting practice', async () => {
-    let fakeId = '012345678901234567890123'
     try {
-      await cancelPractice(instructorId, studentId, fakeId)
+      await cancelPractice(instructorId, studentId, unexistingId)
       throw Error('should not reach this point')
 
     } catch (error) {
@@ -74,14 +72,13 @@ describe('logic - cancel practice', () => {
       expect(error.message).to.exist
       expect(typeof error.message).to.equal('string')
       expect(error.message.length).to.be.greaterThan(0)
-      expect(error.message).to.equal(`practice with id ${fakeId} not found`)
+      expect(error.message).to.equal(`practice with id ${unexistingId} not found`)
     }
   })
 
   it('should fail on unexisting student', async () => {
-    let fakeId = '012345678901234567890123'
     try {
-      await cancelPractice(instructorId, fakeId, practiceId)
+      await cancelPractice(instructorId, unexistingId, practiceId)
       throw Error('should not reach this point')
 
     } catch (error) {
@@ -89,14 +86,13 @@ describe('logic - cancel practice', () => {
       expect(error.message).to.exist
       expect(typeof error.message).to.equal('string')
       expect(error.message.length).to.be.greaterThan(0)
-      expect(error.message).to.equal(`user with id ${fakeId} not found`)
+      expect(error.message).to.equal(`user with id ${unexistingId} not found`)
     }
   })
 
   it('should fail on unexisting instructor', async () => {
-    let fakeId = '012345678901234567890123'
     try {
-      await cancelPractice(fakeId, studentId, practiceId)
+      await cancelPractice(unexistingId, studentId, practiceId)
       throw Error('should not reach this point')
 
     } catch (error) {
@@ -104,12 +100,11 @@ describe('logic - cancel practice', () => {
       expect(error.message).to.exist
       expect(typeof error.message).to.equal('string')
       expect(error.message.length).to.be.greaterThan(0)
-      expect(error.message).to.equal(`user with id ${fakeId} not found`)
+      expect(error.message).to.equal(`user with id ${unexistingId} not found`)
     }
   })
 
   it('should fail on incorrect student id and practice done', async () => {
-    let fakeId = '01234567890123'
     try {
       await cancelPractice(instructorId, fakeId, practiceId)
       throw Error('should not reach this point')
@@ -125,7 +120,6 @@ describe('logic - cancel practice', () => {
   })
 
   it('should fail on incorrect instructor id and practice done', async () => {
-    let fakeId = '01234567890123'
     try {
       await cancelPractice(fakeId, studentId, practiceId)
       throw Error('should not reach this point')
@@ -169,7 +163,6 @@ describe('logic - cancel practice', () => {
       instructorId = instructor.id
 
       // create practice
-      price = 1
       status = 'done'
       date = new Date("Wed, 27 July 2025 13:30:00")
       let practice = await Practice.create({ date, instructorId, studentId, status })
@@ -191,9 +184,8 @@ describe('logic - cancel practice', () => {
     })
 
     it('should fail on unexisting student and practice done', async () => {
-      let fakeId = '012345678901234567890123'
       try {
-        await cancelPractice(instructorId, fakeId, practiceId)
+        await cancelPractice(instructorId, unexistingId, practiceId)
         throw Error('should not reach this point')
 
       } catch (error) {
@@ -201,14 +193,13 @@ describe('logic - cancel practice', () => {
         expect(error.message).to.exist
         expect(typeof error.message).to.equal('string')
         expect(error.message.length).to.be.greaterThan(0)
-        expect(error.message).to.equal(`user with id ${fakeId} not found`)
+        expect(error.message).to.equal(`user with id ${unexistingId} not found`)
       }
     })
 
     it('should fail on unexisting instructor and practice done', async () => {
-      let fakeId = '012345678901234567890123'
       try {
-        await cancelPractice(fakeId, studentId, practiceId)
+        await cancelPractice(unexistingId, studentId, practiceId)
         throw Error('should not reach this point')
 
       } catch (error) {
@@ -216,7 +207,7 @@ describe('logic - cancel practice', () => {
         expect(error.message).to.exist
         expect(typeof error.message).to.equal('string')
         expect(error.message.length).to.be.greaterThan(0)
-        expect(error.message).to.equal(`user with id ${fakeId} not found`)
+        expect(error.message).to.equal(`user with id ${unexistingId} not found`)
       }
     })
 
@@ -251,7 +242,6 @@ describe('logic - cancel practice', () => {
       instructorId = instructor.id
 
       // create practice
-      price = 1
       status = 'pending'
       date = new Date("Wed, 27 July 2016 13:30:00")
       let practice = await Practice.create({ date, instructorId, studentId, status })
