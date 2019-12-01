@@ -88,42 +88,6 @@ describe('logic - list users', () => {
     })
   })
 
-  it('should succeed on admin retrieving only instructor users', async () => {
-    const users = await listUsers(adminId, 'instructors')
-
-    expect(users).to.exist
-/*    expect(users).to.have.lengthOf(10)*/
-
-    users.forEach(user => {
-      expect(user._id).to.exist
-
-      expect(user.name).to.exist
-      expect(user.name).to.be.a('string')
-      expect(user.name).to.have.length.greaterThan(0)
-      expect(user.name).be.oneOf(names)
-
-      expect(user.surname).to.exist
-      expect(user.surname).to.be.a('string')
-      expect(user.surname).to.have.length.greaterThan(0)
-      expect(user.surname).be.oneOf(surnames)
-
-      expect(user.password).to.exist
-      expect(user.password).to.be.a('string')
-      expect(user.password).to.have.length.greaterThan(0)
-      expect(user.password).be.oneOf(passwords)
-
-      expect(user.email).to.exist
-      expect(user.email).to.be.a('string')
-      expect(user.email).to.have.length.greaterThan(0)
-      expect(user.email).be.oneOf(emails)
-
-      expect(user.role).to.exist
-      expect(user.role).to.be.a('string')
-      expect(user.role).to.have.length.greaterThan(0)
-      expect(user.role).to.equal('instructor')
-    })
-  })
-
   it('should fail on unexisting user', async () => {
     let fakeId = '012345678901234567890123'
     try {

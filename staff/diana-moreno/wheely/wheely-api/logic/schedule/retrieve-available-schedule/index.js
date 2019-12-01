@@ -16,12 +16,12 @@ module.exports = function(instructorId) { // hace falta el id de quien lo pide?
 
     // transform the schedule of weekdays of the data base in an object with real dates (for 30 natural days) and an array of hours to expose in the frontend for booking
     for (let i = 0; i < 30; i++) {
-      let weekday = moment().add(i, 'day').day()
-      let today = Number(moment().day())
+      const weekday = moment().add(i, 'day').day()
+      const today = Number(moment().day())
 
       if (scheduleDb[weekday].hours.length > 0) {
-        let day = moment().day(i + today, 'day')
-        let hours = scheduleDb[weekday].hours
+        const day = moment().day(i + today, 'day')
+        const hours = scheduleDb[weekday].hours
         calendar.push({
           day,
           hours
@@ -31,14 +31,14 @@ module.exports = function(instructorId) { // hace falta el id de quien lo pide?
 
     // checks if the first day of the array is today. If is today, removes from the array of hours, the hours that are past (to no offer a new practice in the past)
     if (calendar[0].day.format('L') == moment().format('L')) {
-      let [, now] = moment().format('DD-MM-YYYY HH:mm:ss').split(' ')
+      const [, now] = moment().format('DD-MM-YYYY HH:mm:ss').split(' ')
       const timeNow = moment(now, "H:mm"); // parse string to moment hour
 
       calendar[0].hours.forEach(hour => {
-        let timeSaved = moment(hour, "H:mm") // parse string to moment hour
+        const timeSaved = moment(hour, "H:mm") // parse string to moment hour
 
         if (timeNow.isBefore(timeSaved)) {
-          let index = calendar[0].hours.indexOf(hour)
+          const index = calendar[0].hours.indexOf(hour)
           calendar[0].hours.splice(index, 1)
         }
       })
@@ -47,3 +47,5 @@ module.exports = function(instructorId) { // hace falta el id de quien lo pide?
     return calendar
   })()
 }
+
+// como separar esto en meses y archivarlos, para poder hacer estadísticas??

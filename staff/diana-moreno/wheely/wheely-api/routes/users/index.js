@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const { registerUser, authenticateUser, retrieveUser, deleteUser, editUser } = require('../../logic')
+const { registerUser, authenticateUser, retrieveUser, deleteUser, editUser, listUsers } = require('../../logic')
 const jwt = require('jsonwebtoken')
 const { env: { SECRET } } = process
 const tokenVerifier = require('../../helpers/token-verifier')(SECRET)
@@ -70,7 +70,7 @@ router.post('/auth', jsonBodyParser, (req, res) => {
   }
 })
 
-router.get('/', tokenVerifier, (req, res) => {
+router.get('/:id', tokenVerifier, (req, res) => {
   //tokenVerifier añade el id que reciben del token en header en req?
   try {
     const { id } = req
@@ -119,6 +119,27 @@ router.patch('/', jsonBodyParser, tokenVerifier, (req, res) => {
 
     editUser(id, name, surname, email)
       .then(() => res.end() )
+      .catch(error => {
+        const { message } = error
+
+        if (error instanceof NotFoundError)
+          return res.status(404).json({ message })
+        if (error instanceof ConflictError)
+          return res.status(409).json({ message })
+
+        res.status(500).json({ message })
+      })
+  } catch ({ message }) {
+    res.status(400).json({ message })
+  }
+})
+
+router.get('/', tokenVerifier, (req, res) => {
+  try {
+    const { id } = req
+
+    listUsers(id)
+      .then(users => res.json({ users }))
       .catch(error => {
         const { message } = error
 

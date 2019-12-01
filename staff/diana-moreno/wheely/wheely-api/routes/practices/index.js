@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const { createPractice, retrievePendingPractices, retrieveDonePractices, retrieveCancelledPractices } = require('../../logic')
+const { createPractice, cancelPractice, retrievePractices, retrieveProgression, updatePractices, writeFeedback } = require('../../logic')
 const jwt = require('jsonwebtoken')
 const { env: { SECRET } } = process
 const tokenVerifier = require('../../helpers/token-verifier')(SECRET)
