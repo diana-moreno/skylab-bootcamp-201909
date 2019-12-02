@@ -1,6 +1,7 @@
 import React from 'react'
 import './index.sass'
 import Feedback from '../Feedback'
+import { Link } from 'react-router-dom'
 
 export default function({error}) {
   return (
@@ -11,6 +12,7 @@ export default function({error}) {
       </header>
 
       <main  class='login__container'>
+<Link to="/detail-instructor">About</Link>
         <p class='login__subtitle'>Instructors and students area</p>
         <form action="" class='login__form'>
           <input type="text" name="email" placeholder="email" class='login__form-item'/>
