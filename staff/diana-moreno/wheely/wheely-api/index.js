@@ -5,13 +5,14 @@ const { name, version } = require('./package.json')
 const { argv: [, , port], env: { PORT = port || 8080, DB_URL } } = process
 const cors = require('cors')
 const { database } = require('wheely-data')
-const { users, practices } = require('./routes')
+const { users, practices,schedule } = require('./routes')
 
 const api = express()
 
 api.use(cors())
 api.use('/users', users)
 api.use('/practices', practices)
+api.use('/schedule', schedule)
 
 database
   .connect(DB_URL)
