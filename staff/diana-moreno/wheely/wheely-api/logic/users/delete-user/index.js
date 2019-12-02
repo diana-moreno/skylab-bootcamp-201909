@@ -20,6 +20,6 @@ module.exports = function(adminId, id) {
     if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
     // delete user
-    await User.deleteOne({ _id: ObjectId(id) })
+    await User.findByIdAndDelete(id)
   })()
 }

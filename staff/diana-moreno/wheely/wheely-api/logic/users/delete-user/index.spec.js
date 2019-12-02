@@ -9,7 +9,6 @@ const { database, models: { User, Student, Instructor } } = require('wheely-data
 describe('logic - delete user', () => {
   before(() => database.connect(TEST_DB_URL))
 
-
   let roles = ['admin', 'student', 'instructor']
   let name, surname, email, password, role, names, surnames, emails, passwords, ids, adminId
 
@@ -55,9 +54,14 @@ describe('logic - delete user', () => {
   it('should succeed on correct user admin deleting other users', async () => {
     ids.forEach(async (id) => {
       await deleteUser(adminId, id)
-      user = await User.findOne({ id })
-      expect(user).to.equal(null)
     })
+
+    let id = ids[0]
+    let user0 = await User.findOne({ id })
+    expect(user0).to.equal(null)
+    id = ids[6]
+    let user6 = await User.findOne({ id })
+    expect(user6).to.equal(null)
   })
 
   it('should fail on wrong user id', async () => {
