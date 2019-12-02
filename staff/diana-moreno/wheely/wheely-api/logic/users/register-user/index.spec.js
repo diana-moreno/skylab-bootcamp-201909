@@ -184,6 +184,7 @@ describe('logic - register user', () => {
   })
 
   it('should fail on incorrect name, surname, email, password, or expression type and content', () => {
+    expect(() => registerUser('1')).to.throw(ContentError, '1 is not a valid id')
     expect(() => registerUser(1)).to.throw(TypeError, '1 is not a string')
     expect(() => registerUser(true)).to.throw(TypeError, 'true is not a string')
     expect(() => registerUser([])).to.throw(TypeError, ' is not a string')

@@ -3,7 +3,7 @@ const { env: { TEST_DB_URL } } = process
 const { expect } = require('chai')
 const { random } = Math
 const editUser = require('.')
-const { errors: { NotFoundError } } = require('wheely-utils')
+const { errors: { NotFoundError, ContentError } } = require('wheely-utils')
 const { database, models: { User, Student, Instructor } } = require('wheely-data')
 
 describe('logic - edit user', () => {
@@ -266,20 +266,16 @@ describe('logic - edit user', () => {
     })
   })
 
-  beforeEach(async () => {
-    name = `name-${random()}`
-    surname = `surname-${random()}`
-    email = `email-${random()}@mail.com`
-    password = `password-${random()}`
-    role = 'student'
-
-    await User.deleteMany()
-
-    const user = await User.create({ name, surname, email, password, role })
-    user.profile = new Student()
-    await user.save()
-
-    id = user.id
+  it('should fail on incorrect id type or content', () => {
+    expect(() => editUser('1')).to.throw(ContentError, '1 is not a valid id')
+    expect(() => editUser(1)).to.throw(TypeError, '1 is not a string')
+    expect(() => editUser(true)).to.throw(TypeError, 'true is not a string')
+    expect(() => editUser([])).to.throw(TypeError, ' is not a string')
+    expect(() => editUser({})).to.throw(TypeError, '[object Object] is not a string')
+    expect(() => editUser(undefined)).to.throw(TypeError, 'undefined is not a string')
+    expect(() => editUser(null)).to.throw(TypeError, 'null is not a string')
+    expect(() => editUser('')).to.throw(ContentError, 'id is empty or blank')
+    expect(() => editUser(' \t\r')).to.throw(ContentError, 'id is empty or blank')
   })
 
   after(() => User.deleteMany().then(database.disconnect))

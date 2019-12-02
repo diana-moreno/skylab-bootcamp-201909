@@ -1,7 +1,6 @@
-const { validate, errors: { NotFoundError } } = require('wheely-utils')
+const { validate, errors: { NotFoundError, ContentError } } = require('wheely-utils')
 const { ObjectId, models: { User, Day, Week } } = require('wheely-data')
 
-// hace falta que validemos que sea un admin quien lo hace?
 module.exports = function(adminId, instructorId, indexDay, hour) {
   // sincronous validate
   validate.string(adminId)
@@ -35,9 +34,7 @@ module.exports = function(adminId, instructorId, indexDay, hour) {
       await instructor.save()
     }
 
-    // then searchs if the day exists to add in, and then checks if the hour in this day exists, if not, create it, if yes, delete it (make a toogle)
-
-
+    // then searchs if the day exists to add in, and then checks if the hour in this day exists, if not, create it, if yes, delete it (make a toggle)
     if(0 <= indexDay && indexDay < 7) {
       let day = instructor.profile.schedule.days[indexDay]
       let indexFound = day.hours.indexOf(hour)

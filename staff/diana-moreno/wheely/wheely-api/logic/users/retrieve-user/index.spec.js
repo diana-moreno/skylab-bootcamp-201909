@@ -9,7 +9,6 @@ const { database, models: { User, Student, Instructor } } = require('wheely-data
 describe('logic - retrieve user', () => {
   before(() => database.connect(TEST_DB_URL))
 
-  let roles = ['student', 'admin', 'instructor']
   let id, name, surname, email, password, role, fakeId = '012345678901234567890123'
 
   describe('when user is a student', () => {
@@ -158,6 +157,7 @@ describe('logic - retrieve user', () => {
     })
 
     it('should fail on incorrect name, surname, email, password, or expression type and content', () => {
+      expect(() => retrieveUser('1')).to.throw(ContentError, '1 is not a valid id')
       expect(() => retrieveUser(1)).to.throw(TypeError, '1 is not a string')
       expect(() => retrieveUser(true)).to.throw(TypeError, 'true is not a string')
       expect(() => retrieveUser([])).to.throw(TypeError, ' is not a string')

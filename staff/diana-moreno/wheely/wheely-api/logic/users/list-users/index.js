@@ -1,4 +1,4 @@
-const { validate, errors: { NotFoundError, ConflictError } } = require('wheely-utils')
+const { validate, errors: { NotFoundError, ConflictError, ContentError } } = require('wheely-utils')
 const { ObjectId, models: { User, Practice, Instructor } } = require('wheely-data')
 
 module.exports = function(id) {

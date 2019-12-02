@@ -280,7 +280,8 @@ describe('logic - retrieve practices', () => {
     }
   })
 
-   it('should fail on incorrect instructorId, studentId, practiceId, feedback, valoration type or content', () => {
+   it('should fail on incorrect user id and query type or content', () => {
+      expect(() => listPractices('1')).to.throw(ContentError, '1 is not a valid id')
       expect(() => listPractices(1)).to.throw(TypeError, '1 is not a string')
       expect(() => listPractices(true)).to.throw(TypeError, 'true is not a string')
       expect(() => listPractices([])).to.throw(TypeError, ' is not a string')

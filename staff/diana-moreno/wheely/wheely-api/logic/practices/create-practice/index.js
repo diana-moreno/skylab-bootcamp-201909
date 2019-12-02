@@ -1,4 +1,4 @@
-const { validate, errors: { NotFoundError, ConflictError } } = require('wheely-utils')
+const { validate, errors: { NotFoundError, ConflictError, ContentError } } = require('wheely-utils')
 const { ObjectId, models: { User, Practice } } = require('wheely-data')
 const moment = require('moment')
 const sendEmail = require('../../../helpers/send-email')

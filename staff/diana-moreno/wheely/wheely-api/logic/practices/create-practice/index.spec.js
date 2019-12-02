@@ -234,10 +234,6 @@ describe('logic - book a practice', () => {
       // practice's features
       price = 1
       status = 'pending'
-      date = new Date()
-    })
-
-    beforeEach(async () => {
       date = new Date("Wed, 27 July 2050 13:00:00")
       practice = await Practice.create({ date, instructorId, studentId })
       practiceId = practice.id
@@ -264,16 +260,17 @@ describe('logic - book a practice', () => {
 
   })
 
-  it('should fail on incorrect instructorId, studentId, practiceId type or content', () => {
+  it('should fail on incorrect instructorId, studentId, date type or content', () => {
+    expect(() => createPractice('1')).to.throw(ContentError, '1 is not a valid id')
     expect(() => createPractice(1)).to.throw(TypeError, '1 is not a string')
     expect(() => createPractice(true)).to.throw(TypeError, 'true is not a string')
     expect(() => createPractice([])).to.throw(TypeError, ' is not a string')
     expect(() => createPractice({})).to.throw(TypeError, '[object Object] is not a string')
     expect(() => createPractice(undefined)).to.throw(TypeError, 'undefined is not a string')
     expect(() => createPractice(null)).to.throw(TypeError, 'null is not a string')
-
     expect(() => createPractice('')).to.throw(ContentError, 'instructorId is empty or blank')
 
+    expect(() => createPractice(instructorId, '1')).to.throw(ContentError, '1 is not a valid id')
     expect(() => createPractice(instructorId, 1)).to.throw(TypeError, '1 is not a string')
     expect(() => createPractice(instructorId, true)).to.throw(TypeError, 'true is not a string')
     expect(() => createPractice(instructorId, [])).to.throw(TypeError, ' is not a string')

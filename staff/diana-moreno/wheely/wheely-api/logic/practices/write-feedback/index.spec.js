@@ -172,15 +172,16 @@ describe('logic - write feedback', () => {
     })
 
     it('should fail on incorrect instructorId, studentId, practiceId, feedback, valoration type or content', () => {
+      expect(() => writeFeedback('1')).to.throw(ContentError, '1 is not a valid id')
       expect(() => writeFeedback(1)).to.throw(TypeError, '1 is not a string')
       expect(() => writeFeedback(true)).to.throw(TypeError, 'true is not a string')
       expect(() => writeFeedback([])).to.throw(TypeError, ' is not a string')
       expect(() => writeFeedback({})).to.throw(TypeError, '[object Object] is not a string')
       expect(() => writeFeedback(undefined)).to.throw(TypeError, 'undefined is not a string')
       expect(() => writeFeedback(null)).to.throw(TypeError, 'null is not a string')
-
       expect(() => writeFeedback('')).to.throw(ContentError, 'instructorId is empty or blank')
 
+      expect(() => writeFeedback(instructorId, '1')).to.throw(ContentError, '1 is not a valid id')
       expect(() => writeFeedback(instructorId, 1)).to.throw(TypeError, '1 is not a string')
       expect(() => writeFeedback(instructorId, true)).to.throw(TypeError, 'true is not a string')
       expect(() => writeFeedback(instructorId, [])).to.throw(TypeError, ' is not a string')
@@ -190,6 +191,7 @@ describe('logic - write feedback', () => {
       expect(() => writeFeedback(instructorId, '')).to.throw(ContentError, 'studentId is empty or blank')
       expect(() => writeFeedback(instructorId, ' \t\r')).to.throw(ContentError, 'studentId is empty or blank')
 
+      expect(() => writeFeedback(instructorId, studentId, '1')).to.throw(ContentError, '1 is not a valid id')
       expect(() => writeFeedback(instructorId, studentId, 1)).to.throw(TypeError, '1 is not a string')
       expect(() => writeFeedback(instructorId, studentId, true)).to.throw(TypeError, 'true is not a string')
       expect(() => writeFeedback(instructorId, studentId, [])).to.throw(TypeError, ' is not a string')

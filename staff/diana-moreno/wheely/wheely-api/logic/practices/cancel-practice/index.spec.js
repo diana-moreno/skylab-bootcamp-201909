@@ -264,6 +264,8 @@ describe('logic - cancel practice', () => {
   })
 
   it('should fail on incorrect instructorId, studentId, practiceId type or content', () => {
+    expect(() => cancelPractice('1')).to.throw(ContentError, '1 is not a valid id')
+
     expect(() => cancelPractice(1)).to.throw(TypeError, '1 is not a string')
     expect(() => cancelPractice(true)).to.throw(TypeError, 'true is not a string')
     expect(() => cancelPractice([])).to.throw(TypeError, ' is not a string')
@@ -273,6 +275,7 @@ describe('logic - cancel practice', () => {
 
     expect(() => cancelPractice('')).to.throw(ContentError, 'instructorId is empty or blank')
 
+    expect(() => cancelPractice(instructorId, '1')).to.throw(ContentError, '1 is not a valid id')
     expect(() => cancelPractice(instructorId, 1)).to.throw(TypeError, '1 is not a string')
     expect(() => cancelPractice(instructorId, true)).to.throw(TypeError, 'true is not a string')
     expect(() => cancelPractice(instructorId, [])).to.throw(TypeError, ' is not a string')
@@ -282,6 +285,7 @@ describe('logic - cancel practice', () => {
     expect(() => cancelPractice(instructorId, '')).to.throw(ContentError, 'studentId is empty or blank')
     expect(() => cancelPractice(instructorId, ' \t\r')).to.throw(ContentError, 'studentId is empty or blank')
 
+    expect(() => cancelPractice(instructorId, studentId, '1')).to.throw(ContentError, '1 is not a valid id')
     expect(() => cancelPractice(instructorId, studentId, 1)).to.throw(TypeError, '1 is not a string')
     expect(() => cancelPractice(instructorId, studentId, true)).to.throw(TypeError, 'true is not a string')
     expect(() => cancelPractice(instructorId, studentId, [])).to.throw(TypeError, ' is not a string')

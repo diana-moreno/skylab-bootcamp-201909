@@ -1,4 +1,4 @@
-const { validate, errors: { ConflictError, NotFoundError } } = require('wheely-utils')
+const { validate, errors: { ConflictError, NotFoundError, ContentError } } = require('wheely-utils')
 const { ObjectId, models: { User } } = require('wheely-data')
 
 module.exports = function(adminId, studentId, credits) {
@@ -15,7 +15,7 @@ module.exports = function(adminId, studentId, credits) {
   return (async () => {
     // checks if admin is an admin
     let admin = await User.findOne({ _id: adminId, role: 'admin' })
-    if (!admin) throw new NotFoundError(`user with id ${adminId} not found`)
+    if (!admin) throw new NotFoundError(`user with id ${adminId} not found or not a valid user`)
 
     // checks if student exists
     let student = await User.findOne({ _id: studentId, role: 'student' })

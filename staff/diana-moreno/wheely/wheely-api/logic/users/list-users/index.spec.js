@@ -131,16 +131,6 @@ describe('logic - list users', () => {
     })
   })
 
-  it('should fail on incorrect id type or content', () => {
-    expect(() => listUsers(1)).to.throw(TypeError, '1 is not a string')
-    expect(() => listUsers(true)).to.throw(TypeError, 'true is not a string')
-    expect(() => listUsers([])).to.throw(TypeError, ' is not a string')
-    expect(() => listUsers({})).to.throw(TypeError, '[object Object] is not a string')
-    expect(() => listUsers(undefined)).to.throw(TypeError, 'undefined is not a string')
-    expect(() => listUsers(null)).to.throw(TypeError, 'null is not a string')
-    expect(() => listUsers('')).to.throw(ContentError, 'id is empty or blank')
-    expect(() => listUsers(' \t\r')).to.throw(ContentError, 'id is empty or blank')
-  })
 
   describe('logic - when instructor retrieves his students', () => {
 
@@ -194,6 +184,18 @@ describe('logic - list users', () => {
       expect(users).to.exist
 
     })
+  })
+
+  it('should fail on incorrect id type or content', () => {
+    expect(() => listUsers('1')).to.throw(ContentError, '1 is not a valid id')
+    expect(() => listUsers(1)).to.throw(TypeError, '1 is not a string')
+    expect(() => listUsers(true)).to.throw(TypeError, 'true is not a string')
+    expect(() => listUsers([])).to.throw(TypeError, ' is not a string')
+    expect(() => listUsers({})).to.throw(TypeError, '[object Object] is not a string')
+    expect(() => listUsers(undefined)).to.throw(TypeError, 'undefined is not a string')
+    expect(() => listUsers(null)).to.throw(TypeError, 'null is not a string')
+    expect(() => listUsers('')).to.throw(ContentError, 'id is empty or blank')
+    expect(() => listUsers(' \t\r')).to.throw(ContentError, 'id is empty or blank')
   })
 
   after(() => Promise.all([User.deleteMany()]).then(database.disconnect))
