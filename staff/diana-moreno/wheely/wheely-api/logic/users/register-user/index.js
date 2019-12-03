@@ -21,7 +21,7 @@ module.exports = function(adminId, name, surname, email, password, role) {
   return (async () => {
     // checks if admin is an admin
     let admin = await User.findOne({ _id: adminId, role: 'admin' })
-    if (!admin) throw new NotFoundError(`user with id ${adminId} not found`)
+    if (!admin) throw new NotFoundError(`user with id ${adminId} not found or has no permission`)
 
     // checks if user already exists
     let user = await User.findOne({ email })

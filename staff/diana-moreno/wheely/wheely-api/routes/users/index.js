@@ -70,7 +70,7 @@ router.post('/auth', jsonBodyParser, (req, res) => {
   }
 })
 
-router.get('/:id', tokenVerifier, (req, res) => {
+router.get('/user', tokenVerifier, (req, res) => {
   //tokenVerifier añade el id que reciben del token en header en req?
   try {
     const { id } = req
@@ -176,6 +176,7 @@ router.put('/credits', jsonBodyParser, tokenVerifier, (req, res) => {
   }
 })
 
+//TODO
 router.get('/progression', jsonBodyParser, tokenVerifier, (req, res) => {
   try {
   const { id, body: { query } } = req

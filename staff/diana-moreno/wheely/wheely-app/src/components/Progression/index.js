@@ -5,7 +5,6 @@ import ProgressionItem from '../Progression-item'
 
 export default function () {
   return <>
-    <Navbar />
     <section class="timeline">
       <ul class='timeline__list'>
         <ProgressionItem />

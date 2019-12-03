@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Route, withRouter, Redirect } from 'react-router-dom'
-import { authenticateUser, registerUser, retrieveUser, listTasks, modifyTask, createTask } from '../../logic'
+import { authenticateUser, registerUser, retrieveUser, listTasks, modifyTask, createTask, getToken } from '../../logic'
 import './index.sass'
+import Context from '../CreateContext'
 
 import Login from '../Login'
 import Reservations from '../Reservations' // double
@@ -14,108 +15,86 @@ import Register from '../Register'
 import Valoration from '../Valoration'
 import Account from '../Account' // double
 import Profile from '../Profile'
+import Navbar from '../Navbar'
+
+/*import retrieveDataUser from '../../logic/retrieveDataUser'*/
 
 
 export default withRouter(function({ history }) {
-  const [name, setName] = useState()
-  const [surname, setSurname] = useState()
+  const [nameSurname, setNameSurname] = useState()
+  const [feedback, setFeedback] = useState()
   const [user, setUser] = useState()
-  const [tasks, setTasks] = useState([])
+  if(user) { const {name, surname, email, password, role, profile } = user }
+  const { token } = sessionStorage
 
-/*  useEffect(() => {
-    const { token } = sessionStorage;
-
+// when the page is reloaded, retrieve the user and save it into the state
+  useEffect(() => {
     (async () => {
-      if (token) {
-        const { name, surname } = await retrieveUser(token)
-
-        setSurname(surname)
-        setName(name)
-
-        await retrieveTasks(token)
+      try {
+        if(token) {
+          const user = await retrieveUser(token)
+          const nameSurname = user.user.name.concat(' ').concat(user.user.surname)
+          setUser(user)
+          setNameSurname(nameSurname)
+        }
+      }catch (error) {
+        console.log(error)
       }
     })()
-  }, [sessionStorage.token])
-*/
-/*  async function retrieveTasks(token) {
-    const tasks = await listTasks(token)
+  }, [])
 
-    setTasks(tasks)
-  }
-
-  function handleGoToRegister() { history.push('/register') }
-
-  function handleGoToLogin() { history.push('/login') }*/
-
-  async function handleRegister(name, surname, email, password, role) {
-    try {
-      await registerUser(name, surname, email, password, role)
-      /*history.push('/login')*/
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  async function handleLogin(email, password) {
+  const handleLogin = async (email, password) => {
     try {
       const token = await authenticateUser(email, password)
 
       sessionStorage.token = token
+      const user = await retrieveUser(token)
+      setUser(user)
+      history.push('/account')
 
-      history.push('/profile')
     } catch (error) {
       console.error(error)
     }
   }
-/*
-  function handleGoBack() { history.push('/') }
 
-  function handleLogout() {
-    sessionStorage.clear()
-
-    handleGoBack()
-  }
-
-  async function handleChangeTaskStatus(id, status) {
+  const handleRegister = async (name, surname, email, password, role) => {
     try {
-      const { token } = sessionStorage
-
-      await modifyTask(token, id, undefined, undefined, status)
-
-      await retrieveTasks(token)
-    } catch (error) {
-      console.error(error)
+      debugger
+      const response = await registerUser(token, name, surname, email, password, role)
+      setFeedback({ message: response })
+    } catch ({message}) {
+      setFeedback({ error: message })
     }
   }
-
-  async function handleNewTask(title, description) {
-    try {
-      const { token } = sessionStorage
-
-      await createTask(token, title, description)
-
-      await retrieveTasks(token)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-*/
-  const { token } = sessionStorage
 
   return <>
-    <Route exact path='/' render={() => <Login onLogin={handleLogin} />} />
-    <Route path = '/register' render={() => token ? <Register onRegister={handleRegister} /> : <Redirect to="/" /> }/>
-    <Route path = '/booking' render={() => token ?<Booking /> : <Redirect to="/" /> }/>
-    <Route path = '/account' render={() => token ? <Account /> : <Redirect to="/" /> }/>
-    <Route path = '/profile' render={() => !token ? <Redirect to="/" /> : <Profile /> }/>
-    <Route path = '/credits' render={() => token ?<Credits /> : <Redirect to="/" /> }/>
-    <Route path = '/progression' render={() => token ? <Progression /> : <Redirect to="/" /> }/>
-    <Route path = '/schedule' render={() => token ? <Schedule /> : <Redirect to="/" /> }/>
-    <Route path = '/users' render={() => token ? <UsersList /> : <Redirect to="/" /> }/>
-    <Route path = '/valoration' render={() => token ? <Valoration /> : <Redirect to="/" /> }/>
-    <Route path = '/reservations' render = {() => <Reservations /> }/>
+      <Route exact path='/' render={() =>
+        <Login onLogin={handleLogin} />} />
+      {token && <Navbar nameSurname={nameSurname}/> }
+      <Route path = '/register' render={() =>
+        token ? <Register feedback={feedback} onRegister={handleRegister} /> : <Redirect to="/" /> }/>
+      <Route path = '/booking' render={() =>
+        token ?<Booking /> : <Redirect to="/" /> }/>
+      <Route path = '/account' render={() =>
+        token ? <Account /> : <Redirect to="/" /> }/>
+      <Route path = '/profile' render={() =>
+        !token ? <Redirect to="/" /> : <Profile /> }/>
+      <Route path = '/credits' render={() =>
+        token ?<Credits /> : <Redirect to="/" /> }/>
+      <Route path = '/progression' render={() =>
+        token ? <Progression /> : <Redirect to="/" /> }/>
+      <Route path = '/schedule' render={() =>
+        token ? <Schedule /> : <Redirect to="/" /> }/>
+      <Route path = '/users' render={() =>
+        token ? <UsersList /> : <Redirect to="/" /> }/>
+      <Route path = '/valoration' render={() =>
+        token ? <Valoration /> : <Redirect to="/" /> }/>
+      <Route path = '/reservations' render = {() => <Reservations /> }/>
   </>
 })
+
+{/*    <Context.Provider value={{setFeedback, role, nameSurname}}>*/}
+/*    </Context.Provider>*/
 
 
   {

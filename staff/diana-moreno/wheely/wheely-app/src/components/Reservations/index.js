@@ -6,7 +6,6 @@ import SearchOptions from '../Search-options'
 
 export default function () {
   return <>
-    <Navbar />
     <section className='reservations'>
       <form action="">
         <select name="role" class='reservations__search'>

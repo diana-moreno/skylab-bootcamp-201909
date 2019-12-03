@@ -1,21 +1,17 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useContext } from 'react'
 import './index.sass'
 import Navbar from '../Navbar'
 import NavigationLinksInstructor from './NavigationLinksInstructor'
 import NavigationLinksStudent from './NavigationLinksStudent'
 import Feedback from '../Feedback'
 import { Link } from 'react-router-dom'
+import Context from '../CreateContext'
 
-export default class InstructorAccount extends React.Component {
-  state = {
-    isStudent: true,
-    isAdmin: false,
-    isInstructor: false
-  }
+export default function({ }) {
 
-  render() {
+  const { role } = useContext(Context)
+
     return <Fragment>
-      <Navbar />
       <section className='account'>
 
           <div>
@@ -24,12 +20,10 @@ export default class InstructorAccount extends React.Component {
             </Link>
             <p>Profile</p>
           </div>
+          { role === 'student' /*|| role === 'admin'*/ && <NavigationLinksStudent /> }
 
-          { this.state.isStudent && <NavigationLinksStudent /> }
-
-          { this.state.isInstructor && <NavigationLinksInstructor /> }
+          { role === 'instructor' && <NavigationLinksInstructor /> }
 
       </section>
     </Fragment>
-  }
 }

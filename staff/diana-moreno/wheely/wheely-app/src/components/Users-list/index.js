@@ -5,7 +5,6 @@ import UsersItem from '../Users-item'
 
 export default function () {
   return <>
-    <Navbar />
     <section class='users'>
       <form class='users__searcher' action="">
         <input class='users__searcher-input' type="text" placeholder="search user"/>

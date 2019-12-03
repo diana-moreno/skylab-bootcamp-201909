@@ -1,17 +1,26 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import './index.sass'
 import Navbar from '../Navbar'
+import getToken from '../../logic/getToken'
+import registerUser from '../../logic/register-user'
+import Feedback from '../Feedback'
+import Context from '../CreateContext'
 
-export default function ({onRegister, error}) {
+export default function ({ onRegister, feedback }) {
+
+  const { setFeedback } = useContext(Context)
+
+  const registerFn = event => {
+    event.preventDefault()
+    const { name: { value: name }, surname: { value: surname }, email: { value: email }, password: { value: password }, role: { value: role } } = event.target
+    onRegister(name, surname, email, password, role)
+  }
+
   return <>
-    <Navbar />
     <section className='register'>
       <h3>Create a new user</h3>
       <p>All fields are required</p>
-      <form className='register__form' onSubmit={(event) => {
-           const { name: { value: name }, surname: { value: surname }, email: { value: email }, password: { value: password }, role: { value: role } } = event.target
-           onRegister('5de30787ddd26962825e57d4', name, surname, email, password, role)
-      }}>
+      <form className='register__form' onSubmit={registerFn}>
         <input type="text" name="name" placeholder="name" />
         <input type="text" name="surname" placeholder="surname" />
         <input type="text" name="email" placeholder="email" />
@@ -22,8 +31,9 @@ export default function ({onRegister, error}) {
           <option value="instructor">instructor</option>
           <option value="admin">admin</option>
         </select>
-        <button classNameName='form__button form__button--register'>Create account</button>
+        <button className='form__button form__button--register'>Create account</button>
       </form>
+      {feedback && <Feedback feedback={feedback} />}
     </section>
   </>
 }

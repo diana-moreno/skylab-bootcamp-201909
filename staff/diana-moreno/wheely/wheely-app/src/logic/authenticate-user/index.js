@@ -10,7 +10,6 @@ module.exports = function (email, password) {
     validate.string.notVoid('password', password)
 
 	return (async () => {
-        debugger
         const res = await call(`${API_URL}/users/auth`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

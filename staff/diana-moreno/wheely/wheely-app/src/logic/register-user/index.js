@@ -2,7 +2,7 @@ const call = require('../../utils/call')
 const { validate, errors: { ConflictError } } = require('wheely-utils')
 const API_URL = process.env.REACT_APP_API_URL
 
-module.exports = function (adminId, name, surname, email, password, role) {
+module.exports = function (token, name, surname, email, password, role) {
     validate.string(name)
     validate.string.notVoid('name', name)
     validate.string(surname)
@@ -18,11 +18,14 @@ module.exports = function (adminId, name, surname, email, password, role) {
     return (async () => {
         const res = await call(`${API_URL}/users`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ adminId, name, surname, email, password, role })
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name, surname, email, password, role })
         })
 
-        if (res.status === 201) return
+        if (res.status === 201) return 'Registration succesfully'
 
         if (res.status === 409) throw new ConflictError(JSON.parse(res.body).message)
 

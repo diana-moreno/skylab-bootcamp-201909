@@ -56,7 +56,6 @@ export default class InstructorAccount extends React.Component {
 
   render() {
     return <Fragment>
-      <Navbar />
       <section className='detail-user'>
         <form>
           <div>
@@ -113,7 +112,7 @@ export default class InstructorAccount extends React.Component {
               </Fragment>
           }
 
-          {this.state.isEditMode && <Feedback message={this.props.error} />}
+   {/*       {this.state.isEditMode && <Feedback feedback={feedback} />}*/}
 
         </form>
 

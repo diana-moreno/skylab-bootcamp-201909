@@ -50,7 +50,6 @@ export default class Schedule extends React.Component {
     // debugger
     let _state = this.state
     return <>
-      <Navbar />
       <section className='schedule'>
         <p>Here you can edit the schedule of: </p>
         <p><b>Paco García</b></p>

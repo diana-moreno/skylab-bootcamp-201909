@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { Fragment, useContext } from 'react'
 import './index.sass'
 import NavbarItems from '../Navbar-items'
+import Context from '../CreateContext'
 
-export default function() {
+export default function({ nameSurname }) {
+/*  const { nameSurname, role } = useContext(Context)*/
   return (
     <header>
       <nav role="navigation" className='navbar'>
@@ -21,7 +23,7 @@ export default function() {
       </nav>
       <div className='greeting'>
         <i className="material-icons greeting__rol-icon">supervisor_account</i>
-        <h3 className='greeting__name'>Luis Garcia</h3>
+        <h3 className='greeting__name'>{nameSurname}</h3>
       </div>
       <h3 className='title'>Your account</h3>
     </header>

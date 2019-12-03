@@ -4,7 +4,6 @@ import Navbar from '../Navbar'
 
 export default function () {
   return <>
-    <Navbar />
     <section class='booking'>
       <div>
         <h3>Do you want to book a practice?</h3>
