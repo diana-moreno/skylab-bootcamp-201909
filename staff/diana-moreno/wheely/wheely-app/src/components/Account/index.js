@@ -1,7 +1,8 @@
 import React, { Fragment } from 'react'
 import './index.sass'
 import Navbar from '../Navbar'
-import NavigationLinks from './NavigationLinks'
+import NavigationLinksInstructor from './NavigationLinksInstructor'
+import NavigationLinksStudent from './NavigationLinksStudent'
 import Feedback from '../Feedback'
 import { Redirect } from 'react-router-dom'
 
@@ -19,7 +20,10 @@ export default class InstructorAccount extends React.Component {
     email: {
       value: 'carlos@gmail.com',
       edit: false
-    }
+    },
+    isStudent: true,
+    isAdmin: false,
+    isInstructor: false
   }
 
   edit = (str) => {
@@ -95,14 +99,22 @@ export default class InstructorAccount extends React.Component {
 
           <div>
             <p className={this.state.email.edit
-              ? 'detail-user__input--separation detail-user__input--separation-dni'
-              : 'detail-user__input--separation-dni'}><b>DNI: </b><span>78569987W</span>
+              ? 'detail-user__input--separation detail-user__input--separation-no-icon'
+              : 'detail-user__input--separation-no-icon'}><b>DNI: </b><span>78569987W</span>
             </p>
           </div>
 
-          {!this.state.isEditMode
-            ? <NavigationLinks />
-            : <Fragment>
+
+          {!this.state.isEditMode && this.state.isStudent &&
+             <NavigationLinksStudent />
+          }
+
+          {!this.state.isEditMode && this.state.isInstructor &&
+             <NavigationLinksInstructor />
+          }
+
+          {this.state.isEditMode
+            && <Fragment>
                 <p>Introduce your password to confirm changes</p>
                 <input className='detail-user__input--password' placeholder='password'/>
               </Fragment>
@@ -121,3 +133,7 @@ export default class InstructorAccount extends React.Component {
     </Fragment>
   }
 }
+
+
+
+{/*              <Link to="/instructor-account" className='detail-user__button detail-user__button--cancel'>Cancel</Link>*/}

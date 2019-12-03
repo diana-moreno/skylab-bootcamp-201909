@@ -1,7 +1,7 @@
 const { validate, errors: { ConflictError, NotFoundError, ContentError } } = require('wheely-utils')
 const { ObjectId, models: { User } } = require('wheely-data')
 
-module.exports = function(id, name, surname, email) {
+module.exports = function(id, name, surname, email) { // password
   validate.string(id)
   validate.string.notVoid('id', id)
   if (!ObjectId.isValid(id)) throw new ContentError(`${id} is not a valid id`)
@@ -21,7 +21,7 @@ module.exports = function(id, name, surname, email) {
 
   return (async () => {
     // check if user exists
-    const user = await User.findById(id)
+    const user = await User.findById(id) // findOne with id and password
     if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
     //update data

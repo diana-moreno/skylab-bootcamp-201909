@@ -23,7 +23,7 @@ export default function() {
         <i className="material-icons greeting__rol-icon">supervisor_account</i>
         <h3 className='greeting__name'>Luis Garcia</h3>
       </div>
-      <h3 className='title'>Student account</h3>
+      <h3 className='title'>Your account</h3>
     </header>
   )
 }

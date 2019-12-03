@@ -4,16 +4,16 @@ import { authenticateUser, registerUser, retrieveUser, listTasks, modifyTask, cr
 import './index.sass'
 
 import Login from '../Login'
-import Reservations from '../Reservations'
+import Reservations from '../Reservations' // double
 import Booking from '../Booking'
 import Credits from '../Credits'
 import Progression from '../Progression'
 import Schedule from '../Schedule'
-import UsersList from '../Users-list'
+import UsersList from '../Users-list' // double
 import Register from '../Register'
 import Valoration from '../Valoration'
-import InstructorAccount from '../Instructor-account'
-import StudentAccount from '../Student-account'
+import Account from '../Account' // double
+import StudentAccount from '../Student-account' // double
 
 
 /*import StudentYourAccount from '../Student-your-account'
@@ -119,7 +119,7 @@ export default withRouter(function({ history }) {
     <Route path = '/users' render={() => <UsersList /> }/>
     <Route path = '/register' render={() => <Register /> }/>
     <Route path = '/valoration' render={() => <Valoration /> }/>
-    <Route path = '/instructor-account' render={() => <InstructorAccount /> }/>
+    <Route path = '/account' render={() => <Account /> }/>
     <Route path = '/student-account' render={() => <StudentAccount /> }/>
     <Route path = '/reservations'
       render = {() => <Reservations /> }/>
