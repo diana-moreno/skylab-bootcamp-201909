@@ -1,8 +1,11 @@
 import React, { Fragment } from 'react'
 import { Link, Redirect } from 'react-router-dom'
 
-const NavigationLinksInstructor = () =>
+const NavigationLinksStudent = () =>
   <Fragment>
+    <div className='detail-user__input--separation-no-icon'>
+      <p><b>Account: </b>student</p>
+    </div>
     <div>
       <Link to="/reservations">
         <i className="material-icons detail-user__icon detail-user__icon--blue">search</i>
@@ -10,17 +13,17 @@ const NavigationLinksInstructor = () =>
       <p>Reservations</p>
     </div>
     <div>
-      <Link to="/users">
+      <Link to="/credits">
         <i className="material-icons detail-user__icon detail-user__icon--blue">search</i>
       </Link>
-      <p>Your students</p>
+      <p>Credits</p>
     </div>
     <div>
-      <Link to="/schedule">
+      <Link to="/progression">
         <i className="material-icons detail-user__icon detail-user__icon--blue">search</i>
       </Link>
-      <p>Schedule</p>
+      <p>Progression</p>
     </div>
   </Fragment>
 
-export default NavigationLinksInstructor
+export default NavigationLinksStudent

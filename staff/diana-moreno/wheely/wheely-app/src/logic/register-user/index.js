@@ -1,9 +1,8 @@
 const call = require('../../utils/call')
 const { validate, errors: { ConflictError } } = require('wheely-utils')
-// const { env: { REACT_APP_API_URL: API_URL } } = process
 const API_URL = process.env.REACT_APP_API_URL
 
-module.exports = function (name, surname, email, username, password) {
+module.exports = function (adminId, name, surname, email, password, role) {
     validate.string(name)
     validate.string.notVoid('name', name)
     validate.string(surname)
@@ -11,16 +10,16 @@ module.exports = function (name, surname, email, username, password) {
     validate.string(email)
     validate.string.notVoid('e-mail', email)
     validate.email(email)
-    validate.string(username)
-    validate.string.notVoid('username', username)
     validate.string(password)
     validate.string.notVoid('password', password)
+    validate.string(role)
+    validate.string.notVoid('role', role)
 
     return (async () => {
         const res = await call(`${API_URL}/users`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, surname, email, username, password })
+            body: JSON.stringify({ adminId, name, surname, email, password, role })
         })
 
         if (res.status === 201) return

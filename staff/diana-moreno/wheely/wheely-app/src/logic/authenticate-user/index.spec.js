@@ -7,24 +7,23 @@ const { database, models: { User } } = require('wheely-data')
 describe('logic - authenticate user', () => {
     beforeAll(() => database.connect(TEST_DB_URL))
 
-    let id, name, surname, email, username, password
+    let id, name, surname, email, password
 
     beforeEach(async () => {
         name = `name-${random()}`
         surname = `surname-${random()}`
         email = `email-${random()}@mail.com`
-        username = `username-${random()}`
         password = `password-${random()}`
 
         await User.deleteMany()
 
-        const user = await User.create({ name, surname, email, username, password })
+        const user = await User.create({ name, surname, email, password })
 
         id = user.id
     })
 
     it('should succeed on correct credentials', async () => {
-        const token = await authenticateUser(username, password)
+        const token = await authenticateUser(email, password)
 
         expect(token).toBeDefined()
         expect(typeof token).toBe('string')
@@ -32,17 +31,17 @@ describe('logic - authenticate user', () => {
 
         const [, payload,] = token.split('.')
 
-        const { sub } = JSON.parse(atob(payload))
+        const { sub } = JSON.parse(atob(payload)) // what??
 
         expect(id).toBe(sub)
     })
 
     describe('when wrong credentials', () => {
-        it('should fail on wrong username', async () => {
-            const username = 'wrong'
+        it('should fail on wrong email', async () => {
+            const email = 'wrong'
 
             try {
-                await authenticateUser(username, password)
+                await authenticateUser(email, password)
 
                 throw new Error('should not reach this point')
             } catch (error) {
@@ -58,7 +57,7 @@ describe('logic - authenticate user', () => {
             const password = 'wrong'
 
             try {
-                await authenticateUser(username, password)
+                await authenticateUser(email, password)
 
                 throw new Error('should not reach this point')
             } catch (error) {
@@ -79,8 +78,8 @@ describe('logic - authenticate user', () => {
         expect(() => authenticateUser(undefined)).toThrow(TypeError, 'undefined is not a string')
         expect(() => authenticateUser(null)).toThrow(TypeError, 'null is not a string')
 
-        expect(() => authenticateUser('')).toThrow(ContentError, 'username is empty or blank')
-        expect(() => authenticateUser(' \t\r')).toThrow(ContentError, 'username is empty or blank')
+        expect(() => authenticateUser('')).toThrow(ContentError, 'email is empty or blank')
+        expect(() => authenticateUser(' \t\r')).toThrow(ContentError, 'email is empty or blank')
 
         expect(() => authenticateUser(email, 1)).toThrow(TypeError, '1 is not a string')
         expect(() => authenticateUser(email, true)).toThrow(TypeError, 'true is not a string')

@@ -3,7 +3,7 @@ import './index.sass'
 import Feedback from '../Feedback'
 import { Link } from 'react-router-dom'
 
-export default function({error}) {
+export default function({onLogin, error}) {
   return (
     <section class='login'>
       <header class='login__container'>
@@ -12,9 +12,12 @@ export default function({error}) {
       </header>
 
       <main  class='login__container'>
-<Link to="/detail-instructor">About</Link>
         <p class='login__subtitle'>Instructors and students area</p>
-        <form action="" class='login__form'>
+        <form class='login__form' onSubmit={(event) => {
+          event.preventDefault()
+          const { email: { value: email }, password: { value: password } } = event.target
+          onLogin(email, password)
+        }}>
           <input type="text" name="email" placeholder="email" class='login__form-item'/>
           <input type="text" name="password" placeholder="password" class='login__form-item'/>
           <button class='login__button'>Enter</button>

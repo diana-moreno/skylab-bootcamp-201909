@@ -13,38 +13,31 @@ import UsersList from '../Users-list' // double
 import Register from '../Register'
 import Valoration from '../Valoration'
 import Account from '../Account' // double
-import StudentAccount from '../Student-account' // double
-
-
-/*import StudentYourAccount from '../Student-your-account'
-import InstructorYourAccount from '../Instructor-your-account'
-
-import AdminDetailInstructor from '../Admin-detail-instructor'
-import AdminDetailStudent from '../Admin-detail-student'*/
-/*
-import InstructorStatistics from '../Instructor-statistics' // no logic yet
-import InstructorStudents from '../Instructor-students' // same as user list with different behavior ???*/
+import Profile from '../Profile'
 
 
 export default withRouter(function({ history }) {
   const [name, setName] = useState()
+  const [surname, setSurname] = useState()
+  const [user, setUser] = useState()
   const [tasks, setTasks] = useState([])
 
-  useEffect(() => {
+/*  useEffect(() => {
     const { token } = sessionStorage;
 
     (async () => {
       if (token) {
-        const { name } = await retrieveUser(token)
+        const { name, surname } = await retrieveUser(token)
 
+        setSurname(surname)
         setName(name)
 
         await retrieveTasks(token)
       }
     })()
   }, [sessionStorage.token])
-
-  async function retrieveTasks(token) {
+*/
+/*  async function retrieveTasks(token) {
     const tasks = await listTasks(token)
 
     setTasks(tasks)
@@ -52,30 +45,29 @@ export default withRouter(function({ history }) {
 
   function handleGoToRegister() { history.push('/register') }
 
-  function handleGoToLogin() { history.push('/login') }
+  function handleGoToLogin() { history.push('/login') }*/
 
-  async function handleRegister(name, surname, email, username, password) {
+  async function handleRegister(name, surname, email, password, role) {
     try {
-      await registerUser(name, surname, email, username, password)
-
-      history.push('/login')
+      await registerUser(name, surname, email, password, role)
+      /*history.push('/login')*/
     } catch (error) {
       console.error(error)
     }
   }
 
-  async function handleLogin(username, password) {
+  async function handleLogin(email, password) {
     try {
-      const token = await authenticateUser(username, password)
+      const token = await authenticateUser(email, password)
 
       sessionStorage.token = token
 
-      history.push('/board')
+      history.push('/profile')
     } catch (error) {
       console.error(error)
     }
   }
-
+/*
   function handleGoBack() { history.push('/') }
 
   function handleLogout() {
@@ -107,28 +99,32 @@ export default withRouter(function({ history }) {
       console.error(error)
     }
   }
-
+*/
   const { token } = sessionStorage
 
   return <>
-    <Route exact path='/' render={() => <Login />} />
-    <Route path = '/booking' render={() => <Booking /> }/>
-    <Route path = '/credits' render={() => <Credits /> }/>
-    <Route path = '/progression' render={() => <Progression /> }/>
-    <Route path = '/schedule' render={() => <Schedule /> }/>
-    <Route path = '/users' render={() => <UsersList /> }/>
-    <Route path = '/register' render={() => <Register /> }/>
-    <Route path = '/valoration' render={() => <Valoration /> }/>
-    <Route path = '/account' render={() => <Account /> }/>
-    <Route path = '/student-account' render={() => <StudentAccount /> }/>
-    <Route path = '/reservations'
-      render = {() => <Reservations /> }/>
+    <Route exact path='/' render={() => <Login onLogin={handleLogin} />} />
+    <Route path = '/register' render={() => token ? <Register onRegister={handleRegister} /> : <Redirect to="/" /> }/>
+    <Route path = '/booking' render={() => token ?<Booking /> : <Redirect to="/" /> }/>
+    <Route path = '/account' render={() => token ? <Account /> : <Redirect to="/" /> }/>
+    <Route path = '/profile' render={() => !token ? <Redirect to="/" /> : <Profile /> }/>
+    <Route path = '/credits' render={() => token ?<Credits /> : <Redirect to="/" /> }/>
+    <Route path = '/progression' render={() => token ? <Progression /> : <Redirect to="/" /> }/>
+    <Route path = '/schedule' render={() => token ? <Schedule /> : <Redirect to="/" /> }/>
+    <Route path = '/users' render={() => token ? <UsersList /> : <Redirect to="/" /> }/>
+    <Route path = '/valoration' render={() => token ? <Valoration /> : <Redirect to="/" /> }/>
+    <Route path = '/reservations' render = {() => <Reservations /> }/>
   </>
 })
 
 
   {
     /*
+    <Route path = '/account' render={() => <Account /> }/>
+
+
+
+    <Route path = '/student-account' render={() => <StudentAccount /> }/>
            <Route path='/detail-instructor' render={() => <AdminDetailStudent />} />
            <Route path='/detail-instructor' render={() => <AdminNewUser />} />
            */
