@@ -2,6 +2,7 @@ const { validate, errors: { ConflictError, NotFoundError, ContentError } } = req
 const { ObjectId, models: { User, Student, Instructor } } = require('wheely-data')
 
 module.exports = function(adminId, name, surname, email, password, role) {
+  debugger
   validate.string(adminId)
   validate.string.notVoid('adminId', adminId)
   if (!ObjectId.isValid(adminId)) throw new ContentError(`${adminId} is not a valid id`)
