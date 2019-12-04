@@ -97,7 +97,6 @@ router.get('/:id', tokenVerifier, (req, res) => { // recupera otro usuario
   //tokenVerifier añade el id que reciben del token en header en req?
   try {
     const { params: { id } } = req
-
     retrieveUser(id)
       .then(user => res.json({ user }))
       .catch(error => {

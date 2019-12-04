@@ -8,7 +8,8 @@
   div
     display: flex
     align-items: center
-
+    p
+      word-break: break-all
   &__icon
     margin-right: 1rem
     color: orange
@@ -41,6 +42,12 @@
       width: 15rem
       margin: 0 auto
       background: #d46f67
+
+    &--hidden
+      background: none
+      border: none
+      outline: none
+
 
   &__input
     display: block

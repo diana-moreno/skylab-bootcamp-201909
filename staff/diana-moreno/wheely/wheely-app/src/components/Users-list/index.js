@@ -22,16 +22,16 @@ const a = 'hello'
   }, [setUsersList])
 
   return < >
-    <section class='users'>
-      <form class='users__searcher' action="">
-        <input class='users__searcher-input' type="text" placeholder="search user"/>
-        <button class='users__searcher-button'>Search</button>
+    <section className='users'>
+      <form className='users__searcher' action="">
+        <input className='users__searcher-input' type="text" placeholder="search user"/>
+        <button className='users__searcher-button'>Search</button>
       </form>
-      <ul>
-      { usersList && usersList.map(currentUser =>
-        <UsersItem currentUser={currentUser} /> )
-      }
-      </ul>
+        <ul>
+        { usersList && usersList.map(currentUser =>
+          <UsersItem currentUser={currentUser} /> )
+        }
+        </ul>
     </section>
     </>
 }

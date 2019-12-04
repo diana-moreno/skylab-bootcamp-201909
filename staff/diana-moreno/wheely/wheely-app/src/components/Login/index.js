@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom'
 export default function({ onLogin, error }) {
 
   const loginFn = event => {
-    debugger
     event.preventDefault()
     const { email: { value: email }, password: { value: password } } = event.target
     onLogin(email, password)

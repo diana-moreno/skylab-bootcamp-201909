@@ -6,18 +6,17 @@ import Feedback from '../Feedback'
 import { Link } from 'react-router-dom'
 import Context from '../CreateContext'
 
-export default function({ }) {
+export default function({ id }) {
 
   const { role } = useContext(Context)
-
     return <Fragment>
       <section className='account'>
 
           <div>
-            <Link to="/profile">
+            <Link to={`/profile/${id}`}>
               <i className="material-icons detail-user__icon">create</i>
             </Link>
-            <p>Profile</p>
+              <p>Profile</p>
           </div>
           { role === 'student' /*|| role === 'admin'*/ && <NavigationLinksStudent /> }
 

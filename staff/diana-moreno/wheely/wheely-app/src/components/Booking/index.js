@@ -4,7 +4,7 @@ import Navbar from '../Navbar'
 
 export default function () {
   return <>
-    <section class='booking'>
+    <section className='booking'>
       <div>
         <h3>Do you want to book a practice?</h3>
         <p>You can select the instructor you prefer and the day and time that suits you best!</p>

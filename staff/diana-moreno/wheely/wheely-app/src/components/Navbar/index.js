@@ -1,10 +1,14 @@
-import React, { Fragment, useContext } from 'react'
+import React, { Fragment, useContext, useEffect, useState } from 'react'
 import './index.sass'
-import NavbarItems from '../Navbar-items'
+/*import NavbarItems from '../Navbar-items'*/
 import Context from '../CreateContext'
+import MenuStudent from './Menu-student'
+import MenuInstructor from './Menu-instructor'
+import MenuAdmin from './Menu-admin'
 
 export default function({ nameSurname }) {
-/*  const { nameSurname, role } = useContext(Context)*/
+  const { role } = useContext(Context)
+
   return (
     <header>
       <nav role="navigation" className='navbar'>
@@ -15,9 +19,9 @@ export default function({ nameSurname }) {
           <span className='navbar__line'></span>
           <h1 className='navbar__title'>Wheely</h1>
           <ul className="navbar__menu">
-            <NavbarItems />
-            <NavbarItems />
-            <NavbarItems />
+            {role === 'student' && <MenuStudent /> }
+            {role === 'instructor' && <MenuInstructor /> }
+            {role === 'admin' && <MenuAdmin /> }
           </ul>
         </div>
       </nav>

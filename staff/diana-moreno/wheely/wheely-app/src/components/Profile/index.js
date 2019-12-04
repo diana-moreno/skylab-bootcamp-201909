@@ -30,10 +30,10 @@ constructor(props) {
 
   async componentDidMount() {
     /*let user = await this.props.onRetrieveUser()*/
-    debugger
-    let user = this.props.user
+    let user = await this.props.onRetrieveOtherUser(this.props.id)
+    let roleOwner = this.props.roleOwner
+/*    let user = this.props.user*/
     const { user: { name, surname, email, role } } = user
-
     this.setState({
       isEditMode: false,
       firstName: {
@@ -48,10 +48,8 @@ constructor(props) {
         value: email,
         edit: false
       },
-      role: role
-/*      isStudent: true,
-      isAdmin: true,
-      isInstructor: false*/
+      role,
+      roleOwner
     })
   }
 
@@ -87,15 +85,15 @@ constructor(props) {
 
   render() {
 
-    const { state: { isEditMode, role, firstName: { value: firstName, edit: isFirstNameEdit }, lastName: { value: lastName, edit: isLastNameEdit }, email: { value: email, edit: isEmailEdit } }, edit, cancel }= this
+    const { state: { isEditMode, role, roleOwner, firstName: { value: firstName, edit: isFirstNameEdit }, lastName: { value: lastName, edit: isLastNameEdit }, email: { value: email, edit: isEmailEdit } }, edit, cancel }= this
 
     return <Fragment>
       <section className='detail-user'>
         <form>
           <div>
-            <a href="#" onClick={() => edit('firstName')}>
+            <button className='detail-user__button--hidden'onClick={() => edit('firstName')}>
               <i className="material-icons detail-user__icon">create</i>
-            </a>
+            </button>
             <p className={isFirstNameEdit ? 'detail-user__input--separation' : ''}><b>First name: </b>
               { isFirstNameEdit
               ? <input className='detail-user__input' type='text' placeholder={ firstName } />
@@ -103,9 +101,9 @@ constructor(props) {
             </p>
           </div>
           <div>
-            <a href="#" onClick={() => edit('lastName')}>
+            <button className='detail-user__button--hidden' onClick={() => edit('lastName')}>
               <i className="material-icons detail-user__icon">create</i>
-            </a>
+            </button>
             <p className={isLastNameEdit
               ? 'detail-user__input--separation'
               : ''}><b>Last name: </b>{ isLastNameEdit
@@ -115,9 +113,9 @@ constructor(props) {
           </div>
 
           <div>
-            <a href="#" onClick={() => edit('email')}>
+            <button className='detail-user__button--hidden' onClick={() => edit('email')}>
               <i className="material-icons detail-user__icon">create</i>
-            </a>
+            </button>
             <p className={isEmailEdit
               ? 'detail-user__input--separation'
               : ''}><b>e-mail: </b>{ isEmailEdit
@@ -156,7 +154,7 @@ constructor(props) {
           </div>
         }
 
-        {role === 'admin' && !isEditMode &&
+        {roleOwner === 'admin' && !isEditMode &&
           <button className='detail-user__button detail-user__button--delete'>Delete user</button>}
       </section>
     </Fragment>

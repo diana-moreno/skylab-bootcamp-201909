@@ -6,8 +6,11 @@ module.exports = function(token, id) {
   validate.string(token)
   validate.string.notVoid('token', token)
 
+  validate.string(id)
+  validate.string.notVoid('id', id)
+
   return (async () => {
-    const res = await call(`${API_URL}/users/user`, {
+    const res = await call(`${API_URL}/users/${id}`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${token}` }
     })
