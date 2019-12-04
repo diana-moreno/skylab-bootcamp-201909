@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Route, withRouter, Redirect } from 'react-router-dom'
-import { authenticateUser, registerUser, retrieveUser, listTasks, modifyTask, createTask, getToken } from '../../logic'
+import { authenticateUser, registerUser, retrieveUser, listTasks, modifyTask, createTask, getToken, listUsers } from '../../logic'
 import './index.sass'
 import Context from '../CreateContext'
 
@@ -17,14 +17,15 @@ import Account from '../Account' // double
 import Profile from '../Profile'
 import Navbar from '../Navbar'
 
-/*import retrieveDataUser from '../../logic/retrieveDataUser'*/
-
 
 export default withRouter(function({ history }) {
   const [nameSurname, setNameSurname] = useState()
   const [feedback, setFeedback] = useState()
   const [user, setUser] = useState()
-  if(user) { const {name, surname, email, password, role, profile } = user }
+  const [role, setRole] = useState()
+  const [id, setUserId] = useState()
+
+/*  if(user) { const {name, surname, email, password, role, profile } = user }*/
   const { token } = sessionStorage
 
 // when the page is reloaded, retrieve the user and save it into the state
@@ -35,7 +36,10 @@ export default withRouter(function({ history }) {
           const user = await retrieveUser(token)
           const nameSurname = user.user.name.concat(' ').concat(user.user.surname)
           setUser(user)
+          setUserId(user.user._id)
+          setRole(user.user.role)
           setNameSurname(nameSurname)
+          console.log(role)
         }
       }catch (error) {
         console.log(error)
@@ -46,11 +50,14 @@ export default withRouter(function({ history }) {
   const handleLogin = async (email, password) => {
     try {
       const token = await authenticateUser(email, password)
-
       sessionStorage.token = token
+debugger
       const user = await retrieveUser(token)
+      const nameSurname = user.user.name.concat(' ').concat(user.user.surname)
+      setRole(user.user.role)
       setUser(user)
-      history.push('/account')
+      setNameSurname(nameSurname)
+      history.push('/users')
 
     } catch (error) {
       console.error(error)
@@ -59,7 +66,6 @@ export default withRouter(function({ history }) {
 
   const handleRegister = async (name, surname, email, password, role) => {
     try {
-      debugger
       const response = await registerUser(token, name, surname, email, password, role)
       setFeedback({ message: response })
     } catch ({message}) {
@@ -67,35 +73,72 @@ export default withRouter(function({ history }) {
     }
   }
 
+  const handleRetrieveUser = async () => {
+    try {
+      const user = await retrieveUser(token)
+      return user
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const handleListUsers = async () => {
+    try {
+      const users = await listUsers(token)
+      return users
+    } catch (error) {
+
+    }
+  }
+
+// bloquear ciertas pantallas para usuarios
   return <>
-      <Route exact path='/' render={() =>
-        <Login onLogin={handleLogin} />} />
-      {token && <Navbar nameSurname={nameSurname}/> }
-      <Route path = '/register' render={() =>
-        token ? <Register feedback={feedback} onRegister={handleRegister} /> : <Redirect to="/" /> }/>
+    <Context.Provider value={{ setFeedback, role }}>
+      <Route exact path='/' render={() => <Login onLogin={handleLogin} />} />
+
+      {token && role && <Navbar nameSurname={nameSurname}/> }
+
+      <Route path = '/register' render={() => token && role === 'admin'
+        ? <Register feedback={feedback} onRegister={handleRegister} />
+        : <Redirect to="/" /> }
+      /> {/* redirect to home?*/}
+
+      <Route path = '/account' render={() => token
+        ? <Account />
+        : <Redirect to="/" /> }
+      />
+
+      { user && <Route path = '/profile' render={() =>
+       <Profile user={user} /> }/> }
+
+      { user && <Route path='/profile/:_id' render={({ match: { params: { _id }}}) => token && _id ?  <Profile user={user} /> : <Navbar nameSurname={nameSurname}/> } /> }
+
+
+
+      {user && <Route path = '/users' render={() => <UsersList onListUsers={handleListUsers} /> }/> }
+
+
       <Route path = '/booking' render={() =>
         token ?<Booking /> : <Redirect to="/" /> }/>
-      <Route path = '/account' render={() =>
-        token ? <Account /> : <Redirect to="/" /> }/>
-      <Route path = '/profile' render={() =>
-        !token ? <Redirect to="/" /> : <Profile /> }/>
       <Route path = '/credits' render={() =>
         token ?<Credits /> : <Redirect to="/" /> }/>
       <Route path = '/progression' render={() =>
         token ? <Progression /> : <Redirect to="/" /> }/>
       <Route path = '/schedule' render={() =>
         token ? <Schedule /> : <Redirect to="/" /> }/>
-      <Route path = '/users' render={() =>
-        token ? <UsersList /> : <Redirect to="/" /> }/>
       <Route path = '/valoration' render={() =>
         token ? <Valoration /> : <Redirect to="/" /> }/>
       <Route path = '/reservations' render = {() => <Reservations /> }/>
+
+    </Context.Provider>
   </>
 })
 
-{/*    <Context.Provider value={{setFeedback, role, nameSurname}}>*/}
-/*    </Context.Provider>*/
 
+
+{/*      <Route path = '/profile' render={() =>
+        !token && !user ? <Redirect to="/" /> : <Profile onRetrieveUser={handleRetrieveUser} user={user} /> }/>
+*/}
 
   {
     /*

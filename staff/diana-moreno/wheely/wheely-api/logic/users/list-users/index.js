@@ -21,15 +21,24 @@ module.exports = function(id) {
     // the result returned depends on the user who is demanding (permission control)
     if (admin) {
       users = await User
-        .find()
+        .find({ "role": { $in: ['student', 'instructor'] } })
         .lean()
     } else if (instructor) {
-      users = await Practice
+      const practices = await Practice
         .find({ "instructorId": ObjectId(id), "status": 'pending' }, { "studentId": 1 })
-        .populate('studentId')
+        .populate('studentId') // quitar el id del schema
         .lean()
-    }
 
+      users = practices.reduce((users, practice) => {
+        const user = practice.studentId
+        if (!users.find(({ _id }) => _id === user._id)) {
+          users.push(user)
+        }
+        return users
+      }, [])
+
+    }
     return users
   })()
 }
+// revisar test porque ahora devuelve otra cosa!!!

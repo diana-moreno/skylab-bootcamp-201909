@@ -1,6 +1,5 @@
 import React, { Fragment, useContext } from 'react'
 import './index.sass'
-import Navbar from '../Navbar'
 import NavigationLinksInstructor from './NavigationLinksInstructor'
 import NavigationLinksStudent from './NavigationLinksStudent'
 import Feedback from '../Feedback'

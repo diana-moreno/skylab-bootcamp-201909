@@ -1,27 +1,58 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useContext } from 'react'
 import './index.sass'
 import Navbar from '../Navbar'
 import Feedback from '../Feedback'
 import { Link } from 'react-router-dom'
+import Context from '../CreateContext'
 
-export default class InstructorAccount extends React.Component {
-  state = {
-    isEditMode: false,
-    firstName: {
-      value: 'Carlos',
-      edit: false,
-    },
-    lastName: {
-      value: 'Sanz',
-      edit: false
-    },
-    email: {
-      value: 'carlos@gmail.com',
-      edit: false
-    },
-    isStudent: true,
-    isAdmin: false,
-    isInstructor: false
+export default class Account extends React.Component {
+ /* const { role } = useContext(Context)*/
+constructor(props) {
+  super(props)
+
+  this.state = {
+      isEditMode: false,
+      firstName: {
+        value: '',
+        edit: false,
+      },
+      lastName: {
+        value: '',
+        edit: false
+      },
+      email: {
+        value: '',
+        edit: false
+      },
+      role: ''
+  }
+}
+
+  async componentDidMount() {
+    /*let user = await this.props.onRetrieveUser()*/
+    debugger
+    let user = this.props.user
+    const { user: { name, surname, email, role } } = user
+
+    this.setState({
+      isEditMode: false,
+      firstName: {
+        value: name,
+        edit: false,
+      },
+      lastName: {
+        value: surname,
+        edit: false
+      },
+      email: {
+        value: email,
+        edit: false
+      },
+      role: role
+/*      isStudent: true,
+      isAdmin: true,
+      isInstructor: false*/
+    })
   }
 
   edit = (str) => {
@@ -55,81 +86,79 @@ export default class InstructorAccount extends React.Component {
   }
 
   render() {
+
+    const { state: { isEditMode, role, firstName: { value: firstName, edit: isFirstNameEdit }, lastName: { value: lastName, edit: isLastNameEdit }, email: { value: email, edit: isEmailEdit } }, edit, cancel }= this
+
     return <Fragment>
       <section className='detail-user'>
         <form>
           <div>
-            <a href="#" onClick={() => this.edit('firstName')}>
+            <a href="#" onClick={() => edit('firstName')}>
               <i className="material-icons detail-user__icon">create</i>
             </a>
-            <p className={this.state.firstName.edit ? 'detail-user__input--separation' : ''}><b>First name: </b>
-              { this.state.firstName.edit
-              ? <input className='detail-user__input' type='text' placeholder={ this.state.firstName.value } />
-              : <span>{ this.state.firstName.value }</span>}
+            <p className={isFirstNameEdit ? 'detail-user__input--separation' : ''}><b>First name: </b>
+              { isFirstNameEdit
+              ? <input className='detail-user__input' type='text' placeholder={ firstName } />
+              : <span>{ firstName }</span>}
+            </p>
+          </div>
+          <div>
+            <a href="#" onClick={() => edit('lastName')}>
+              <i className="material-icons detail-user__icon">create</i>
+            </a>
+            <p className={isLastNameEdit
+              ? 'detail-user__input--separation'
+              : ''}><b>Last name: </b>{ isLastNameEdit
+              ? <input className='detail-user__input' type='text' placeholder={ lastName } />
+              : <span>{ lastName }</span>}
             </p>
           </div>
 
           <div>
-            <a href="#" onClick={() => this.edit('lastName')}>
+            <a href="#" onClick={() => edit('email')}>
               <i className="material-icons detail-user__icon">create</i>
             </a>
-            <p className={this.state.lastName.edit
+            <p className={isEmailEdit
               ? 'detail-user__input--separation'
-              : ''}><b>Last name: </b>{ this.state.lastName.edit
-              ? <input className='detail-user__input' type='text' placeholder={ this.state.lastName.value } />
-              : <span>{ this.state.lastName.value }</span>}
+              : ''}><b>e-mail: </b>{ isEmailEdit
+              ? <input className='detail-user__input' type='text' placeholder={ email } />
+              : <span>{ email }</span>}
             </p>
           </div>
 
-          <div>
-            <a href="#" onClick={() => this.edit('email')}>
-              <i className="material-icons detail-user__icon">create</i>
-            </a>
-            <p className={this.state.email.edit
-              ? 'detail-user__input--separation'
-              : ''}><b>e-mail: </b>{ this.state.email.edit
-              ? <input className='detail-user__input' type='text' placeholder={ this.state.email.value } />
-              : <span>{ this.state.email.value }</span>}
-            </p>
-          </div>
-
-          {!this.state.isEditMode &&
+          {!isEditMode &&
             <div className='detail-user__input--separation-no-icon'>
               <p><b>DNI: </b>78569987W</p>
             </div>
           }
 
-          {!this.state.isEditMode &&
+          {!isEditMode &&
             <div className='detail-user__input--separation-no-icon'>
-              <p><b>Account: </b>student</p>
+              <p><b>Account: </b>{role}</p>
             </div>
           }
 
-          {this.state.isEditMode
+          {isEditMode
             && <Fragment>
                 <p>Introduce your password to confirm changes</p>
                 <input className='detail-user__input--password' placeholder='password'/>
               </Fragment>
           }
 
-   {/*       {this.state.isEditMode && <Feedback feedback={feedback} />}*/}
 
         </form>
+   {/*       {this.state.isEditMode && <Feedback feedback={feedback} />}*/}
 
-        {this.state.isEditMode &&
+        {isEditMode &&
           <div>
-            <button className='detail-user__button detail-user__button--cancel' onClick={this.cancel}>Cancel</button>
+            <button className='detail-user__button detail-user__button--cancel' onClick={cancel}>Cancel</button>
             <button className='detail-user__button detail-user__button--submit'>Submit</button>
           </div>
         }
 
-        {this.state.isAdmin &&!this.state.isEditMode &&
+        {role === 'admin' && !isEditMode &&
           <button className='detail-user__button detail-user__button--delete'>Delete user</button>}
       </section>
     </Fragment>
   }
 }
-
-
-
-{/*              <Link to="/instructor-account" className='detail-user__button detail-user__button--cancel'>Cancel</Link>*/}
