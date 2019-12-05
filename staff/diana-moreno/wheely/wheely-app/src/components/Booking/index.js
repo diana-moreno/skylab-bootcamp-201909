@@ -1,10 +1,14 @@
 import React from 'react'
 import './index.sass'
 import Navbar from '../Navbar'
+import { withRouter } from 'react-router-dom'
 
-export default function () {
+export default withRouter(function({ history }) {
   return <>
-    <h3 className='title'>Booking</h3>
+    <div className='title'>
+      <i onClick={() => history.goBack()} className="material-icons">undo</i>
+      <h3>Booking</h3>
+    </div>
     <section className='booking'>
       <div>
         <h3>Do you want to book a practice?</h3>
@@ -44,5 +48,5 @@ export default function () {
       </form>
     </section>
   </>
-}
+})
 

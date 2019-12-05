@@ -5,23 +5,36 @@ import getToken from '../../logic/getToken'
 import registerUser from '../../logic/register-user'
 import Feedback from '../Feedback'
 import Context from '../CreateContext'
+import { Link , withRouter } from 'react-router-dom'
 
-export default function ({ onRegister, feedback }) {
+export default withRouter(function({ error, history }) {
+  const { token } = sessionStorage
+  const { setFeedback, roleOwner } = useContext(Context)
 
-  const { setFeedback } = useContext(Context)
-
-  const registerFn = event => {
+  const handleSubmit = event => {
     event.preventDefault()
     const { name: { value: name }, surname: { value: surname }, email: { value: email }, password: { value: password }, role: { value: role } } = event.target
-    onRegister(name, surname, email, password, role)
+    handleRegister(name, surname, email, password, role)
   }
 
+  const handleRegister = async (name, surname, email, password, role) => {
+    try {
+      const response = await registerUser(token, name, surname, email, password, role)
+    /*  setFeedback({ message: response })*/
+    } catch ({message}) {
+   /*   setFeedback({ error: message })*/
+    }
+  }
+{/*onClick={history.goBack()}*/}
   return <>
-    <h3 className='title'>Register</h3>
+    <div className='title'>
+      <i onClick={() => history.goBack()} className="material-icons">undo</i>
+      <h3>Register</h3>
+    </div>
     <section className='register'>
       <h3>Create a new user</h3>
       <p>All fields are required</p>
-      <form className='register__form' onSubmit={registerFn}>
+      <form className='register__form' onSubmit={handleSubmit}>
         <input type="text" name="name" placeholder="name" />
         <input type="text" name="surname" placeholder="surname" />
         <input type="text" name="email" placeholder="email" />
@@ -34,7 +47,7 @@ export default function ({ onRegister, feedback }) {
         </select>
         <button className='form__button form__button--register'>Create account</button>
       </form>
-      {feedback && <Feedback feedback={feedback} />}
+{/*      {feedback && <Feedback feedback={feedback} />}*/}
     </section>
   </>
-}
+})

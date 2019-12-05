@@ -3,7 +3,9 @@ import './index.sass'
 
 export default function () {
   return <>
-  <h3 className='title'>Home</h3>
+    <div className='title'>
+      <h3>Home</h3>
+    </div>
     <section className='credits'>
       <p>Welcome!</p>
     </section>

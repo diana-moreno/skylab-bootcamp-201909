@@ -50,7 +50,10 @@ export default class Schedule extends React.Component {
     // debugger
     let _state = this.state
     return <>
-      <h3 className='title'>Schedule</h3>
+      <div className='title'>
+        <i onClick={this.props.onBack} className="material-icons">undo</i>
+        <h3>Schedule</h3>
+      </div>
       <section className='schedule'>
         <p>Here you can edit the schedule of: </p>
         <p><b>Paco García</b></p>

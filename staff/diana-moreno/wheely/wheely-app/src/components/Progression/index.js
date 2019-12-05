@@ -3,11 +3,14 @@ import './index.sass'
 import Navbar from '../Navbar'
 import ProgressionItem from '../Progression-item'
 
-export default function () {
+export default function ({ onBack }) {
   return <>
-    <h3 className='title'>Progression</h3>
-    <section class="timeline">
-      <ul class='timeline__list'>
+    <div className='title'>
+      <i onClick={onBack} className="material-icons">undo</i>
+      <h3>Progression</h3>
+    </div>
+    <section className="timeline">
+      <ul className='timeline__list'>
         <ProgressionItem />
         <ProgressionItem />
       </ul>

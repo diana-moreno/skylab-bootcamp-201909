@@ -18,17 +18,14 @@ import Account from '../Account' // double
 import Profile from '../Profile'
 import Navbar from '../Navbar'
 
-
 export default withRouter(function({ history }) {
   const [nameSurname, setNameSurname] = useState()
   const [feedback, setFeedback] = useState()
   const [user, setUser] = useState()
   const [role, setRole] = useState()
   const [id, setUserId] = useState()
-  const [roleOwner, setRoleOwner] = useState()
+  const [roleOwner, setRoleOwner] = useState(undefined)
 
-
-/*  if(user) { const {name, surname, email, password, role, profile } = user }*/
   const { token } = sessionStorage
 
 // when the page is reloaded, retrieve the user and save it into the state
@@ -43,15 +40,14 @@ export default withRouter(function({ history }) {
           setRoleOwner(user.user.role)
           setRole(user.user.role)
           setNameSurname(nameSurname)
-          console.log(role)
         }
       }catch (error) {
         console.log(error)
       }
     })()
-  }, [])
+  }, [roleOwner])
 
-  const handleLogin = async (email, password) => {
+/*  const handleLogin = async (email, password) => {
     try {
       const token = await authenticateUser(email, password)
       sessionStorage.token = token
@@ -67,80 +63,74 @@ export default withRouter(function({ history }) {
     } catch (error) {
       console.error(error)
     }
-  }
+  }*/
 
-  const handleRegister = async (name, surname, email, password, role) => {
+/*  const handleRegister = async (name, surname, email, password, role) => {
     try {
       const response = await registerUser(token, name, surname, email, password, role)
       setFeedback({ message: response })
     } catch ({message}) {
       setFeedback({ error: message })
     }
-  }
+  }*/
 
-  const handleRetrieveOtherUser = async (_id) => {
+/*  const handleRetrieveOtherUser = async (_id) => {
     try {
       const user = await retrieveOtherUser(token, _id)
       return user
     } catch (error) {
       console.error(error)
     }
-  }
+  }  // propio*/
 
-  const handleListUsers = async () => {
+/*  const handleListUsers = async () => {
     try {
       const users = await listUsers(token)
       return users
     } catch (error) {
 
     }
+  } // propio*/
+
+  const handleGoBack = (event) => {
+    history.goBack()
   }
+
 
 
 
 // bloquear ciertas pantallas para usuarios
   return <>
+    <Context.Provider value={{ roleOwner, setRoleOwner, nameSurname, setNameSurname, id }}>
 
-    <Context.Provider value={{ setFeedback, role }}>
+      <Route exact path='/' render={() => <Login />} />
+      {token && roleOwner && <Navbar /> }
 
-      <Route exact path='/' render={() => <Login onLogin={handleLogin} />} />
+      {token && <Route path='/home' render={() => <Home />} />}
 
-      {token && role && <Navbar nameSurname={nameSurname}/> }
 
-      <Route path='/home' render={() => <Home />} />
+      {token && roleOwner === 'admin' && <Route path = '/register' render={() => <Register /> }/> }
 
-      <Route path = '/register' render={() => token && role === 'admin'
-        ? <Register feedback={feedback} onRegister={handleRegister} />
-        : <Redirect to="/" /> }
-      /> {/* redirect to home?*/}
-
-      { user && <Route path = '/account' render={() =>
-        token
-        ? <Account id={id} />
+      { roleOwner && <Route path = '/account' render={() => token
+        ? <Account id={id} /*onBack={handleGoBack}*/ />
         : <Redirect to="/" /> }
       /> }
+      { roleOwner && <Route path='/profile/:id' render={({ match: { params: { id }}}) => token && id
+        ? <Profile roleOwner={roleOwner} id={id} onBack={handleGoBack}  />
+        : <Navbar nameSurname={nameSurname}/> } /> }
 
- {/*     { user && <Route path = '/profile' render={() =>
-       <Profile user={user} /> }/> }*/}
-
-      { user && <Route path='/profile/:id' render={({ match: { params: { id }}}) =>
-        token && id ?  <Profile roleOwner={roleOwner} id={id} onRetrieveOtherUser={handleRetrieveOtherUser} /> : <Navbar nameSurname={nameSurname}/> } /> }
-
-
-      {user && <Route path = '/users' render={() => <UsersList onListUsers={handleListUsers} /> }/> }
-
-
+      {roleOwner && <Route path = '/users' render={() => <UsersList onBack={handleGoBack} /> }/> }
       <Route path = '/booking' render={() =>
-        token ?<Booking /> : <Redirect to="/" /> }/>
+        token ? <Booking onBack={handleGoBack}  /> : <Redirect to="/" /> }/>
       <Route path = '/credits' render={() =>
-        token ?<Credits /> : <Redirect to="/" /> }/>
+        token ?<Credits onBack={handleGoBack}  /> : <Redirect to="/" /> }/>
       <Route path = '/progression' render={() =>
-        token ? <Progression /> : <Redirect to="/" /> }/>
+        token ? <Progression onBack={handleGoBack} /> : <Redirect to="/" /> }/>
       <Route path = '/schedule' render={() =>
-        token ? <Schedule /> : <Redirect to="/" /> }/>
+        token ? <Schedule onBack={handleGoBack} /> : <Redirect to="/" /> }/>
       <Route path = '/valoration' render={() =>
-        token ? <Valoration /> : <Redirect to="/" /> }/>
-      <Route path = '/reservations' render = {() => <Reservations /> }/>
+        token ? <Valoration onBack={handleGoBack}  /> : <Redirect to="/" /> }/>
+      <Route path = '/reservations' render = {() => <Reservations onBack={handleGoBack} /> }/>
 
     </Context.Provider>
   </>

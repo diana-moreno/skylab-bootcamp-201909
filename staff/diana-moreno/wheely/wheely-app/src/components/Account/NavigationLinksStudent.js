@@ -3,24 +3,18 @@ import { Link, Redirect } from 'react-router-dom'
 
 const NavigationLinksStudent = () =>
   <Fragment>
-    <div>
-      <Link to="/reservations">
-        <i className="material-icons detail-user__icon detail-user__icon--blue">search</i>
-      </Link>
+    <Link to="/reservations">
+      <i className="material-icons detail-user__icon detail-user__icon--blue">search</i>
       <p>Reservations</p>
-    </div>
-    <div>
-      <Link to="/credits">
-        <i className="material-icons detail-user__icon detail-user__icon--blue">search</i>
-      </Link>
+    </Link>
+    <Link to="/credits">
+      <i className="material-icons detail-user__icon detail-user__icon--blue">search</i>
       <p>Credits</p>
-    </div>
-    <div>
-      <Link to="/progression">
-        <i className="material-icons detail-user__icon detail-user__icon--blue">search</i>
-      </Link>
+    </Link>
+    <Link to="/progression">
+      <i className="material-icons detail-user__icon detail-user__icon--blue">search</i>
       <p>Progression</p>
-    </div>
+    </Link>
   </Fragment>
 
 export default NavigationLinksStudent

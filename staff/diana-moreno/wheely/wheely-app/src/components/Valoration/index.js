@@ -1,11 +1,12 @@
 import React from 'react'
 import './index.sass'
-import Navbar from '../Navbar'
 
-export default function () {
+export default function ({ onBack }) {
   return <>
-    <Navbar />
-    <h3 className='title'>Valoration</h3>
+    <div className='title'>
+      <i onClick={onBack} className="material-icons">undo</i>
+      <h3>Valoration</h3>
+    </div>
     <section className='reservations'>
       <div className='reservations__category-container'>
         <div className='reservations__category'>

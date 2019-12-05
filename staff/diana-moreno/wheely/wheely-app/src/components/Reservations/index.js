@@ -4,12 +4,15 @@ import Navbar from '../Navbar'
 import ReservationCard from '../Reservation-card'
 import SearchOptions from '../Search-options'
 
-export default function () {
+export default function ({ onBack }) {
   return <>
-    <h3 className='title'>Reservations</h3>
+    <div className='title'>
+      <i onClick={onBack} className="material-icons">undo</i>
+      <h3>Reservations</h3>
+    </div>
     <section className='reservations'>
       <form action="">
-        <select name="role" class='reservations__search'>
+        <select name="role" className='reservations__search'>
           <SearchOptions />
         </select>
         <button>Filter</button>

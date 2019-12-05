@@ -4,6 +4,8 @@ import Navbar from '../Navbar'
 import Feedback from '../Feedback'
 import { Link } from 'react-router-dom'
 import Context from '../CreateContext'
+import { retrieveOtherUser } from '../../logic'
+
 
 export default class Account extends React.Component {
  /* const { role } = useContext(Context)*/
@@ -28,12 +30,12 @@ constructor(props) {
   }
 }
 
+
   async componentDidMount() {
-    /*let user = await this.props.onRetrieveUser()*/
-    let user = await this.props.onRetrieveOtherUser(this.props.id)
+    let user = await this.handleRetrieveOtherUser(this.props.id)
     let roleOwner = this.props.roleOwner
-/*    let user = this.props.user*/
     const { user: { name, surname, email, role } } = user
+
     this.setState({
       isEditMode: false,
       firstName: {
@@ -52,6 +54,16 @@ constructor(props) {
       roleOwner
     })
   }
+
+  handleRetrieveOtherUser = async (_id) => {
+    const { token } = sessionStorage
+    try {
+      const user = await retrieveOtherUser(token, _id)
+      return user
+    } catch (error) {
+      console.error(error)
+    }
+  }  // propio
 
   edit = (str) => {
     this.setState({
@@ -88,7 +100,10 @@ constructor(props) {
     const { state: { isEditMode, role, roleOwner, firstName: { value: firstName, edit: isFirstNameEdit }, lastName: { value: lastName, edit: isLastNameEdit }, email: { value: email, edit: isEmailEdit } }, edit, cancel }= this
 
     return <Fragment>
-      <h3 className='title'>Profile</h3>
+      <div className='title'>
+        <i onClick={this.props.onBack} className="material-icons">undo</i>
+        <h3>Profile</h3>
+      </div>
       <section className='detail-user'>
         <form>
           <div>

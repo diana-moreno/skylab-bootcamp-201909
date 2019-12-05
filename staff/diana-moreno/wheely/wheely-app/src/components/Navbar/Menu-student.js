@@ -2,10 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 /*import './index.sass'*/
 
-export default function({ onToggleMenu }) {
+export default function({ onToggleMenu, onLogout }) {
 
-
-debugger
   return <>
     <li className='navbar__menu-item'>
       <Link onClick={onToggleMenu} to={`/home`}>Home</Link>
@@ -17,7 +15,7 @@ debugger
       <Link onClick={onToggleMenu} to={`/account`}>Your account</Link>
     </li>
     <li className='navbar__menu-item'>
-      <Link onClick={onToggleMenu} to={`/`}>Logout</Link>
+      <Link to={'/'} onClick={onLogout} >Logout</Link>
     </li>
   </>
 }

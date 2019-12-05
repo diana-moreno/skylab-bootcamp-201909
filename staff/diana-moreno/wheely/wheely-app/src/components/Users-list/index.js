@@ -3,15 +3,19 @@ import './index.sass'
 import Navbar from '../Navbar'
 import UsersItem from '../Users-item'
 import Context from '../CreateContext'
+import { listUsers } from '../../logic'
+import './index.sass'
 
-export default function({ onListUsers }) {
-  const { role } = useContext(Context)
+
+export default function({ onBack }) {
+  const { roleOwner } = useContext(Context)
   const [usersList, setUsersList] = useState()
+  const { token } = sessionStorage
 
   useEffect(() => {
     (async () => {
       try {
-        const { users } = await onListUsers()
+        const { users } = await handleListUsers()
         if(users.studentId) {
           users = users.studentId
         }
@@ -22,8 +26,20 @@ export default function({ onListUsers }) {
     })()
   }, [setUsersList])
 
-  return < >
-    <h3 className='title'>{role === 'admin' ? 'Users' : 'Your students'} </h3>
+  const handleListUsers = async () => {
+    try {
+      const users = await listUsers(token)
+      return users
+    } catch (error) {
+
+    }
+  }
+
+  return <>
+    <div className='title'>
+      <i onClick={onBack} className="material-icons">undo</i>
+      <h3 className='title'>{roleOwner === 'admin' ? 'Users' : 'Your students'}</h3>
+    </div>
     <section className='users'>
       <form className='users__searcher' action="">
         <input className='users__searcher-input' type="text" placeholder="search user"/>

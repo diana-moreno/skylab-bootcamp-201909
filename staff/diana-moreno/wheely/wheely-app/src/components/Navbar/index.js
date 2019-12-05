@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import './index.sass'
 /*import NavbarItems from '../Navbar-items'*/
 import Context from '../CreateContext'
@@ -6,12 +6,17 @@ import MenuStudent from './Menu-student'
 import MenuInstructor from './Menu-instructor'
 import MenuAdmin from './Menu-admin'
 
-export default function({ nameSurname }) {
-  const { role } = useContext(Context)
+export default function({}) {
+  const { roleOwner, nameSurname } = useContext(Context)
   const [toggleMenu, setToggleMenu] = useState(false)
 
-  function handleToggleMenu() {
+  const handleToggleMenu = () => {
     setToggleMenu(!toggleMenu)
+  }
+
+  const handleLogout = () => {
+    sessionStorage.clear()
+    /*handleGoBack()*/
   }
 
   return (
@@ -25,9 +30,9 @@ export default function({ nameSurname }) {
           </div>
           <h1 className='navbar__title'>Wheely</h1>
           <ul className={!toggleMenu ? 'navbar__menu' : 'navbar__menu navbar__menu--show'}>
-            {role === 'student' && <MenuStudent onToggleMenu={handleToggleMenu}/> }
-            {role === 'instructor' && <MenuInstructor onToggleMenu={handleToggleMenu} /> }
-            {role === 'admin' && <MenuAdmin onToggleMenu={handleToggleMenu} /> }
+            {roleOwner === 'student' && <MenuStudent onToggleMenu={handleToggleMenu} onLogout={handleLogout} /> }
+            {roleOwner === 'instructor' && <MenuInstructor onToggleMenu={handleToggleMenu} onLogout={handleLogout} /> }
+            {roleOwner === 'admin' && <MenuAdmin onToggleMenu={handleToggleMenu} onLogout={handleLogout} /> }
           </ul>
         </div>
       </nav>
@@ -35,7 +40,6 @@ export default function({ nameSurname }) {
         <i className="material-icons greeting__rol-icon">supervisor_account</i>
         <h3 className='greeting__name'>{nameSurname}</h3>
       </div>
-      {/*<h3 className='title'>Your account</h3>*/}
     </header>
   )
 }
