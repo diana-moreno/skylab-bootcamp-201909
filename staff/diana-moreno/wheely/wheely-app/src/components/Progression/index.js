@@ -5,6 +5,7 @@ import ProgressionItem from '../Progression-item'
 
 export default function () {
   return <>
+    <h3 className='title'>Progression</h3>
     <section class="timeline">
       <ul class='timeline__list'>
         <ProgressionItem />

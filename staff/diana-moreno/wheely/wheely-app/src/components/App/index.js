@@ -102,6 +102,7 @@ export default withRouter(function({ history }) {
   return <>
 
     <Context.Provider value={{ setFeedback, role }}>
+
       <Route exact path='/' render={() => <Login onLogin={handleLogin} />} />
 
       {token && role && <Navbar nameSurname={nameSurname}/> }

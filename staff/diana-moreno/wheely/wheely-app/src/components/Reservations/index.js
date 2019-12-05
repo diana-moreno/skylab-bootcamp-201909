@@ -6,6 +6,7 @@ import SearchOptions from '../Search-options'
 
 export default function () {
   return <>
+    <h3 className='title'>Reservations</h3>
     <section className='reservations'>
       <form action="">
         <select name="role" class='reservations__search'>

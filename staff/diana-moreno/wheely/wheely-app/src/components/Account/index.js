@@ -10,6 +10,7 @@ export default function({ id }) {
 
   const { role } = useContext(Context)
     return <Fragment>
+      <h3 className='title'>Your account</h3>
       <section className='account'>
 
           <div>

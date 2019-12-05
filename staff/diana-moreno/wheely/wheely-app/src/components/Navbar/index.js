@@ -8,20 +8,26 @@ import MenuAdmin from './Menu-admin'
 
 export default function({ nameSurname }) {
   const { role } = useContext(Context)
+  const [toggleMenu, setToggleMenu] = useState(false)
+
+  function handleToggleMenu() {
+    setToggleMenu(!toggleMenu)
+  }
 
   return (
     <header>
-      <nav role="navigation" className='navbar'>
+      <nav className='navbar'>
         <div className="navbar__menu-toggle">
-          <input type='checkbox' className="navbar__checkbox" />
-          <span className='navbar__line'></span>
-          <span className='navbar__line'></span>
-          <span className='navbar__line'></span>
+          <div onClick={handleToggleMenu} className='navbar__lines-container' >
+            <span className='navbar__line'></span>
+            <span className='navbar__line'></span>
+            <span className='navbar__line'></span>
+          </div>
           <h1 className='navbar__title'>Wheely</h1>
-          <ul className="navbar__menu">
-            {role === 'student' && <MenuStudent /> }
-            {role === 'instructor' && <MenuInstructor /> }
-            {role === 'admin' && <MenuAdmin /> }
+          <ul className={!toggleMenu ? 'navbar__menu' : 'navbar__menu navbar__menu--show'}>
+            {role === 'student' && <MenuStudent onToggleMenu={handleToggleMenu}/> }
+            {role === 'instructor' && <MenuInstructor onToggleMenu={handleToggleMenu} /> }
+            {role === 'admin' && <MenuAdmin onToggleMenu={handleToggleMenu} /> }
           </ul>
         </div>
       </nav>
@@ -29,7 +35,7 @@ export default function({ nameSurname }) {
         <i className="material-icons greeting__rol-icon">supervisor_account</i>
         <h3 className='greeting__name'>{nameSurname}</h3>
       </div>
-      <h3 className='title'>Your account</h3>
+      {/*<h3 className='title'>Your account</h3>*/}
     </header>
   )
 }

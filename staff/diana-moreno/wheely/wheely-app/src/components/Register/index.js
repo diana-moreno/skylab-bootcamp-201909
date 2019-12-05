@@ -17,6 +17,7 @@ export default function ({ onRegister, feedback }) {
   }
 
   return <>
+    <h3 className='title'>Register</h3>
     <section className='register'>
       <h3>Create a new user</h3>
       <p>All fields are required</p>

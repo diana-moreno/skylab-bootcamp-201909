@@ -5,6 +5,7 @@ import Navbar from '../Navbar'
 export default function () {
   return <>
     <Navbar />
+    <h3 className='title'>Valoration</h3>
     <section className='reservations'>
       <div className='reservations__category-container'>
         <div className='reservations__category'>

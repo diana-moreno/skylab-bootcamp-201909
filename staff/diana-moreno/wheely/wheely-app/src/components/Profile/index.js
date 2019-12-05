@@ -88,6 +88,7 @@ constructor(props) {
     const { state: { isEditMode, role, roleOwner, firstName: { value: firstName, edit: isFirstNameEdit }, lastName: { value: lastName, edit: isLastNameEdit }, email: { value: email, edit: isEmailEdit } }, edit, cancel }= this
 
     return <Fragment>
+      <h3 className='title'>Profile</h3>
       <section className='detail-user'>
         <form>
           <div>

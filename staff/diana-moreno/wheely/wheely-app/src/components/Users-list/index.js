@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import './index.sass'
 import Navbar from '../Navbar'
 import UsersItem from '../Users-item'
+import Context from '../CreateContext'
 
 export default function({ onListUsers }) {
+  const { role } = useContext(Context)
   const [usersList, setUsersList] = useState()
-const a = 'hello'
 
   useEffect(() => {
     (async () => {
@@ -22,6 +23,7 @@ const a = 'hello'
   }, [setUsersList])
 
   return < >
+    <h3 className='title'>{role === 'admin' ? 'Users' : 'Your students'} </h3>
     <section className='users'>
       <form className='users__searcher' action="">
         <input className='users__searcher-input' type="text" placeholder="search user"/>
