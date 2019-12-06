@@ -92,6 +92,15 @@ router.get('/user', tokenVerifier, (req, res) => { // recupera mi usuario
   }
 })
 
+function tryCatch(res){
+  return (fn) => {
+    try{
+      fn()
+    } catch ({ message }) {
+      res.status(400).json({ message })
+    }
+  }
+}
 
 router.get('/:id', tokenVerifier, (req, res) => { // recupera otro usuario
   //tokenVerifier añade el id que reciben del token en header en req?
@@ -113,6 +122,43 @@ router.get('/:id', tokenVerifier, (req, res) => { // recupera otro usuario
     res.status(400).json({ message })
   }
 })
+
+
+router.get('/:id/users', tokenVerifier, (req, res) => {
+  // devuelve los usuarios del usuario con id 'id' en caso de ser admin y el
+  // usuario con id 'id' siendo profesor
+  const { params: { id }, id: ownerId } = req
+debugger
+  tryCatch(res)(() => {
+    retrieveUser(ownerId)
+      .then(checkIfAdminAndContinue)
+      .catch(catchError)
+  })
+
+  function catchError({ message }) {
+    if (error instanceof NotFoundError)
+      return res.status(404).json({ message })
+    return res.status(500).json({ message })
+  }
+
+  function checkIfAdminAndContinue(user){
+    if (user.role === 'admin') {
+      // hacemos cosas
+      return retrieveUser(id)
+        .then(checkIfInstrAndContinue)
+        .catch(catchError)
+    } else res.status(403)
+  }
+
+  function checkIfInstrAndContinue(user){
+    if (user.role === 'instructor') {
+      return listUsers(id)
+        .then(users => res.json({ users }))
+        .catch(catchError)
+    } else res.status(403)
+  }
+})
+
 
 router.delete('/', tokenVerifier, (req, res) => {
   try {

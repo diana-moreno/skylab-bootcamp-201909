@@ -7,7 +7,7 @@ import { listUsers } from '../../logic'
 import './index.sass'
 
 
-export default function({ onBack }) {
+export default function({ onBack, id }) {
   const { roleOwner } = useContext(Context)
   const [usersList, setUsersList] = useState()
   const { token } = sessionStorage
@@ -28,7 +28,12 @@ export default function({ onBack }) {
 
   const handleListUsers = async () => {
     try {
-      const users = await listUsers(token)
+      let users
+      if (id) {
+        users = await listUsers(token, id)
+      } else {
+        users = await listUsers(token)
+      }
       return users
     } catch (error) {
 

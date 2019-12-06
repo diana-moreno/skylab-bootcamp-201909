@@ -3,12 +3,20 @@ const { validate, errors: { NotFoundError, CredentialsError } } = require('wheel
 // const { env: { REACT_APP_API_URL: API_URL } } = process
 const API_URL = process.env.REACT_APP_API_URL
 
-module.exports = function(token) {
+module.exports = function(token, id) {
   validate.string(token)
   validate.string.notVoid('token', token)
 
+  if(id) {
+    validate.string(id)
+    validate.string.notVoid('id', id)
+  }
+
   return (async () => {
-    const res = await call(`${API_URL}/users`, {
+    const defaultEndpoint = `${API_URL}/users`
+    const superEndpoint =  `${API_URL}/users/${id}/users`
+    const endpoint = id ? superEndpoint : defaultEndpoint
+    const res = await call(endpoint, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`

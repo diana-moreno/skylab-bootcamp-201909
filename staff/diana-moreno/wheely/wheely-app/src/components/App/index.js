@@ -52,6 +52,15 @@ export default withRouter(function({ history }) {
     history.goBack()
   }
 
+  const OnlyLoggedIn = (Component, props) =>
+    token ? <Component {...props} />
+    : <Redirect to="/" />
+
+  const OnlyAdmin = (Component, props) =>
+    roleOwner === 'admin'
+      ? <Component {...props} />
+      : <Home />
+
 // bloquear ciertas pantallas para usuarios
   return <>
     <Context.Provider value={{ roleOwner, setRoleOwner, nameSurname, setNameSurname, setMyId, myId }}>
@@ -71,16 +80,32 @@ export default withRouter(function({ history }) {
         ? <Account id={id} onBack={handleGoBack}  />
         : <Home /> } /> }
 
-      { token && (roleOwner === 'instructor' || roleOwner === 'admin') && <Route path='/account/:id' render={({ match: { params: { id }}}) => token && id
+
+      { token && (roleOwner === 'instructor' || roleOwner === 'admin') && <Route exact path='/account/:id/' render={({ match: { params: { id }}}) => token && id
         ? <Account id={id} onBack={handleGoBack}  />
         : <Home /> } /> }
 
-      { !token && <Route path='/account/:id' render={({ match: { params: { id }}}) => <Login /> } /> }
+      { /* account/id/users desde admin */ }
+      {
+        token && roleOwner === 'admin'
+          ? (<Route
+              path='/account/:id/users/'
+              render={({ match: { params: { id }}}) => id
+                ? <UsersList id={id} onBack={handleGoBack}  />
+                : <Home /> }
+            />)
+          : <Redirect to="/" />
+      }
 
+{/*      { !token && <Route path='/account/:id' render={({ match: { params: { id }}}) => <Login /> } /> }*/}
+
+
+      { /* Profile */ }
       { token && roleOwner === 'student' && <Route path='/profile/:id' render={({ match: { params: { id }}}) => token && id === myId
         ? <Profile roleOwner={roleOwner} id={id} onBack={handleGoBack}  />
         : <Home /> } /> }
 
+      { /* Profile */ }
       { token && (roleOwner === 'instructor' || roleOwner === 'admin') && <Route path='/profile/:id' render={({ match: { params: { id }}}) => token && id
         ? <Profile roleOwner={roleOwner} id={id} onBack={handleGoBack}  />
         : <Home /> } /> }

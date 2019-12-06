@@ -2,7 +2,7 @@ import React from 'react'
 import './index.sass'
 import Navbar from '../Navbar'
 import ReservationCard from '../Reservation-card'
-import SearchOptions from '../Search-options'
+/*import SearchOptions from '../Search-options'*/
 
 export default function ({ onBack }) {
   return <>
@@ -13,7 +13,7 @@ export default function ({ onBack }) {
     <section className='reservations'>
       <form action="">
         <select name="role" className='reservations__search'>
-          <SearchOptions />
+     {/*     <SearchOptions />*/}
         </select>
         <button>Filter</button>
       </form>

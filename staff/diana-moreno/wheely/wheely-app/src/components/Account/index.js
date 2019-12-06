@@ -35,7 +35,7 @@ export default withRouter(function({ id, history }) {
           <i className="material-icons detail-user__icon">create</i>
           <p>Profile</p>
         </Link>
-        { role === 'admin' && <NavigationLinksStudent id={id} /> }
+
         { role === 'student' && <NavigationLinksStudent id={id} /> }
         { role === 'instructor' && <NavigationLinksInstructor id={id} /> }
       </section>
