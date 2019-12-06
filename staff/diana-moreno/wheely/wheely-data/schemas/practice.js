@@ -27,9 +27,6 @@ module.exports = new Schema({
     enum: ['pending', 'cancelled', 'feedback', 'done'],
     default: 'pending'
   },
-/*  feedback: { // cambiar
-    type: Object
-  }*/
   feedback: {
     type: String
   },

@@ -21,6 +21,7 @@ export default function({ id, onBack }) {
   useEffect(() => {
     (async () => {
       try {
+
         const result = await retrieveOtherUser(token, id)
         const { user: { profile: { schedule : { days } } } } = result
         const { user: { name } } = result

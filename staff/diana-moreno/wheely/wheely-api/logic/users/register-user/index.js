@@ -1,5 +1,5 @@
 const { validate, errors: { ConflictError, NotFoundError, ContentError } } = require('wheely-utils')
-const { ObjectId, models: { User, Student, Instructor } } = require('wheely-data')
+const { ObjectId, models: { User, Student, Instructor, Week, Day } } = require('wheely-data')
 
 module.exports = function(adminId, name, surname, email, password, role) {
   debugger
@@ -23,19 +23,38 @@ module.exports = function(adminId, name, surname, email, password, role) {
     let admin = await User.findOne({ _id: adminId, role: 'admin' })
     if (!admin) throw new NotFoundError(`user with id ${adminId} not found or has no permission`)
 
+
     // checks if user already exists
     let user = await User.findOne({ email })
     if (user) throw new ConflictError(`user with email ${email} already exists`)
 
+
     // create new user depending on the role
     user = await User.create({ name, surname, email, password, role })
-    if (role === 'student') user.profile = new Student()
-    if (role === 'instructor') user.profile = new Instructor()
 
-    await user.save()
+
+    // create specific profile for instructor
+    let instructor = await User.findOne({ _id: ObjectId(user.id), role: 'instructor' })
+
+    if (instructor) {
+      instructor.profile = new Instructor()
+      instructor = await User.findOneAndUpdate({ _id: ObjectId(instructor.id) }, { $set: instructor })
+      instructor.profile.schedule = new Week()
+
+      for (let i = 0; i < 7; i++) {
+        instructor.profile.schedule.days.push(new Day({ index: i, hours: [] }))
+      }
+      await User.updateOne({ _id: ObjectId(instructor.id) }, { $set: instructor })
+    }
+
+
+    // create profile specific for student
+    let student = await User.findOne({ _id: ObjectId(user.id), role: 'student' })
+
+    if (student) {
+      student.profile = new Student()
+      await User.updateOne({ _id: ObjectId(student.id) }, { $set: student })
+    }
   })()
 }
-
-
-
-
+// falta corregir los tests, ahora sí funcionan los esquemas!!!!
