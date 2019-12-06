@@ -1,13 +1,28 @@
-import React, { Fragment, useContext } from 'react'
+import React, { Fragment, useContext, useState, useEffect } from 'react'
 import './index.sass'
 import NavigationLinksInstructor from './NavigationLinksInstructor'
 import NavigationLinksStudent from './NavigationLinksStudent'
 import Feedback from '../Feedback'
 import Context from '../CreateContext'
 import { Link, withRouter } from 'react-router-dom'
+import { retrieveOtherUser } from '../../logic'
 
 export default withRouter(function({ id, history }) {
   const { roleOwner } = useContext(Context)
+  const [role, setRole] = useState()
+
+  useEffect(() => {
+    (async () => {
+      const { token } = sessionStorage
+      try {
+        const user = await retrieveOtherUser(token, id)
+        const { user: { role } } = user
+        setRole(role)
+      }catch (error) {
+        console.log(error)
+      }
+    })()
+  }, [])
 
   return (
     <Fragment>
@@ -20,8 +35,9 @@ export default withRouter(function({ id, history }) {
           <i className="material-icons detail-user__icon">create</i>
           <p>Profile</p>
         </Link>
-        { roleOwner === 'student' && <NavigationLinksStudent id={id} /> }
-        { roleOwner === 'instructor' && <NavigationLinksInstructor /> }
+        { role === 'admin' && <NavigationLinksStudent id={id} /> }
+        { role === 'student' && <NavigationLinksStudent id={id} /> }
+        { role === 'instructor' && <NavigationLinksInstructor id={id} /> }
       </section>
     </Fragment>
   )

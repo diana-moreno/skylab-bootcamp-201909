@@ -13,7 +13,7 @@ export default function ({ currentUser }) {
 
   return <>
     <li className='users__user'>
-      <Link to={ roleOwner === 'admin' ? `/profile/${_id}` : `/progression/${_id}`}>
+      <Link to={ roleOwner === 'admin' ? `/account/${_id}` : `/progression/${_id}`}>
         <i className="material-icons users__user-icon">
         {role === 'student' ? 'school' : 'directions_car'}</i>
         <p>{name} {surname}</p>

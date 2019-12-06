@@ -19,8 +19,8 @@ import Profile from '../Profile'
 import Navbar from '../Navbar'
 
 export default withRouter(function({ history }) {
-  const [nameSurname, setNameSurname] = useState()
 /*  const [user, setUser] = useState()*/
+  const [nameSurname, setNameSurname] = useState()
   const [myId, setMyId] = useState()
   const [roleOwner, setRoleOwner] = useState(undefined)
   const [credits, setCredits] = useState()
@@ -36,10 +36,8 @@ export default withRouter(function({ history }) {
         if(token) {
           const user = await retrieveUser(token)
           const nameSurname = user.user.name.concat(' ').concat(user.user.surname)// cambiar user.user
-          /*setUser(user) */// es necesario? puedo pasar el user y desestructurar
           setMyId(user.user.id) // to retrieve my profile
           setRoleOwner(user.user.role)
-  /*        setRole(user.user.role)*/
           setNameSurname(nameSurname)
           setCredits(user.user.profile.credits)
         }
@@ -63,18 +61,30 @@ export default withRouter(function({ history }) {
 
       {token && <Route path='/home' render={() => <Home />} />}
 
-
       {token && roleOwner === 'admin' && <Route path = '/register' render={() => <Register /> }/> }
 
-      { roleOwner && <Route path = '/account' render={() => token
-        ? <Account id={myId} /*onBack={handleGoBack}*/ />
-        : <Redirect to="/" /> }
-      /> }
-      { roleOwner && <Route path='/profile/:id' render={({ match: { params: { id }}}) => token && id
+      {token && (roleOwner === 'instructor' || roleOwner === 'student') && <Route path = '/register' render={() => <Home /> }/> }
+
+      {!token && <Route path = '/register' render={() => <Login /> }/>}
+
+      { token && roleOwner === 'student' && <Route path='/account/:id' render={({ match: { params: { id }}}) => token && id === myId
+        ? <Account id={id} onBack={handleGoBack}  />
+        : <Home /> } /> }
+
+      { token && (roleOwner === 'instructor' || roleOwner === 'admin') && <Route path='/account/:id' render={({ match: { params: { id }}}) => token && id
+        ? <Account id={id} onBack={handleGoBack}  />
+        : <Home /> } /> }
+
+      { !token && <Route path='/account/:id' render={({ match: { params: { id }}}) => <Login /> } /> }
+
+      { token && roleOwner === 'student' && <Route path='/profile/:id' render={({ match: { params: { id }}}) => token && id === myId
         ? <Profile roleOwner={roleOwner} id={id} onBack={handleGoBack}  />
-        : <Navbar nameSurname={nameSurname}/> } /> }
-       {/*  props because profile is in classic React*/}
-{/*       Lo que hace es buscar el usuario del id de la ruta, no tengo que ser yo necesariamente, no es el id de props*/}
+        : <Home /> } /> }
+
+      { token && (roleOwner === 'instructor' || roleOwner === 'admin') && <Route path='/profile/:id' render={({ match: { params: { id }}}) => token && id
+        ? <Profile roleOwner={roleOwner} id={id} onBack={handleGoBack}  />
+        : <Home /> } /> }
+
 
       {roleOwner && <Route path = '/users' render={() => <UsersList onBack={handleGoBack} /> }/> }
       <Route path = '/booking' render={() =>

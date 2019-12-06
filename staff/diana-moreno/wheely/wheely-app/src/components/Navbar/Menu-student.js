@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { Fragment, useContext, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-/*import './index.sass'*/
+import Context from '../CreateContext'
 
 export default function({ onToggleMenu, onLogout }) {
+  const { myId } = useContext(Context)
 
   return <>
     <li className='navbar__menu-item'>
@@ -12,7 +13,7 @@ export default function({ onToggleMenu, onLogout }) {
       <Link onClick={onToggleMenu} to={`/booking`}>Booking</Link>
     </li>
     <li className='navbar__menu-item'>
-      <Link onClick={onToggleMenu} to={`/account`}>Your account</Link>
+      <Link onClick={onToggleMenu} to={`/account/${myId}`}>Your account</Link>
     </li>
     <li className='navbar__menu-item'>
       <Link to={'/'} onClick={onLogout} >Logout</Link>
