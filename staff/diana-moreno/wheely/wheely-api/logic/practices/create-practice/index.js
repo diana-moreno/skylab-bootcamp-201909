@@ -31,9 +31,8 @@ module.exports = function(instructorId, studentId, date) {
       if (!instructor) throw new NotFoundError(`user with id ${instructorId} not found`)
 
       // check if a practice with the same date exists
-      let existingDate = await Practice.findOne({ date: date })
+      let existingDate = await Practice.findOne({ _id: instructorId, date: date })
       if (existingDate) throw new ConflictError(`practice with date ${date} already exists`)
-        // MALLLLLLLL
 
 
       // check if the practice has expired

@@ -20,13 +20,14 @@ import Navbar from '../Navbar'
 
 export default withRouter(function({ history }) {
   const [nameSurname, setNameSurname] = useState()
-  const [feedback, setFeedback] = useState()
-  const [user, setUser] = useState()
-  const [role, setRole] = useState()
-  const [id, setUserId] = useState()
+/*  const [user, setUser] = useState()*/
+  const [myId, setMyId] = useState()
   const [roleOwner, setRoleOwner] = useState(undefined)
+  const [credits, setCredits] = useState()
 
   const { token } = sessionStorage
+
+// paso por contexto el nombre, el rol del propietario y sus respectivo seteadores. En el useEffect general de App, le digo que cuando cambie el roleOwner, se actualice, recogiendo al usuario y guardándolo en el state. A partir de ahora, tengo acceso a mi usuario desde cualquier punto de la aplicación, pasando el state por props.
 
 // when the page is reloaded, retrieve the user and save it into the state
   useEffect(() => {
@@ -35,11 +36,12 @@ export default withRouter(function({ history }) {
         if(token) {
           const user = await retrieveUser(token)
           const nameSurname = user.user.name.concat(' ').concat(user.user.surname)// cambiar user.user
-          setUser(user)
-          setUserId(user.user.id)
+          /*setUser(user) */// es necesario? puedo pasar el user y desestructurar
+          setMyId(user.user.id) // to retrieve my profile
           setRoleOwner(user.user.role)
-          setRole(user.user.role)
+  /*        setRole(user.user.role)*/
           setNameSurname(nameSurname)
+          setCredits(user.user.profile.credits)
         }
       }catch (error) {
         console.log(error)
@@ -47,61 +49,14 @@ export default withRouter(function({ history }) {
     })()
   }, [roleOwner])
 
-/*  const handleLogin = async (email, password) => {
-    try {
-      const token = await authenticateUser(email, password)
-      sessionStorage.token = token
-      const user = await retrieveUser(token)
-      const nameSurname = user.user.name.concat(' ').concat(user.user.surname)
-      setRole(user.user.role)
-      setUser(user)
-      setUserId(user.user.id)
-      setRoleOwner(user.user.role)
-      setNameSurname(nameSurname)
-      history.push('/home')
-
-    } catch (error) {
-      console.error(error)
-    }
-  }*/
-
-/*  const handleRegister = async (name, surname, email, password, role) => {
-    try {
-      const response = await registerUser(token, name, surname, email, password, role)
-      setFeedback({ message: response })
-    } catch ({message}) {
-      setFeedback({ error: message })
-    }
-  }*/
-
-/*  const handleRetrieveOtherUser = async (_id) => {
-    try {
-      const user = await retrieveOtherUser(token, _id)
-      return user
-    } catch (error) {
-      console.error(error)
-    }
-  }  // propio*/
-
-/*  const handleListUsers = async () => {
-    try {
-      const users = await listUsers(token)
-      return users
-    } catch (error) {
-
-    }
-  } // propio*/
 
   const handleGoBack = (event) => {
     history.goBack()
   }
 
-
-
-
 // bloquear ciertas pantallas para usuarios
   return <>
-    <Context.Provider value={{ roleOwner, setRoleOwner, nameSurname, setNameSurname, id }}>
+    <Context.Provider value={{ roleOwner, setRoleOwner, nameSurname, setNameSurname, setMyId, myId }}>
 
       <Route exact path='/' render={() => <Login />} />
       {token && roleOwner && <Navbar /> }
@@ -112,20 +67,30 @@ export default withRouter(function({ history }) {
       {token && roleOwner === 'admin' && <Route path = '/register' render={() => <Register /> }/> }
 
       { roleOwner && <Route path = '/account' render={() => token
-        ? <Account id={id} /*onBack={handleGoBack}*/ />
+        ? <Account id={myId} /*onBack={handleGoBack}*/ />
         : <Redirect to="/" /> }
       /> }
       { roleOwner && <Route path='/profile/:id' render={({ match: { params: { id }}}) => token && id
         ? <Profile roleOwner={roleOwner} id={id} onBack={handleGoBack}  />
         : <Navbar nameSurname={nameSurname}/> } /> }
+       {/*  props because profile is in classic React*/}
+{/*       Lo que hace es buscar el usuario del id de la ruta, no tengo que ser yo necesariamente, no es el id de props*/}
 
       {roleOwner && <Route path = '/users' render={() => <UsersList onBack={handleGoBack} /> }/> }
       <Route path = '/booking' render={() =>
         token ? <Booking onBack={handleGoBack}  /> : <Redirect to="/" /> }/>
       <Route path = '/credits' render={() =>
-        token ?<Credits onBack={handleGoBack}  /> : <Redirect to="/" /> }/>
-      <Route path = '/progression' render={() =>
-        token ? <Progression onBack={handleGoBack} /> : <Redirect to="/" /> }/>
+        token ?<Credits onBack={handleGoBack} credits={credits} /> : <Redirect to="/" /> }/>
+
+{/*      <Route path = '/progression' render={() =>
+        token ? <Progression onBack={handleGoBack} user={user} /> : <Redirect to="/" /> }/>
+*/}
+
+     { roleOwner && <Route path='/progression/:id' render={({ match: { params: { id }}}) => token && id
+        ? <Progression id={id} onBack={handleGoBack} id={id} />
+        : <Navbar nameSurname={nameSurname}/> } /> }
+
+
       <Route path = '/schedule' render={() =>
         token ? <Schedule onBack={handleGoBack} /> : <Redirect to="/" /> }/>
       <Route path = '/valoration' render={() =>

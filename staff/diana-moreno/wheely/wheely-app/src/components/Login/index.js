@@ -11,7 +11,8 @@ export default withRouter(function({ error, history }) {
   const [nameSurname, setNameSurname] = useState()
   const [roleOwner, setRoleOwner] = useState()
 */
-  const { setRoleOwner, setNameSurname } = useContext(Context)
+  const { setRoleOwner, setNameSurname, setMyId } = useContext(Context)
+/*  const [id, setUserId] = useState()*/
 
   const handleSubmit = event => {
     event.preventDefault()
@@ -21,14 +22,13 @@ export default withRouter(function({ error, history }) {
 
   const handleLogin = async (email, password) => {
     try {
-      debugger
       const token = await authenticateUser(email, password)
       sessionStorage.token = token
       const user = await retrieveUser(token)
       const nameSurname = user.user.name.concat(' ').concat(user.user.surname)
 /*      setRole(user.user.role)
       setUser(user)*/
-/*      setUserId(user.user.id)*/
+      setMyId(user.user.id)
       setRoleOwner(user.user.role)
       setNameSurname(nameSurname)
       history.push('/home')

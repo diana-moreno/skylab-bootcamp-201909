@@ -65,12 +65,13 @@ router.patch('/', (req, res) => {
   }
 })
 
-router.get('/', jsonBodyParser, tokenVerifier, (req, res) => {
+// he añadido el :id
+router.get('/:id', tokenVerifier, jsonBodyParser, (req, res) => {
   try {
-  const { id, body: { query } } = req
+  const { params: { id }, body: { query } } = req
 
     listPractices(id, query)
-      .then(users => res.json({ users }))
+      .then(practices => res.json({ practices }))
       .catch(error => {
         const { message } = error
 

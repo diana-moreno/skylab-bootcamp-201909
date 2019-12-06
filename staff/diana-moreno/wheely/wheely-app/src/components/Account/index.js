@@ -20,7 +20,7 @@ export default withRouter(function({ id, history }) {
           <i className="material-icons detail-user__icon">create</i>
           <p>Profile</p>
         </Link>
-        { roleOwner === 'student' && <NavigationLinksStudent /> }
+        { roleOwner === 'student' && <NavigationLinksStudent id={id} /> }
         { roleOwner === 'instructor' && <NavigationLinksInstructor /> }
       </section>
     </Fragment>
