@@ -10,10 +10,10 @@ const jsonBodyParser = bodyParser.json()
 
 const router = Router()
 
-router.patch('/toggle', jsonBodyParser, tokenVerifier, (req, res) => {
+router.patch('/:instructorId', jsonBodyParser, tokenVerifier, (req, res) => {
   try {
-    const { id, body: { instructorId, indexDay, hour } } = req
-    toogleSchedule(id, instructorId, indexDay, hour)
+    const { id, params: { instructorId}, body: { indexDay, hour } } = req
+    toggleSchedule(id, instructorId, indexDay, hour)
       .then((instructor) => res.json({ instructor }))
       .catch(error => {
         const { message } = error

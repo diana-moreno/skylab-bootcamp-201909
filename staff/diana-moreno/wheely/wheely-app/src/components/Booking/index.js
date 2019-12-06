@@ -4,6 +4,16 @@ import Navbar from '../Navbar'
 import { withRouter } from 'react-router-dom'
 
 export default withRouter(function({ history }) {
+  const fetchinstructores = () => {
+    // llamada a la api para pedir instructores
+  }
+  const getDisponibilidadDelInstructor = () => {
+    // esto se llama on click/on select del select de profesores
+    // cuando tienes el instructor
+    // pedir las reservas que tiene asignadas
+    // calculo
+
+  }
   return <>
     <div className='title'>
       <i onClick={() => history.goBack()} className="material-icons">undo</i>
@@ -18,6 +28,11 @@ export default withRouter(function({ history }) {
       <form action="">
        <select name="role">
           <option value="">-- instructor --</option>
+{/*          {
+            instructores.map((in, i) =>
+              <option value="instructor1">in</option>
+            )
+          }*/}
           <option value="instructor1">Aitor Pedos</option>
           <option value="instructor2">Aitor Tilla</option>
           <option value="instructor3">Aitor Menta</option>

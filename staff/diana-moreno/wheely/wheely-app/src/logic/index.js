@@ -8,5 +8,6 @@ module.exports = {
     removeTask: require('./remove-task'),
     listUsers: require('./list-users'),
     retrieveOtherUser: require('./retrieve-other-user'),
-    listPractices: require('./list-practices')
+    listPractices: require('./list-practices'),
+    updateSchedule: require('./update-schedule')
 }

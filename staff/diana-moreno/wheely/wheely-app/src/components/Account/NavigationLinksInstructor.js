@@ -28,7 +28,7 @@ const NavigationLinksInstructor = ({ id }) => {
       <p>Reservations</p>
     </Link>
     { newRedirect ? adminRoute : normalRoute }
-    <Link to="/schedule">
+    <Link to={`/schedule/${id}`}>
       <i className="material-icons detail-user__icon detail-user__icon--blue">search</i>
       <p>Schedule</p>
     </Link>

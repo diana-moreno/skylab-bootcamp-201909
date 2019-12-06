@@ -1,85 +1,80 @@
-import React from 'react'
+import React, { Fragment, useContext, useState, useEffect } from 'react'
+import { Route, withRouter, Redirect } from 'react-router-dom'
 import './index.sass'
-import Navbar from '../Navbar'
 import ScheduleItem from '../Schedule-item'
+import { updateSchedule, retrieveOtherUser } from '../../logic'
+import Context from '../CreateContext'
 
-const hours = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00']
+export default function({ id, onBack }) {
 
-const days = [0,1,2,3,4,5,6]
+  const hoursList = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00']
+  const daysList = [0,1,2,3,4,5,6]
+  const { token } = sessionStorage
+  const { roleOwner } = useContext(Context)
 
-const C = [
-  {
-    hours: ['10:00']
-  },
-  {
-    hours: ['12:00']
-  },
-  {
-    hours: ['11:00']
-  },
-  {
-    hours: []
-  },
-  {
-    hours: []
-  },
-  {
-    hours: []
-  },
-  {
-    hours: []
-  },
-]
+  const [name, setName] = useState()
+  const [days, setDays] = useState(daysList)
+  const [hours, setHour] = useState(hoursList)
+  const [availableSchedule, setAvailableSchedule] = useState(null)
 
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const result = await retrieveOtherUser(token, id)
+        const { user: { profile: { schedule : { days } } } } = result
+        const { user: { name } } = result
+        setName(name)
+        setAvailableSchedule(days)
+      } catch (error) {
+        console.log(error)
+      }
+    })()
+  }, [])
 
-export default class Schedule extends React.Component {
-  state = {
-    horasDisponibles: this.props.horasDisponibles || C
+
+  const updateSlot = (day, hour) => async () => {
+    // si es un instructor, solo puede visualizar los datos, no editarlos
+    if(roleOwner == 'admin') {
+      let result = await updateSchedule(token, id, day, hour)
+      const { instructor: { profile: { schedule : { days } } } } = result
+      setAvailableSchedule(days)
+    }
   }
 
-  updateSlot = (day, hour) => {
-
-    console.log('clicked', day, hour)
-    // toggle({ day, hour }).then(result => this.setState({
-    //   horasDisponibles: result,
-    // })
-  }
-
-  render() {
-    // debugger
-    let _state = this.state
-    return <>
-      <div className='title'>
-        <i onClick={this.props.onBack} className="material-icons">undo</i>
-        <h3>Schedule</h3>
-      </div>
-      <section className='schedule'>
-        <p>Here you can edit the schedule of: </p>
-        <p><b>Paco García</b></p>
-        <div className='timetable'>
-          <div className="week-names">
-            { ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(d => <p>{d}</p>) }
-          </div>
-          <div className="time-interval">
-            { hours.map((hour) => <p>{hour}</p>) }
-          </div>
-          <form className="content" action="">
-            { hours.map(hour => (
-                days.map(day =>
+  return <>
+    <div className='title'>
+      <i onClick={onBack} className="material-icons">undo</i>
+      <h3>{name}'s Schedule</h3>
+    </div>
+    <section className='schedule'>
+{/*      <p>{name}'s schedule</p>*/}
+ {/*     <p><b>{name}</b></p>*/}
+      <div className='schedule__timetable'>
+        <div className="schedule__week-names">
+          { ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(d => <p>{d}</p>) }
+        </div>
+        <div className="schedule__time-interval">
+          { hours.map((hour) => <p>{hour}</p>) }
+        </div>
+        <ul className="schedule__board">
+          { availableSchedule === null
+            ? 'Loading...'
+            : hours.map(hour => (
+                days.map((day, i) =>
                   <ScheduleItem
+                    key={i}
                     day={day}
                     hour={hour}
-                    handleClick={this.updateSlot}
-                    checked={_state.horasDisponibles[day].hours.includes(hour)}
+                    handleClick={updateSlot(day, hour)}
+                    isChecked={availableSchedule[day].hours.includes(hour)}
                   />
                 )
               )
             )
-            }
-          </form>
-        </div>
-      </section>
-    </>
-  }
+          }
+        </ul>
+      </div>
+    </section>
+  </>
 }

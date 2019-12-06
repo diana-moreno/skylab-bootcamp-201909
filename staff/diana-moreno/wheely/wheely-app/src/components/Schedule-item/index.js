@@ -1,12 +1,11 @@
 import React from 'react'
 import './index.sass'
 
-export default function ({day, hour, handleClick, checked}) {
+export default function ({ day, hour, handleClick, isChecked }) {
 
   return <>
-    <label className="container">
-      <input type="checkbox" checked={checked}/>
-      <span className="checkmark" onClick={() => handleClick(day, hour)}>{day}: {hour} {checked}</span>
-    </label>
+    <li className={isChecked ? 'schedule__item schedule__item--checked' : 'schedule__item'}>
+      <span onClick={() => handleClick()}> &nbsp; </span>
+    </li>
   </>
 }

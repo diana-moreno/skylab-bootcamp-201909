@@ -125,9 +125,10 @@ export default withRouter(function({ history }) {
         ? <Progression id={id} onBack={handleGoBack} id={id} />
         : <Navbar nameSurname={nameSurname}/> } /> }
 
+      { token && (roleOwner === 'admin' || roleOwner === 'instructor') && <Route path='/schedule/:id' render={({ match: { params: { id }}}) => token && id
+        ? <Schedule roleOwner={roleOwner} id={id} onBack={handleGoBack}  />
+        : <Home /> } /> }
 
-      <Route path = '/schedule' render={() =>
-        token ? <Schedule onBack={handleGoBack} /> : <Redirect to="/" /> }/>
       <Route path = '/valoration' render={() =>
         token ? <Valoration onBack={handleGoBack}  /> : <Redirect to="/" /> }/>
       <Route path = '/reservations' render = {() => <Reservations onBack={handleGoBack} /> }/>
