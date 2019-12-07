@@ -94,7 +94,7 @@ export default withRouter(function({ history }) {
                 ? <UsersList id={id} onBack={handleGoBack}  />
                 : <Home /> }
             />)
-          : <Redirect to="/" />
+          : ''
       }
 
 {/*      { !token && <Route path='/account/:id' render={({ match: { params: { id }}}) => <Login /> } /> }*/}
@@ -112,11 +112,11 @@ export default withRouter(function({ history }) {
 
 
       {roleOwner && <Route path = '/users' render={() => <UsersList onBack={handleGoBack} /> }/> }
-      <Route path = '/booking' render={() =>
-        token ? <Booking onBack={handleGoBack}  /> : <Redirect to="/" /> }/>
+      {token && <Route path = '/booking' render={() =>
+        token ? <Booking onBack={handleGoBack}  /> : '' }/>}
 
       {token && roleOwner === 'student' && <Route path = '/credits' render={() =>
-        token ?<Credits onBack={handleGoBack} credits={credits} /> : <Redirect to="/" /> }/>}
+        token ?<Credits onBack={handleGoBack} credits={credits} /> : '' }/>}
 
 {/*      <Route path = '/progression' render={() =>
         token ? <Progression onBack={handleGoBack} user={user} /> : <Redirect to="/" /> }/>

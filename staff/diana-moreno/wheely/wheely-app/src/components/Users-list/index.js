@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
 import './index.sass'
-import Navbar from '../Navbar'
 import UsersItem from '../Users-item'
 import Context from '../CreateContext'
 import { listUsers } from '../../logic'

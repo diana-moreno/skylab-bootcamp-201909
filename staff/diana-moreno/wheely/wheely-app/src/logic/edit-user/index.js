@@ -22,12 +22,10 @@ module.exports = function (token, userId, name, surname, email, dni, credits, pa
         validate.string(email)
         validate.string.notVoid('email', email)
     }
-    debugger
     if (dni) {
         validate.string(dni)
         validate.string.notVoid('dni', dni)
     }
-
     if (credits) {
         validate.number(credits)
     }

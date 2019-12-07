@@ -49,6 +49,8 @@ module.exports = function(userId, query) {
         .lean()
     return practices
 
+// quitar queries
+
     // return different practices array depending on the query selected by the user (permission control)
     // if (instructor && query === 'feedback') {
     //   practices = await Practice

@@ -22,7 +22,6 @@ module.exports = function(id, userId, name, surname, email, dni, credits, passwo
     validate.string.notVoid('e-mail', email)
     validate.email(email)
   }
-  debugger
   if (dni) {
     validate.string(dni)
     validate.string.notVoid('dni', dni)
