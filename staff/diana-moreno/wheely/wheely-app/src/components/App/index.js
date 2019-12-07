@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Route, withRouter, Redirect } from 'react-router-dom'
-import { authenticateUser, registerUser, retrieveUser, listTasks, modifyTask, createTask, getToken, listUsers, retrieveOtherUser } from '../../logic'
+import { authenticateUser, registerUser, retrieveUser, getToken, listUsers, retrieveOtherUser } from '../../logic'
 import './index.sass'
 import Context from '../CreateContext'
 
@@ -114,8 +114,9 @@ export default withRouter(function({ history }) {
       {roleOwner && <Route path = '/users' render={() => <UsersList onBack={handleGoBack} /> }/> }
       <Route path = '/booking' render={() =>
         token ? <Booking onBack={handleGoBack}  /> : <Redirect to="/" /> }/>
-      <Route path = '/credits' render={() =>
-        token ?<Credits onBack={handleGoBack} credits={credits} /> : <Redirect to="/" /> }/>
+
+      {token && roleOwner === 'student' && <Route path = '/credits' render={() =>
+        token ?<Credits onBack={handleGoBack} credits={credits} /> : <Redirect to="/" /> }/>}
 
 {/*      <Route path = '/progression' render={() =>
         token ? <Progression onBack={handleGoBack} user={user} /> : <Redirect to="/" /> }/>

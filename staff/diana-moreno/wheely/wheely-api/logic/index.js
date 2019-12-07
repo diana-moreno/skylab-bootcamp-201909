@@ -5,7 +5,6 @@ module.exports = {
   deleteUser: require('./users/delete-user'),
   editUser: require('./users/edit-user'),
   listUsers: require('./users/list-users'),
-  addCredits: require('./users/add-credits'),
   createPractice: require('./practices/create-practice'),
   listPractices: require('./practices/list-practices'),
   writeFeedback: require('./practices/write-feedback'),

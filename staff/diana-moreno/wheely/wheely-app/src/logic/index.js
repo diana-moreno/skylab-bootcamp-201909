@@ -2,12 +2,10 @@ module.exports = {
     authenticateUser: require('./authenticate-user'),
     registerUser: require('./register-user'),
     retrieveUser: require('./retrieve-user'),
-    createTask: require('./create-task'),
-    listTasks: require('./list-tasks'),
-    modifyTask: require('./modify-task'),
-    removeTask: require('./remove-task'),
     listUsers: require('./list-users'),
     retrieveOtherUser: require('./retrieve-other-user'),
     listPractices: require('./list-practices'),
-    updateSchedule: require('./update-schedule')
+    updateSchedule: require('./update-schedule'),
+    deleteUser: require('./delete-user'),
+    editUser: require('./edit-user')
 }

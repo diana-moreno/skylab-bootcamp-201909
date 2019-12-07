@@ -2,7 +2,7 @@ const call = require('../../utils/call')
 const { validate, errors: { ConflictError } } = require('wheely-utils')
 const API_URL = process.env.REACT_APP_API_URL
 
-module.exports = function (token, name, surname, email, password, role) {
+module.exports = function (token, name, surname, email, dni, password, role) {
     validate.string(name)
     validate.string.notVoid('name', name)
     validate.string(surname)
@@ -22,7 +22,7 @@ module.exports = function (token, name, surname, email, password, role) {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ name, surname, email, password, role })
+            body: JSON.stringify({ name, surname, email, dni, password, role })
         })
 
         if (res.status === 201) return 'Registration succesfully'

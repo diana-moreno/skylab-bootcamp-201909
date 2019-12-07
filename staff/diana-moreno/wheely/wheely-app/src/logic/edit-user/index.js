@@ -3,35 +3,47 @@ const { validate, errors: { CredentialsError, NotFoundError, ConflictError } } =
 // const { env: { REACT_APP_API_URL: API_URL } } = process
 const API_URL = process.env.REACT_APP_API_URL
 
-module.exports = function (token, taskId, title, description, status) {
+module.exports = function (token, userId, name, surname, email, dni, credits, password) {
     validate.string(token)
     validate.string.notVoid('token', token)
 
-    validate.string(taskId)
-    validate.string.notVoid('task id', taskId)
+    validate.string(userId)
+    validate.string.notVoid('user id', userId)
 
-    if (title) {
-        validate.string(title)
-        validate.string.notVoid('title', title)
+    if (name) {
+        validate.string(name)
+        validate.string.notVoid('name', name)
     }
-    if (description) {
-        validate.string(description)
-        validate.string.notVoid('description', description)
+    if (surname) {
+        validate.string(surname)
+        validate.string.notVoid('surname', surname)
     }
-    if (status) {
-        validate.string(status)
-        validate.string.notVoid('status', status)
-        validate.matches('status', status, 'TODO', 'DOING', 'REVIEW', 'DONE')
+    if (email) {
+        validate.string(email)
+        validate.string.notVoid('email', email)
+    }
+    debugger
+    if (dni) {
+        validate.string(dni)
+        validate.string.notVoid('dni', dni)
+    }
+
+    if (credits) {
+        validate.number(credits)
+    }
+    if (password) {
+        validate.string(password)
+        validate.string.notVoid('password', password)
     }
 
     return (async () => {
-        const res = await call(`${API_URL}/tasks/${taskId}`, {
+        const res = await call(`${API_URL}/users/${userId}`, {
             method: 'PATCH',
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ title, description, status })
+            body: JSON.stringify({ name, surname, email, dni, credits, password })
         })
 
         if (res.status === 200) return

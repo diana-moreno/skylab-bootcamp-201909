@@ -13,13 +13,13 @@ export default withRouter(function({ error, history }) {
 
   const handleSubmit = event => {
     event.preventDefault()
-    const { name: { value: name }, surname: { value: surname }, email: { value: email }, password: { value: password }, role: { value: role } } = event.target
-    handleRegister(name, surname, email, password, role)
+    const { name: { value: name }, surname: { value: surname }, email: { value: email }, dni: { value: dni }, password: { value: password }, role: { value: role } } = event.target
+    handleRegister(name, surname, email, dni, password, role)
   }
 
-  const handleRegister = async (name, surname, email, password, role) => {
+  const handleRegister = async (name, surname, email, dni, password, role) => {
     try {
-      const response = await registerUser(token, name, surname, email, password, role)
+      const response = await registerUser(token, name, surname, email, dni, password, role)
     /*  setFeedback({ message: response })*/
     } catch ({message}) {
    /*   setFeedback({ error: message })*/
@@ -38,6 +38,7 @@ export default withRouter(function({ error, history }) {
         <input type="text" name="name" placeholder="name" />
         <input type="text" name="surname" placeholder="surname" />
         <input type="text" name="email" placeholder="email" />
+        <input type="text" name="dni" placeholder="DNI" />
         <input type="password" name="password" placeholder="password" />
         <select name="role">
           <option value="">-- role --</option>

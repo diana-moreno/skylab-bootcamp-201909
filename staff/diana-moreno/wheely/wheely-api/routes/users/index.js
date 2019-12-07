@@ -11,10 +11,10 @@ const jsonBodyParser = bodyParser.json()
 const router = Router()
 
 router.post('/', tokenVerifier, jsonBodyParser, (req, res) => {
-  const { id, body: { name, surname, email, password, role } } = req
+  const { id, body: { name, surname, email, dni, password, role } } = req
 
   try {
-    registerUser(id, name, surname, email, password, role)
+    registerUser(id, name, surname, email, dni, password, role)
       .then(() => res.status(201).end())
       .catch(error => {
         const { message } = error
@@ -92,15 +92,6 @@ router.get('/user', tokenVerifier, (req, res) => { // recupera mi usuario
   }
 })
 
-function tryCatch(res){
-  return (fn) => {
-    try{
-      fn()
-    } catch ({ message }) {
-      res.status(400).json({ message })
-    }
-  }
-}
 
 router.get('/:id', tokenVerifier, (req, res) => { // recupera otro usuario
   //tokenVerifier añade el id que reciben del token en header en req?
@@ -123,12 +114,20 @@ router.get('/:id', tokenVerifier, (req, res) => { // recupera otro usuario
   }
 })
 
+function tryCatch(res){
+  return (fn) => {
+    try{
+      fn()
+    } catch ({ message }) {
+      res.status(400).json({ message })
+    }
+  }
+}
 
 router.get('/:id/users', tokenVerifier, (req, res) => {
   // devuelve los usuarios del usuario con id 'id' en caso de ser admin y el
   // usuario con id 'id' siendo profesor
   const { params: { id }, id: ownerId } = req
-debugger
   tryCatch(res)(() => {
     retrieveUser(ownerId)
       .then(checkIfAdminAndContinue)
@@ -160,10 +159,9 @@ debugger
 })
 
 
-router.delete('/', tokenVerifier, (req, res) => {
+router.delete('/:userId', tokenVerifier, (req, res) => {
   try {
-    const { id, body: { userId } } = req
-
+    const { id, params: { userId } } = req
     deleteUser(id, userId)
       .then(() => res.end())
       .catch(error => {
@@ -181,11 +179,10 @@ router.delete('/', tokenVerifier, (req, res) => {
   }
 })
 
-router.patch('/', jsonBodyParser, tokenVerifier, (req, res) => {
+router.patch('/:userId', jsonBodyParser, tokenVerifier, (req, res) => {
   try {
-    const { id, body: { name, surname, email } } = req
-
-    editUser(id, name, surname, email)
+    const { id, params: { userId }, body: { name, surname, email, dni, credits, password } } = req
+    editUser(id, userId, name, surname, email, dni, credits, password)
       .then(() => res.end() )
       .catch(error => {
         const { message } = error
@@ -244,7 +241,6 @@ router.put('/credits', jsonBodyParser, tokenVerifier, (req, res) => {
   }
 })
 
-//TODO
 router.get('/progression', jsonBodyParser, tokenVerifier, (req, res) => {
   try {
   const { id, body: { query } } = req
@@ -267,3 +263,6 @@ router.get('/progression', jsonBodyParser, tokenVerifier, (req, res) => {
 })
 
 module.exports = router
+
+
+/*      validate.matches('status', status, 'TODO', 'DOING', 'REVIEW', 'DONE')*/

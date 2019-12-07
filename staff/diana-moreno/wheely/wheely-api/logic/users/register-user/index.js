@@ -1,7 +1,7 @@
 const { validate, errors: { ConflictError, NotFoundError, ContentError } } = require('wheely-utils')
 const { ObjectId, models: { User, Student, Instructor, Week, Day } } = require('wheely-data')
 
-module.exports = function(adminId, name, surname, email, password, role) {
+module.exports = function(adminId, name, surname, email, dni, password, role) {
   debugger
   validate.string(adminId)
   validate.string.notVoid('adminId', adminId)
@@ -13,6 +13,8 @@ module.exports = function(adminId, name, surname, email, password, role) {
   validate.string(email)
   validate.string.notVoid('e-mail', email)
   validate.email(email)
+  validate.string(dni)
+  validate.string.notVoid('dni', dni)
   validate.string(password)
   validate.string.notVoid('password', password)
   validate.string(role)
@@ -26,11 +28,13 @@ module.exports = function(adminId, name, surname, email, password, role) {
 
     // checks if user already exists
     let user = await User.findOne({ email })
-    if (user) throw new ConflictError(`user with email ${email} already exists`)
+    if(user) throw new ConflictError(`user with email ${email} already exists`)
+    user = await User.findOne({ dni })
+    if(user) throw new ConflictError(`user with dni ${dni} already exists`)
 
-
+debugger
     // create new user depending on the role
-    user = await User.create({ name, surname, email, password, role })
+    user = await User.create({ name, surname, email, dni, password, role })
 
 
     // create specific profile for instructor
