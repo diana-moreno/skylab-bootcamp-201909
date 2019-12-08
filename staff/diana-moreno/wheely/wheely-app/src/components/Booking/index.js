@@ -3,7 +3,7 @@ import './index.sass'
 import Navbar from '../Navbar'
 import { withRouter } from 'react-router-dom'
 import Context from '../CreateContext'
-import { listUsers, retrieveOtherUser, listPractices } from '../../logic'
+import { listUsers, retrieveOtherUser, listPractices, createPractice } from '../../logic'
 import OptionsInstructors from './options-instructors.js'
 import OptionsDate from './options-date.js'
 import OptionsTime from './options-time.js'
@@ -14,7 +14,7 @@ export default withRouter(function({ history }) {
 /*  const [schedule, setSchedule] = useState()*/
 /*  const [instructorId, setInstructorId] = useState()*/
   const [calendar, setCalendar] = useState()
-  const [indexDate, setIndexDate] = useState()
+  const [indexDay, setIndexDay] = useState()
 
   const { token } = sessionStorage
 
@@ -38,7 +38,7 @@ export default withRouter(function({ history }) {
   const generateAvailableCalendar = async (event) => {
     // prepare empty calendar
     setCalendar([])
-    setIndexDate(undefined)
+    setIndexDay(undefined)
 
     let id = event.target.value
     let schedule = await getAvailableSchedule(id)
@@ -135,9 +135,28 @@ export default withRouter(function({ history }) {
   return availableCalendar
  }
 
+ // el día que ha seleccionado el usuario
   const selectData = (event) => {
-    const indexDate = event.target.value
-    setIndexDate(indexDate)
+    const indexDay = event.target.value
+    setIndexDay(indexDay)
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault()
+    debugger
+    let { instructor: {value: instructorId}, day: { value: indexDay }, hour: { value: hour } } = event.target
+    let day = calendar[indexDay].day
+    let dateTime = moment(`${day} ${hour}`, "DD-MM-YYYY HH:mm")
+    console.log(instructorId, day, hour)
+    handleReservatePractice(instructorId, dateTime)
+  }
+
+  const handleReservatePractice = async (instructorId, dateTime) => {
+    try {
+      const response = await createPractice(token, instructorId, dateTime)
+    } catch ({message}) {
+   /*   setFeedback({ error: message })*/
+    }
   }
 
   return <>
@@ -151,23 +170,23 @@ export default withRouter(function({ history }) {
         <p>You can select the instructor you prefer and the day and time that suits you best!</p>
         <p>Every practice costs 1 credit.</p>
       </div>
-      <form action="">
-       <select name="role" onChange={generateAvailableCalendar} >
+      <form onSubmit={handleSubmit} >
+       <select name="instructor" onChange={generateAvailableCalendar} >
           <option value="" >-- instructor --</option>
          { instructors && instructors.map((instructor, i) =>
-            <OptionsInstructors key={i} id={instructor._id} instructor={instructor} />)
+            <OptionsInstructors name='instructor' key={i} id={instructor._id} instructor={instructor} />)
          }
         </select>
-       <select name="date" onChange={selectData} >
+       <select name="day" onChange={selectData} >
           <option value="">-- date --</option>
          { calendar && calendar.map((elem, i) =>
-            <OptionsDate key={i} index={i} day={elem.day} />)
+            <OptionsDate name='day' key={i} index={i} day={elem.day} />)
          }
         </select>
-       <select name="date">
+       <select name="hour">
           <option value="">-- time --</option>
-         { indexDate && calendar[indexDate].hours.map((hour, i) =>
-            <OptionsTime key={i} hour={hour} />)
+         { indexDay && calendar[indexDay].hours.map((hour, i) =>
+            <OptionsTime name='hour' key={i} hour={hour} />)
          }
         </select>
         <button>Confirm</button>

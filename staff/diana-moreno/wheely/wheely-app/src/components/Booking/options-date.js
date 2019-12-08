@@ -12,3 +12,5 @@ export default function ({ index, day }) {
   </>
 }
 
+// se pueden unificar los tres options???
+//
