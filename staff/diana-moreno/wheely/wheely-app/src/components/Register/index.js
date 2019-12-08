@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from 'react'
 import './index.sass'
 import Navbar from '../Navbar'
-import getToken from '../../logic/getToken'
 import registerUser from '../../logic/register-user'
 import Feedback from '../Feedback'
 import Context from '../CreateContext'
