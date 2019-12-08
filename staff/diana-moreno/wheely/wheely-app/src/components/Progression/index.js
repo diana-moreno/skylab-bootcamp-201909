@@ -10,10 +10,11 @@ export default function ({ id, user, onBack }) {
   const { token } = sessionStorage
 
   useEffect(() => {
+    debugger
     (async () => {
       try {
         if(token) {
-          const result = await listPractices(token, id, 'progression')
+          const result = await listPractices(token, id)
           const { practices } = result
           setPractices(practices)
           if(practices) {
@@ -34,7 +35,8 @@ export default function ({ id, user, onBack }) {
     <section className="timeline">
       <ul className='timeline__list'>
         { practices && practices.filter(pract => {
-          return pract.status === 'done'
+/*          return pract.status === 'done'*/
+          return pract.valoration
         }).map((practice, i) =>
           <ProgressionItem practice={practice} key={i} i={i + 1} /> )
         }

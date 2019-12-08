@@ -23,7 +23,7 @@ const NavigationLinksInstructor = ({ id }) => {
   )
 
   return <Fragment>
-    <Link to="/reservations">
+    <Link to={`/reservations/${id}`}>
       <i className="material-icons detail-user__icon detail-user__icon--blue">search</i>
       <p>Reservations</p>
     </Link>
