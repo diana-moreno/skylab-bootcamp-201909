@@ -4,13 +4,17 @@ import Navbar from '../Navbar'
 import { withRouter } from 'react-router-dom'
 import Context from '../CreateContext'
 import { listUsers, retrieveOtherUser, listPractices } from '../../logic'
-import Option from './option.js'
+import OptionsInstructors from './options-instructors.js'
+import OptionsDate from './options-date.js'
+import OptionsTime from './options-time.js'
 const moment = require('moment')
 
 export default withRouter(function({ history }) {
   const [instructors, setInstructors] = useState()
-  const [schedule, setSchedule] = useState()
-  const [instructorId, setInstructorId] = useState()
+/*  const [schedule, setSchedule] = useState()*/
+/*  const [instructorId, setInstructorId] = useState()*/
+  const [calendar, setCalendar] = useState()
+  const [indexDate, setIndexDate] = useState()
 
   const { token } = sessionStorage
 
@@ -24,7 +28,6 @@ export default withRouter(function({ history }) {
     try {
       let result = await listUsers(token)
       const { users } = result
-
       setInstructors(users)
     } catch (error) {
       console.log(error)
@@ -32,17 +35,26 @@ export default withRouter(function({ history }) {
   }
 
 
-  // recoge el schedule del profesor seleccionado
-  const getAvailableSchedule = async (event) => {
+  const generateAvailableCalendar = async (event) => {
+    // prepare empty calendar
+    setCalendar([])
+    setIndexDate(undefined)
+
     let id = event.target.value
-    setInstructorId(id)
-    // retrieve instructor schedule
+    let schedule = await getAvailableSchedule(id)
+    let calendar = generateCalendar(schedule)
+    let reservations = await retrieveReservations(id)
+    let availableCalendar = getAvailableCalendar(calendar, reservations)
+    setCalendar(availableCalendar)
+  }
+
+
+  // retrieve choosed instructor schedule
+  const getAvailableSchedule = async (id) => {
     try {
       let result = await retrieveOtherUser(token, id)
       const { user: { profile: { schedule: { days }}} } = result
-
-      let calendar = generateCalendar(days)
-      let availableCalendar = getAvailableCalendar(calendar, id)
+      return days
     } catch (error) {
       console.log(error)
     }
@@ -50,44 +62,40 @@ export default withRouter(function({ history }) {
 
 
   // genera un calendario con días y horas reales a partir del schedule
- const generateCalendar = (schedule) => {
-  let calendar = []
+  const generateCalendar = (schedule) => {
+    let calendar = []
+    // transform schedule in a object with real dates and array of times
+    for (let i = 0; i < 30; i++) {
+      const weekday = moment().add(i, 'day').day()
+      const today = Number(moment().day())
 
-  // transform the schedule of weekdays of the data base in an object with real dates (for 30 natural days) and an array of hours to expose in the frontend for booking
-  for (let i = 0; i < 30; i++) {
-    const weekday = moment().add(i, 'day').day()
-    const today = Number(moment().day())
-
-    if (schedule[weekday].hours.length > 0) {
-      let dayHour = moment().day(i + today, 'day')
-      let day = dayHour.format('DD-MM-YYYY')
-      const hours = schedule[weekday].hours
-
-      calendar.push({
-        day,
-        hours
-      })
+      if ( schedule && schedule[weekday].hours.length > 0) {
+        let day = moment().day(i + today, 'day').format('DD-MM-YYYY')
+        const hours = schedule[weekday].hours
+        calendar.push({ day, hours })
+      }
     }
+    calendar = checkPastTime(calendar)
+    return calendar
   }
 
-  // checks if the first day of the array is today. If is today, removes from the array of hours, the hours that are past (to no offer a new practice in the past)
 
-  if (calendar[0].day == moment().format('DD-MM-YYYY')) {
-    const now = moment().format('HH:mm')
-    const timeNow = moment(now, "HH:mm"); // parse string to moment hour
-    let hoursToSave = []
+  // checks if the first day of the array is today. If is today, removes from the array of hours, the hours that are past (to no offer a new practice in the past)
+ const checkPastTime = (calendar) => {
+  if (calendar.length && calendar[0].day == moment().format('DD-MM-YYYY')) {
+    const timeNow = moment().format('HH:mm')
+    let timePending = []
 
     calendar[0].hours.forEach(hour => {
-      const timeSaved = moment(hour, "HH:mm") // parse string to moment hour
-      if (timeNow < timeSaved) {
-        hoursToSave.push(timeSaved)
+      const timeAvailable = moment(hour, "HH:mm") //parse string to moment hour
+
+      if (timeNow < timeAvailable) {
+        timePending.push(timeAvailable)
       }
     })
     // update today hours
-    calendar[0].hours = hoursToSave
-
+    calendar[0].hours = timePending
   }
-  console.log(calendar)
   return calendar
  }
 
@@ -100,11 +108,10 @@ export default withRouter(function({ history }) {
     const { practices } = result
     if(practices) {
       let pendingPractices = practices.filter(pract => pract.status === 'pending')
-      if(pendingPractices) {
-        pendingPractices.forEach(pract => {
-          reservations.push(pract.date)
-        })
-      }
+      pendingPractices && pendingPractices.forEach(practice => {
+        const [day, hour] = moment(practice.date).format('DD-MM-YYYY HH:mm').split(' ')
+        reservations.push({ day, hour })
+      })
     }
     return reservations
   } catch (error) {
@@ -112,16 +119,26 @@ export default withRouter(function({ history }) {
   }
  }
 
- // genera el calendario disponible, restando las reservas pendientes
- const getAvailableCalendar = (calendar, id) => {
-  let reservations = retrieveReservations(id)
-  reservations.forEach(reservation => calendar.filter(date => {
-/*    moment(reservation).format('DD-MM-YYYY') !== date.date */
-  }))
-  calendar.forEach(date => {
 
-  })
+ // genera el calendario disponible, restando las reservas pendientes y eliminando los días que no tienen horas disponibles
+  const getAvailableCalendar = (calendar, reservations) => {
+    reservations && reservations.forEach(reservation =>
+      calendar.forEach(date => {
+        if(reservation.day === date.day) {
+          let index = date.hours.indexOf(reservation.hour)
+          index >= 0 && date.hours.splice(index, 1)
+        } // ojo con splice, probar bien
+    }
+  ))
+  // clean empty days
+  let availableCalendar = calendar.filter(day => day.hours.length > 0)
+  return availableCalendar
  }
+
+  const selectData = (event) => {
+    const indexDate = event.target.value
+    setIndexDate(indexDate)
+  }
 
   return <>
     <div className='title'>
@@ -135,33 +152,23 @@ export default withRouter(function({ history }) {
         <p>Every practice costs 1 credit.</p>
       </div>
       <form action="">
-       <select name="role" onChange={getAvailableSchedule} >
+       <select name="role" onChange={generateAvailableCalendar} >
           <option value="" >-- instructor --</option>
          { instructors && instructors.map((instructor, i) =>
-            <Option key={i} id={instructor._id} instructor={instructor} />)
+            <OptionsInstructors key={i} id={instructor._id} instructor={instructor} />)
+         }
+        </select>
+       <select name="date" onChange={selectData} >
+          <option value="">-- date --</option>
+         { calendar && calendar.map((elem, i) =>
+            <OptionsDate key={i} index={i} day={elem.day} />)
          }
         </select>
        <select name="date">
-          <option value="">-- date --</option>
-          <option value="date1">25/11/2019</option>
-          <option value="date2">26/11/2019</option>
-          <option value="date3">27/11/2019</option>
-          <option value="date1">28/11/2019</option>
-          <option value="date2">29/11/2019</option>
-          <option value="date3">30/11/2019</option>
-          <option value="date1">31/11/2019</option>
-          <option value="date2">01/12/2019</option>
-          <option value="date3">02/12/2019</option>
-        </select>
-       <select name="date">
           <option value="">-- time --</option>
-          <option value="">17:00</option>
-          <option value="">18:00</option>
-          <option value="">19:00</option>
-          <option value="">20:00</option>
-          <option value="">21:00</option>
-          <option value="">22:00</option>
-          <option value="">23:00</option>
+         { indexDate && calendar[indexDate].hours.map((hour, i) =>
+            <OptionsTime key={i} hour={hour} />)
+         }
         </select>
         <button>Confirm</button>
       </form>

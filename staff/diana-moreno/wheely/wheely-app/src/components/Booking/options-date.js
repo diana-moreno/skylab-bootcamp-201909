@@ -6,10 +6,9 @@ import Context from '../CreateContext'
 import { listUsers } from '../../logic'
 
 
-export default function ({ instructor, id  }) {
-  const { name, surname} = instructor
+export default function ({ index, day }) {
   return <>
-      <option value={id}>{name} {surname}</option>
+    <option value={index}>{day}</option>
   </>
 }
 
