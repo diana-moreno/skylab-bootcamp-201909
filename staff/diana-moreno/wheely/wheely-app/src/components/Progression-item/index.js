@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './index.sass'
 const moment = require('moment')
 
-export default function ({ practice }) {
+export default function ({ practice, i }) {
   let { date, feedback, valoration } = practice
   date = moment(date).format('DD-MM-YYYY')
 
@@ -17,7 +17,7 @@ export default function ({ practice }) {
 
   return <>
     <li className="timeline__item">
-      <div className={`timeline__bullet timeline__bullet--${color}`}>1</div>
+      <div className={`timeline__bullet timeline__bullet--${color}`}>{i}</div>
       <div className="timeline__date">{date}</div>
       <div className="timeline__feedback">
         <p>{feedback}</p>

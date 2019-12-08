@@ -35,11 +35,9 @@ export default function ({ id, user, onBack }) {
       <ul className='timeline__list'>
         { practices && practices.filter(pract => {
           return pract.status === 'done'
-        }).map(practice =>
-          <ProgressionItem practice={practice} /> )
+        }).map((practice, i) =>
+          <ProgressionItem practice={practice} key={i} i={i + 1} /> )
         }
-{/*        <ProgressionItem />
-        <ProgressionItem />*/}
       </ul>
     </section>
   </>
