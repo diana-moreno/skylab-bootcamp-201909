@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import './index.sass'
 import NavigationLinksInstructor from './NavigationLinksInstructor'
 import NavigationLinksStudent from './NavigationLinksStudent'
@@ -8,7 +8,6 @@ import { Link, withRouter } from 'react-router-dom'
 import { retrieveOtherUser } from '../../logic'
 
 export default withRouter(function({ id, history }) {
-  const { roleOwner } = useContext(Context)
   const [role, setRole] = useState()
   const [notification, setNotification] = useState(null)
 
@@ -25,21 +24,19 @@ export default withRouter(function({ id, history }) {
     })()
   }, [])
 
-  return (
-    <>
-      <div className='title'>
-        <i onClick={() => history.goBack()} className="material-icons">undo</i>
-        <h3 className='title'>Your account</h3>
-      </div>
-      <section className='account'>
-        <Link to={`/profile/${id}`}>
-          <i className="material-icons detail-user__icon">create</i>
-          <p>Profile</p>
-        </Link>
-        { role === 'student' && <NavigationLinksStudent id={id} /> }
-        { role === 'instructor' && <NavigationLinksInstructor id={id} /> }
-      </section>
-      {notification && <Feedback {...notification} />}
-    </>
-  )
+  return <>
+    <div className='title'>
+      <i onClick={() => history.goBack()} className="material-icons">undo</i>
+      <h3 className='title'>Your account</h3>
+    </div>
+    <section className='account'>
+      <Link to={`/profile/${id}`}>
+        <i className="material-icons detail-user__icon">create</i>
+        <p>Profile</p>
+      </Link>
+      { role === 'student' && <NavigationLinksStudent id={id} /> }
+      { role === 'instructor' && <NavigationLinksInstructor id={id} /> }
+    </section>
+    {notification && <Feedback {...notification} />}
+  </>
 })

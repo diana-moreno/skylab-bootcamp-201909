@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './index.sass'
 import { withRouter } from 'react-router-dom'
-import Context from '../CreateContext'
 import { listUsers, retrieveOtherUser, listPractices, createPractice } from '../../logic'
 import OptionsInstructors from './options-instructors.js'
 import OptionsDate from './options-date.js'
@@ -19,21 +18,18 @@ export default withRouter(function({ history }) {
   const { token } = sessionStorage
 
   useEffect(() => {
-    handleInstructors()
+    (async () => {
+      try {
+        // recoge todos los profesores
+        setNotification(null)
+        let result = await listUsers(token)
+        const { users } = result
+        setInstructors(users)
+      } catch ({ message }) {
+        setNotification({ error: true, message })
+      }
+    })()
   }, [])
-
-
-  // recoge todos los profesores
-  const handleInstructors = async () => {
-    try {
-      setNotification(null)
-      let result = await listUsers(token)
-      const { users } = result
-      setInstructors(users)
-    } catch ({ message }) {
-      setNotification({ error: true, message })
-    }
-  }
 
 
   const generateAvailableCalendar = async (event) => {
@@ -84,7 +80,7 @@ export default withRouter(function({ history }) {
   // checks if the first day of the array is today. If is today, removes from the array of hours, the hours that are past (to no offer a new practice in the past)
   const checkPastTime = (calendar) => {
 
-    if (calendar.length && calendar[0].day == moment().format('DD-MM-YYYY')) {
+    if (calendar.length && calendar[0].day === moment().format('DD-MM-YYYY')) {
       let timeNow = moment().format('HH:mm')
       timeNow = moment(timeNow, 'HH:mm') //parse string to moment hour
       let timePending = []
@@ -156,7 +152,7 @@ export default withRouter(function({ history }) {
 
   const handleReservatePractice = async (instructorId, dateTime) => {
     try {
-      const response = await createPractice(token, instructorId, dateTime)
+      await createPractice(token, instructorId, dateTime)
     } catch ({ message }) {
       setNotification({ error: true, message })
     }

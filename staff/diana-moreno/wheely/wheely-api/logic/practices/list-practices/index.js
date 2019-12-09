@@ -24,6 +24,23 @@ module.exports = function(userId, query) {
       throw new NotFoundError(`user with id ${userId} not found`)
     }
 
+    let practices
+debugger
+    if(student) {
+      practices = await Practice
+        .find({ "studentId": ObjectId(userId) })
+        .populate('studentId')
+        .populate('instructorId')
+    } else if(instructor) {
+      practices = await Practice
+        .find({ "instructorId": ObjectId(userId) })
+        .populate('studentId')
+        .populate('instructorId')
+    }
+debugger
+    return practices
+
+/*
     let param
     if (instructor) {
       param = ['feedback', 'done', 'pending'].includes(query)
@@ -47,7 +64,7 @@ module.exports = function(userId, query) {
         .populate('instructorId')
         .populate('studentId')
         .lean()
-    return practices
+    return practices*/
 
 // quitar queries
 

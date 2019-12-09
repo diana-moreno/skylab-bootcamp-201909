@@ -4,6 +4,7 @@ const moment = require('moment')
 const sendEmail = require('../../../helpers/send-email')
 
 module.exports = function(instructorId, studentId, date) {
+  debugger
   // sincronous validate
   validate.string(instructorId)
   validate.string.notVoid('instructorId', instructorId)
@@ -30,7 +31,7 @@ module.exports = function(instructorId, studentId, date) {
       let instructor = await User.findOne({ _id: instructorId, role: 'instructor' })
       if (!instructor) throw new NotFoundError(`user with id ${instructorId} not found`)
 
-      // check if a practice with the same date exists
+      // check if a practice with the same instructor, date and time exists
       let existingDate = await Practice.findOne({ _id: instructorId, date: date })
       if (existingDate) throw new ConflictError(`practice with date ${date} already exists`)
 
@@ -41,20 +42,12 @@ module.exports = function(instructorId, studentId, date) {
       }
 
       //check if the instructor has this date and hour available in his schedule
-      const [, hour] = moment(date).format("YYYY-MM-DD HH:mm:ss").split(' ')
-      const hourString = moment(hour, "H:mm") // parse string to moment hour
+      const hour = moment(date).format("HH:mm")
       const indexDay = moment(date).day()
       let available = false
 
-      instructor.profile.schedule.days.forEach(day => {
-        if (day.index === indexDay) {
-          day.hours.forEach(hour => {
-            const hourSaveString = moment(hour, "H:mm")
-            if (hourSaveString.isSame(hourString)) {
-              available = true
-            }
-          })
-        }
+      instructor.profile.schedule.days[indexDay].hours.forEach(hourSch => {
+        hourSch === hour ? available = true : available
       })
 
       if (!available) {

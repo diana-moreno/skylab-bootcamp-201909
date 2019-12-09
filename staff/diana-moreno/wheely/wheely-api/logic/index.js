@@ -11,7 +11,5 @@ module.exports = {
   cancelPractice: require('./practices/cancel-practice'),
   updatePractices: require('./practices/update-practices'),
   toggleSchedule: require('./schedule/toggle-schedule'),
+  retrievePractice: require('./practices/retrieve-practice')
 }
-
-/*  retrieveSchedule: require('./schedule/retrieve-schedule')*/
-/*  retrieveProgression: require('./users/retrieve-progression'),*/

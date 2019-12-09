@@ -29,17 +29,18 @@ module.exports = function(instructorId, studentId, practiceId) {
     let practice = await Practice.findOne({ _id: practiceId, studentId: studentId, instructorId: instructorId })
     if (!practice) throw new NotFoundError(`practice with id ${practiceId} not found`)
 
-    // check if the practice is pending (otherside is not possible to cancel)
-    if (practice.status !== 'pending') {
-      throw new ConflictError(`practice with id ${practiceId} is not possible to cancel`)
-    }
-
     // check if remain at least 24h to allow cancel the practice
     if(moment(new Date()).add(1,'days') > moment(practice.date)) {
       throw new ConflictError(`practice with id ${practiceId} is not possible to cancel`)
     }
 
+    // update student profile with a credit more
+    student.profile.credits = student.profile.credits + practice.price
+      await User.updateOne({ _id: studentId }, { $set: { 'profile.credits': student.profile.credits } }, { multi: true })
+
     //delete practice from practices collection
     await Practice.deleteOne({ _id: ObjectId(practiceId) })
   })()
 }
+
+    // falta enviar email!!

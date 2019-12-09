@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './index.sass'
 import Feedback from '../Feedback'
-import { retrievePractice, retrieveUser, cancelPractice, writeFeedback } from '../../logic'
+import { retrievePractice, writeFeedback } from '../../logic'
 const moment = require('moment')
 
 export default function ({ id, onBack }) {

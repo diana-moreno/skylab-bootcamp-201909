@@ -6,13 +6,11 @@ import { updateSchedule, retrieveOtherUser } from '../../logic'
 import Context from '../CreateContext'
 
 export default function({ id, onBack }) {
-  const hoursList = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00']
-  const daysList = [0,1,2,3,4,5,6]
+  const hours = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00']
+  const days = [0,1,2,3,4,5,6]
   const { token } = sessionStorage
   const { roleOwner } = useContext(Context)
   const [name, setName] = useState()
-  const [days, setDays] = useState(daysList)
-  const [hours, setHour] = useState(hoursList)
   const [availableSchedule, setAvailableSchedule] = useState(null)
   const [notification, setNotification] = useState(null)
 

@@ -20,7 +20,6 @@ import Navbar from '../Navbar'
 import ReservationDetail from '../Reservation-detail'
 
 export default withRouter(function({ history }) {
-/*  const [user, setUser] = useState()*/
   const [nameSurname, setNameSurname] = useState()
   const [myId, setMyId] = useState()
   const [roleOwner, setRoleOwner] = useState(undefined)
@@ -28,19 +27,19 @@ export default withRouter(function({ history }) {
 
   const { token } = sessionStorage
 
-// paso por contexto el nombre, el rol del propietario y sus respectivo seteadores. En el useEffect general de App, le digo que cuando cambie el roleOwner, se actualice, recogiendo al usuario y guardándolo en el state. A partir de ahora, tengo acceso a mi usuario desde cualquier punto de la aplicación, pasando el state por props.
-
 // when the page is reloaded, retrieve the user and save it into the state
   useEffect(() => {
     (async () => {
       try {
         if(token) {
-          const user = await retrieveUser(token)
-          const nameSurname = user.user.name.concat(' ').concat(user.user.surname)// cambiar user.user
-          setMyId(user.user.id) // to retrieve my profile
-          setRoleOwner(user.user.role)
+          const result = await retrieveUser(token)
+
+          const { user: {id, name, surname, role, profile: { credits }}} = result
+          const nameSurname = name.concat(' ').concat(surname)
+          setMyId(id) // to retrieve my profile
+          setRoleOwner(role)
           setNameSurname(nameSurname)
-          setCredits(user.user.profile.credits)
+          setCredits(credits)
         }
       }catch (error) {
         console.log(error)
@@ -86,7 +85,6 @@ export default withRouter(function({ history }) {
         ? <Account id={id} onBack={handleGoBack}  />
         : <Home /> } /> }
 
-      { /* account/id/users desde admin */ }
       {
         token && roleOwner === 'admin'
           ? (<Route
@@ -97,9 +95,6 @@ export default withRouter(function({ history }) {
             />)
           : ''
       }
-
-{/*      { !token && <Route path='/account/:id' render={({ match: { params: { id }}}) => <Login /> } /> }*/}
-
 
       { /* Profile */ }
       { token && roleOwner === 'student' && <Route path='/profile/:id' render={({ match: { params: { id }}}) => token && id === myId
@@ -141,42 +136,8 @@ export default withRouter(function({ history }) {
         ? <ReservationDetail id={id} onBack={handleGoBack} />
         : '' } /> }
 
-
     </Context.Provider>
   </>
 })
-
-
-{/*      <Route path = '/valoration/' render={() =>
-        token ? <Valoration onBack={handleGoBack}  /> : <Redirect to="/" /> }/>
-*/}
-
-{/*      <Route path = '/profile' render={() =>
-        !token && !user ? <Redirect to="/" /> : <Profile onRetrieveUser={handleRetrieveUser} user={user} /> }/>
-*/}
-
-  {
-    /*
-    <Route path = '/account' render={() => <Account /> }/>
-
-
-
-    <Route path = '/student-account' render={() => <StudentAccount /> }/>
-           <Route path='/detail-instructor' render={() => <AdminDetailStudent />} />
-           <Route path='/detail-instructor' render={() => <AdminNewUser />} />
-           */
-  }
-
-
-  {
-    /*
-           {/* <Route exact path="/" render={() => token ? <Redirect to="/login" /> : <Landing onRegister={handleGoToRegister} onLogin={handleGoToLogin} />} />
-            <Route path="/register" render={() => token ? <Redirect to="/board" /> : <Register onRegister={handleRegister} onBack={handleGoBack} />} />
-            <Route path="/login" render={() => token ? <Redirect to="/board" /> : <Login onLogin={handleLogin} onBack={handleGoBack} />} />
-            <Route path="/board" render={() => token ? <Board user={name} tasks={tasks} onLogout={handleLogout} onChangeTaskStatus={handleChangeTaskStatus} onNewTask={handleNewTask} /> : <Redirect to="/" />} />
-             <Route path="/hello/:name" render={props => <Hello name={props.match.params.name} />} />
-            <Route path="/hello/:name" render={({ match: { params: { name } } }) => <Hello name={name} />} />*/
-  }
-
 
 
