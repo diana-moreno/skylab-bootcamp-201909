@@ -8,6 +8,7 @@ module.exports = {
     updateSchedule: require('./update-schedule'),
     deleteUser: require('./delete-user'),
     editUser: require('./edit-user'),
-    createPractice: require('./create-practice')
-  /*  generateCalendar: require('./generateCalendar')*/
+    createPractice: require('./create-practice'),
+    retrievePractice: require('./retrieve-practice'),
+    cancelPractice: require('./cancel-practice')
 }

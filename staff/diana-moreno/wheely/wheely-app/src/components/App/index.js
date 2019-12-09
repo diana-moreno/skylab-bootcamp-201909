@@ -17,6 +17,7 @@ import Valoration from '../Valoration'
 import Account from '../Account' // double
 import Profile from '../Profile'
 import Navbar from '../Navbar'
+import ReservationDetail from '../Reservation-detail'
 
 export default withRouter(function({ history }) {
 /*  const [user, setUser] = useState()*/
@@ -135,6 +136,10 @@ export default withRouter(function({ history }) {
 
       { roleOwner && <Route path='/reservations/:id' render={({ match: { params: { id }}}) => token && id
         ? <Reservations id={id} onBack={handleGoBack} />
+        : '' } /> }
+
+      { roleOwner && <Route path='/reservation-detail/:id' render={({ match: { params: { id }}}) => token && id
+        ? <ReservationDetail id={id} onBack={handleGoBack} />
         : '' } /> }
 
 

@@ -1,15 +1,23 @@
-import React from 'react'
+import { Route, withRouter, Redirect } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
 import './index.sass'
 const moment = require('moment')
 
-export default function ({ practice, role }) {
-  const { instructorId: { name: nameInstructor, surname: surnameInstructor }, studentId: { name: nameStudent, surname: surnameStudent }, date } = practice
+export default withRouter(function({ history, practice, role }) {
+  const { instructorId: { name: nameInstructor, surname: surnameInstructor }, studentId: { name: nameStudent, surname: surnameStudent }, _id, date } = practice
   const [day, hour] = moment(date).format('DD-MM-YYYY HH:mm').split(' ')
   let status
   moment(date).isBefore(moment()) ? status = 'finished' : status = 'pending'
 
+  const handleDetail = () => {
+    if(status === 'pending') {
+      history.push(`/reservation-detail/${_id}`)
+      console.log('detalle')
+    }
+  }
+
   return <>
-    <li className={`reservation reservation--${status}`}>
+    <li className={`reservation reservation--${status}`} onClick={handleDetail} >
       <div className='reservation__icon'>
         {status === 'pending' && <i className="material-icons">hourglass_empty</i>}
       </div>
@@ -23,4 +31,4 @@ export default function ({ practice, role }) {
       </div>
     </li>
   </>
-}
+})

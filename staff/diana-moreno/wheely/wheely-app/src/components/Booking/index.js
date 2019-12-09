@@ -82,7 +82,7 @@ export default withRouter(function({ history }) {
 
   // checks if the first day of the array is today. If is today, removes from the array of hours, the hours that are past (to no offer a new practice in the past)
  const checkPastTime = (calendar) => {
-  debugger
+
   if (calendar.length && calendar[0].day == moment().format('DD-MM-YYYY')) {
     let timeNow = moment().format('HH:mm')
     timeNow = moment(timeNow, 'HH:mm') //parse string to moment hour
@@ -95,7 +95,7 @@ export default withRouter(function({ history }) {
         timePending.push(moment(timeAvailable).format('HH:mm'))
       }
     })
-    debugger
+
     // update today hours
     calendar[0].hours = timePending
   }
@@ -146,7 +146,7 @@ export default withRouter(function({ history }) {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    debugger
+
     let { instructor: {value: instructorId}, day: { value: indexDay }, hour: { value: hour } } = event.target
     let day = calendar[indexDay].day
     let dateTime = moment(`${day} ${hour}`, "DD-MM-YYYY HH:mm")

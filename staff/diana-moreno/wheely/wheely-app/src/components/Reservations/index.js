@@ -32,7 +32,6 @@ export default function({ id, onBack }) {
     })()
   }, [])
 
-
   return < >
     <div className='title'>
       <i onClick={onBack} className="material-icons">undo</i>
