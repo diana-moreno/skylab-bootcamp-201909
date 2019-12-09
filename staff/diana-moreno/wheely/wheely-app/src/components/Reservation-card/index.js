@@ -6,16 +6,31 @@ const moment = require('moment')
 
 export default withRouter(function({ history, practice, role }) {
   const { roleOwner } = useContext(Context)
-  const { instructorId: { name: nameInstructor, surname: surnameInstructor }, studentId: { name: nameStudent, surname: surnameStudent }, _id, date } = practice
+  const { instructorId: { name: nameInstructor, surname: surnameInstructor }, studentId: { name: nameStudent, surname: surnameStudent }, _id, date, feedback } = practice
   const [day, hour] = moment(date).format('DD-MM-YYYY HH:mm').split(' ')
   let status
-  moment(date).isBefore(moment()) ? status = 'finished' : status = 'pending'
 
+/*  if(moment(date).isBefore(moment()) && !feedback) {
+    status = 'feedback'
+  } else if(moment(date).isBefore(moment()) && feedback) {
+    status = 'finished'
+  } else if(moment(date).isAfter(moment())) {
+    status = 'pending'
+  }
+*/
+  if(moment(date).isBefore(moment()) && feedback) {
+    status = 'finished'
+  } else if(moment(date).isBefore(moment()) && !feedback) {
+    status = 'feedback'
+  } else if(moment(date).isAfter(moment())) {
+    status = 'pending'
+  }
+/*  moment(date).isBefore(moment()) ? status = 'finished' : status = 'pending'*/
 
   const handleDetail = () => {
     if(roleOwner === 'student' && status === 'pending') {
       history.push(`/reservation-detail/${_id}`)
-    } else if(roleOwner === 'instructor' && status === 'pending') {
+    } else if(roleOwner === 'instructor' && status === 'feedback') {
       history.push(`/valoration/${_id}`)
     }
   }
@@ -24,6 +39,7 @@ export default withRouter(function({ history, practice, role }) {
     <li className={`reservation reservation--${status}`} onClick={handleDetail} >
       <div className='reservation__icon'>
         {status === 'pending' && <i className="material-icons">hourglass_empty</i>}
+        {status === 'feedback' && <i className="material-icons">create</i>}
       </div>
       <div className='reservation__detail'>
         <p><b>Date: </b>{day}</p>
