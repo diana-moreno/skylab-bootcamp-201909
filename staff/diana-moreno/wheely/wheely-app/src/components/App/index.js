@@ -46,7 +46,7 @@ export default withRouter(function({ history }) {
         console.log(error)
       }
     })()
-  }, [roleOwner])
+  })
 
 
   const handleGoBack = (event) => {
@@ -112,12 +112,13 @@ export default withRouter(function({ history }) {
         : <Home /> } /> }
 
 
-      {roleOwner && <Route path = '/users' render={() => <UsersList onBack={handleGoBack} /> }/> }
+      {(roleOwner === 'admin' || roleOwner === 'instructor') && <Route path = '/users' render={() => <UsersList onBack={handleGoBack} /> }/> }
       {token && <Route path = '/booking' render={() =>
         token ? <Booking onBack={handleGoBack}  /> : '' }/>}
 
+
       {token && roleOwner === 'student' && <Route path = '/credits' render={() =>
-        token ?<Credits onBack={handleGoBack} credits={credits} /> : '' }/>}
+        token ? <Credits onBack={handleGoBack} credits={credits} /> : '' }/>}
 
 {/*      <Route path = '/progression' render={() =>
         token ? <Progression onBack={handleGoBack} user={user} /> : <Redirect to="/" /> }/>
@@ -131,14 +132,18 @@ export default withRouter(function({ history }) {
         ? <Schedule roleOwner={roleOwner} id={id} onBack={handleGoBack}  />
         : <Home /> } /> }
 
-      <Route path = '/valoration' render={() =>
+      { token && roleOwner === 'instructor' && <Route path='/valoration/:id' render={({ match: { params: { id }}}) => token
+        ? <Valoration id={id} onBack={handleGoBack}  />
+        : <Home /> } /> }
+
+      <Route path = '/valoration/' render={() =>
         token ? <Valoration onBack={handleGoBack}  /> : <Redirect to="/" /> }/>
 
       { roleOwner && <Route path='/reservations/:id' render={({ match: { params: { id }}}) => token && id
         ? <Reservations id={id} onBack={handleGoBack} />
         : '' } /> }
 
-      { roleOwner && <Route path='/reservation-detail/:id' render={({ match: { params: { id }}}) => token && id
+      { (roleOwner === 'instructor' || roleOwner === 'student') && <Route path='/reservation-detail/:id' render={({ match: { params: { id }}}) => token && id
         ? <ReservationDetail id={id} onBack={handleGoBack} />
         : '' } /> }
 

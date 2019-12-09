@@ -49,8 +49,6 @@ export default function({ id, onBack }) {
       <h3>{name}'s Schedule</h3>
     </div>
     <section className='schedule'>
-{/*      <p>{name}'s schedule</p>*/}
- {/*     <p><b>{name}</b></p>*/}
       <div className='schedule__timetable'>
         <div className="schedule__week-names">
           { ['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(d => <p>{d}</p>) }

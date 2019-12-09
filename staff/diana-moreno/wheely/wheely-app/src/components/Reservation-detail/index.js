@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import './index.sass'
 import Navbar from '../Navbar'
 import { retrievePractice, retrieveUser, cancelPractice} from '../../logic'
@@ -25,7 +25,7 @@ export default function ({ id, onBack }) {
         setRole(role)
 
         const result = await retrievePractice(token, id)
-        const { instructorId: { name: nameInstructor, surname: surnameInstructor, _id: instructorId }, studentId: { name: nameStudent, surname: surnameStudent }, date , _id} = result.practice
+        const { instructorId: { name: nameInstructor, surname: surnameInstructor, _id: instructorId }, date , _id} = result.practice
         let [day, time] = moment(date).format('DD-MM-YYYY HH:mm').split(' ')
 
         setNameInstructor(nameInstructor)
@@ -44,36 +44,28 @@ export default function ({ id, onBack }) {
 
   const handleCancel = async () => {
     try {
-      debugger
-
       await cancelPractice(token, instructorId, practiceId)
     } catch (error) {
       console.log(error)
     }
   }
 
-
   return <>
     <div className='title'>
       <i onClick={onBack} className="material-icons">undo</i>
       <h3>Reservation detail</h3>
     </div>
-    <section className='credits'>
-      <div className='reservation__detail'>
+    <section className='reservation-detail'>
+      <div>
         <p>Those are your reservation details: </p>
         <p><b>Date: </b>{day}</p>
         <p><b>Time: </b>{time}</p>
-        {role === 'student'
-          ? <p><b>Instructor: </b>{nameInstructor} {surnameInstructor}</p>
-          : <p><b>Student: </b>{nameStudent} {surnameStudent}</p>
-        }
-        {role === 'student' &&
-        <div>
-          <p>Do you want to cancel the practice?</p>
-          <p>Keep in mind that you can cancel it notifying with 24h of advance. In this case, your credit will be returned.</p>
-          <button onClick={handleCancel} >Cancel</button>
-        </div>}
+        <p><b>Place: </b>In your driving school</p>
+        <p><b>Instructor: </b>{nameInstructor} {surnameInstructor}</p>
+        <p>Do you want to cancel the practice?</p>
+        <p>Keep in mind that you can cancel it notifying with 24h of advance. In this case, your credit will be returned.</p>
       </div>
+        <button class='reservation-detail__button'onClick={handleCancel} >Cancel</button>
     </section>
   </>
 }

@@ -1,18 +1,22 @@
 import { Route, withRouter, Redirect } from 'react-router-dom'
-import React, { useState, useEffect } from 'react';
+import Context from '../CreateContext'
+import React, { useState, useEffect, useContext } from 'react';
 import './index.sass'
 const moment = require('moment')
 
 export default withRouter(function({ history, practice, role }) {
+  const { roleOwner } = useContext(Context)
   const { instructorId: { name: nameInstructor, surname: surnameInstructor }, studentId: { name: nameStudent, surname: surnameStudent }, _id, date } = practice
   const [day, hour] = moment(date).format('DD-MM-YYYY HH:mm').split(' ')
   let status
   moment(date).isBefore(moment()) ? status = 'finished' : status = 'pending'
 
+
   const handleDetail = () => {
-    if(status === 'pending') {
+    if(roleOwner === 'student' && status === 'pending') {
       history.push(`/reservation-detail/${_id}`)
-      console.log('detalle')
+    } else if(roleOwner === 'instructor' && status === 'pending') {
+      history.push(`/valoration/${_id}`)
     }
   }
 

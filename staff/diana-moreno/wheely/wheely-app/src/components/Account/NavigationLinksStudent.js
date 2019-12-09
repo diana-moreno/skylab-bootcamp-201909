@@ -10,7 +10,7 @@ const NavigationLinksStudent = ({ id }) => {
       <i className="material-icons detail-user__icon detail-user__icon--blue">search</i>
       <p>Reservations</p>
     </Link>
-    {roleOwner === 'student' && <Link to="/credits">
+    {roleOwner === 'student' && <Link to={`/credits/${id}`}>
       <i className="material-icons detail-user__icon detail-user__icon--blue">search</i>
       <p>Credits</p>
     </Link>}
@@ -21,3 +21,5 @@ const NavigationLinksStudent = ({ id }) => {
   </Fragment>
 }
 export default NavigationLinksStudent
+
+// es correcto que todo dependa de id??
