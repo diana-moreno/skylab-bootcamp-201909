@@ -21,7 +21,6 @@ export default withRouter(function({ history }) {
     (async () => {
       try {
         // recoge todos los profesores
-        setNotification(null)
         let result = await listUsers(token)
         const { users } = result
         setInstructors(users)
@@ -34,6 +33,7 @@ export default withRouter(function({ history }) {
 
   const generateAvailableCalendar = async (event) => {
     // prepare empty calendar
+  /*  setNotification(null)*/
     setCalendar([])
     setIndexDay(undefined)
 
@@ -126,7 +126,7 @@ export default withRouter(function({ history }) {
         if(reservation.day === date.day) {
           let index = date.hours.indexOf(reservation.hour)
           index >= 0 && date.hours.splice(index, 1)
-        } // ojo con splice, probar bien
+        }
     }
   ))
   // clean empty days
@@ -146,13 +146,13 @@ export default withRouter(function({ history }) {
     let { instructor: {value: instructorId}, day: { value: indexDay }, hour: { value: hour } } = event.target
     let day = calendar[indexDay].day
     let dateTime = moment(`${day} ${hour}`, "DD-MM-YYYY HH:mm")
-    console.log(instructorId, day, hour)
     handleReservatePractice(instructorId, dateTime)
   }
 
   const handleReservatePractice = async (instructorId, dateTime) => {
     try {
       await createPractice(token, instructorId, dateTime)
+      setNotification({ error: false, message: 'You have successfully booked!' })
     } catch ({ message }) {
       setNotification({ error: true, message })
     }

@@ -24,7 +24,7 @@ module.exports = function(token, instructorId, dateTime) {
       body: JSON.stringify({ instructorId, dateTime })
     })
 
-    if (res.status === 201) return JSON.parse(res.body).id
+    if (res.status === 200) return JSON.parse(res.body).id
 
     if (res.status === 401) throw new CredentialsError(JSON.parse(res.body).message)
 
