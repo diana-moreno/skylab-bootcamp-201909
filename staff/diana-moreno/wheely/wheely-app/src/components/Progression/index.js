@@ -3,14 +3,15 @@ import Navbar from '../Navbar'
 import ProgressionItem from '../Progression-item'
 import { retrieveUser, listPractices } from '../../logic'
 import React, { useState, useEffect } from 'react';
+import Feedback from '../Feedback'
+const moment = require('moment')
 
 export default function ({ id, user, onBack }) {
   const [practices, setPractices] = useState(undefined)
-  const [verification, setVerification] = useState(true)
+  const [notification, setNotification] = useState(null)
   const { token } = sessionStorage
 
   useEffect(() => {
-    debugger
     (async () => {
       try {
         if(token) {
@@ -21,8 +22,8 @@ export default function ({ id, user, onBack }) {
             practices.length === 0 ? setPractices(undefined) : setPractices(practices)
           }
         }
-      }catch (error) {
-        console.log(error)
+      } catch ({ message }) {
+        setNotification({ error: true, message })
       }
     })()
   }, [])
@@ -37,10 +38,13 @@ export default function ({ id, user, onBack }) {
         { practices && practices.filter(pract => {
 /*          return pract.status === 'done'*/
           return pract.valoration
-        }).map((practice, i) =>
+        })
+        .sort((a, b) =>  moment(a.date).diff(moment(b.date)))
+        .map((practice, i) =>
           <ProgressionItem practice={practice} key={i} i={i + 1} /> )
         }
       </ul>
+      {notification && <Feedback {...notification} />}
     </section>
   </>
 }

@@ -7,14 +7,15 @@ import { listUsers, retrieveOtherUser, listPractices, createPractice } from '../
 import OptionsInstructors from './options-instructors.js'
 import OptionsDate from './options-date.js'
 import OptionsTime from './options-time.js'
+import Feedback from '../Feedback'
+
 const moment = require('moment')
 
 export default withRouter(function({ history }) {
   const [instructors, setInstructors] = useState()
-/*  const [schedule, setSchedule] = useState()*/
-/*  const [instructorId, setInstructorId] = useState()*/
   const [calendar, setCalendar] = useState()
   const [indexDay, setIndexDay] = useState()
+  const [notification, setNotification] = useState(null)
 
   const { token } = sessionStorage
 
@@ -26,11 +27,12 @@ export default withRouter(function({ history }) {
   // recoge todos los profesores
   const handleInstructors = async () => {
     try {
+      setNotification(null)
       let result = await listUsers(token)
       const { users } = result
       setInstructors(users)
-    } catch (error) {
-      console.log(error)
+    } catch ({ message }) {
+      setNotification({ error: true, message })
     }
   }
 
@@ -55,8 +57,8 @@ export default withRouter(function({ history }) {
       let result = await retrieveOtherUser(token, id)
       const { user: { profile: { schedule: { days }}} } = result
       return days
-    } catch (error) {
-      console.log(error)
+    } catch ({ message }) {
+      setNotification({ error: true, message })
     }
   }
 
@@ -81,46 +83,45 @@ export default withRouter(function({ history }) {
 
 
   // checks if the first day of the array is today. If is today, removes from the array of hours, the hours that are past (to no offer a new practice in the past)
- const checkPastTime = (calendar) => {
+  const checkPastTime = (calendar) => {
 
-  if (calendar.length && calendar[0].day == moment().format('DD-MM-YYYY')) {
-    let timeNow = moment().format('HH:mm')
-    timeNow = moment(timeNow, 'HH:mm') //parse string to moment hour
-    let timePending = []
+    if (calendar.length && calendar[0].day == moment().format('DD-MM-YYYY')) {
+      let timeNow = moment().format('HH:mm')
+      timeNow = moment(timeNow, 'HH:mm') //parse string to moment hour
+      let timePending = []
 
-    calendar[0].hours.forEach(hour => {
-      const timeAvailable = moment(hour, "HH:mm") //parse string to moment hour
+      calendar[0].hours.forEach(hour => {
+        const timeAvailable = moment(hour, "HH:mm") //parse string to moment hour
 
-      if (timeNow < timeAvailable) {
-        timePending.push(moment(timeAvailable).format('HH:mm'))
-      }
-    })
-
-    // update today hours
-    calendar[0].hours = timePending
+        if (timeNow < timeAvailable) {
+          timePending.push(moment(timeAvailable).format('HH:mm'))
+        }
+      })
+      // update today hours
+      calendar[0].hours = timePending
+    }
+    return calendar
   }
-  return calendar
- }
 
 
 // recoge las reservas pendientes del profesor
- const retrieveReservations = async (id) => {
-  let reservations = []
-  try {
-    let result = await listPractices(token, id)
-    const { practices } = result
-    if(practices) {
-      let pendingPractices = practices.filter(pract => pract.status === 'pending')
-      pendingPractices && pendingPractices.forEach(practice => {
-        const [day, hour] = moment(practice.date).format('DD-MM-YYYY HH:mm').split(' ')
-        reservations.push({ day, hour })
-      })
+  const retrieveReservations = async (id) => {
+    let reservations = []
+    try {
+      let result = await listPractices(token, id)
+      const { practices } = result
+      if(practices) {
+        let pendingPractices = practices.filter(pract => pract.status === 'pending')
+        pendingPractices && pendingPractices.forEach(practice => {
+          const [day, hour] = moment(practice.date).format('DD-MM-YYYY HH:mm').split(' ')
+          reservations.push({ day, hour })
+        })
+      }
+      return reservations
+    } catch ({ message }) {
+      setNotification({ error: true, message })
     }
-    return reservations
-  } catch (error) {
-    console.log(error)
   }
- }
 
 
  // genera el calendario disponible, restando las reservas pendientes y eliminando los días que no tienen horas disponibles
@@ -157,8 +158,8 @@ export default withRouter(function({ history }) {
   const handleReservatePractice = async (instructorId, dateTime) => {
     try {
       const response = await createPractice(token, instructorId, dateTime)
-    } catch ({message}) {
-   /*   setFeedback({ error: message })*/
+    } catch ({ message }) {
+      setNotification({ error: true, message })
     }
   }
 
@@ -194,6 +195,7 @@ export default withRouter(function({ history }) {
         </select>
         <button>Confirm</button>
       </form>
+      {notification && <Feedback {...notification} />}
     </section>
   </>
 })

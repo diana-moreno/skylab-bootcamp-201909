@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './index.sass'
-import Navbar from '../Navbar'
+import Feedback from '../Feedback'
 import ReservationCard from '../Reservation-card'
 import { retrieveUser, listPractices, retrieveOtherUser } from '../../logic'
 /*import SearchOptions from '../Search-options'*/
@@ -9,25 +9,24 @@ const moment = require('moment')
 export default function({ id, onBack }) {
   const [practices, setPractices] = useState(undefined)
   const [role, setRole] = useState()
+  const [notification, setNotification] = useState(null)
   const { token } = sessionStorage
 
   useEffect(() => {
     (async () => {
       try {
-        if (token) {
-          const user = await retrieveOtherUser(token, id)
-          const { user: { role } } = user
-          setRole(role)
-          const result = await listPractices(token, id)
-          const { practices } = result
-          setPractices(practices)
+        const user = await retrieveOtherUser(token, id)
+        const { user: { role } } = user
+        setRole(role)
+        const result = await listPractices(token, id)
+        const { practices } = result
+        setPractices(practices)
 
-          if (practices) {
-            practices.length === 0 ? setPractices(undefined) : setPractices(practices)
-          }
+        if (practices) {
+          practices.length === 0 ? setPractices(undefined) : setPractices(practices)
         }
-      } catch (error) {
-        console.log(error)
+      } catch ({ message }) {
+        setNotification({ error: true, message })
       }
     })()
   }, [])
@@ -53,6 +52,7 @@ export default function({ id, onBack }) {
         }
       </ul>
     </div>
+    {notification && <Feedback {...notification} />}
   </section>
   </>
 }

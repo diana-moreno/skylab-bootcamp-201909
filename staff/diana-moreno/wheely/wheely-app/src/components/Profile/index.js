@@ -21,6 +21,8 @@ export default function ({ onBack, id  }) {
   const [role, setRole] = useState()
   const [credits, setCredits] = useState()
   const [dni, setDni] = useState()
+  const [notification, setNotification] = useState(null)
+
 
   const { roleOwner } = useContext(Context)
   const { token } = sessionStorage
@@ -36,8 +38,8 @@ export default function ({ onBack, id  }) {
         setEmail(email)
         setRole(role)
         setCredits(credits)
-      }catch (error) {
-        console.log(error)
+      } catch ({ message }) {
+        setNotification({ error: true, message })
       }
     })()
   }, [])
@@ -64,13 +66,14 @@ export default function ({ onBack, id  }) {
     setEmailEdit(false)
     setCreditsEdit(false)
     setDniEdit(false)
+    setNotification(null)
   }
 
   const handleDeleteUser = async () => {
     try {
       await deleteUser(token, id)
-    } catch (error) {
-        console.log(error)
+    } catch ({ message }) {
+      setNotification({ error: true, message })
     }
   }
 
@@ -82,8 +85,10 @@ export default function ({ onBack, id  }) {
   const handleEditUser = async (firstName, lastName, email, dni, credits, password) => {
     try {
       await editUser(token, id, firstName, lastName, email, dni, credits, password)
-    } catch (error) {
-        console.log(error)
+      disableEditMode()
+      setNotification({ error: false, message: 'Your changes have been saved successfully!' })
+    } catch ({ message }) {
+      setNotification({ error: true, message })
     }
   }
 
@@ -203,6 +208,7 @@ export default function ({ onBack, id  }) {
           </Fragment>
         }
 
+
         {/*cancel and submit buttons*/}
         {isEditMode &&
           <div>
@@ -211,7 +217,8 @@ export default function ({ onBack, id  }) {
           </div>
         }
       </form>
-   {/*       {this.state.isEditMode && <Feedback feedback={feedback} />}*/}
+
+      {notification && <Feedback {...notification} />}
 
       {/*delte user*/}
       {roleOwner === 'admin' && !isEditMode &&

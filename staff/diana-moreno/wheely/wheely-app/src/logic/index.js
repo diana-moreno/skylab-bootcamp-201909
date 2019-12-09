@@ -10,5 +10,6 @@ module.exports = {
     editUser: require('./edit-user'),
     createPractice: require('./create-practice'),
     retrievePractice: require('./retrieve-practice'),
-    cancelPractice: require('./cancel-practice')
+    cancelPractice: require('./cancel-practice'),
+    writeFeedback: require('./write-feedback')
 }

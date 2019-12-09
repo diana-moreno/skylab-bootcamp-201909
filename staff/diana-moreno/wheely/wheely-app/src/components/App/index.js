@@ -120,9 +120,6 @@ export default withRouter(function({ history }) {
       {token && roleOwner === 'student' && <Route path = '/credits' render={() =>
         token ? <Credits onBack={handleGoBack} credits={credits} /> : '' }/>}
 
-{/*      <Route path = '/progression' render={() =>
-        token ? <Progression onBack={handleGoBack} user={user} /> : <Redirect to="/" /> }/>
-*/}
 
      { roleOwner && <Route path='/progression/:id' render={({ match: { params: { id }}}) => token && id
         ? <Progression id={id} onBack={handleGoBack} />
@@ -135,9 +132,6 @@ export default withRouter(function({ history }) {
       { token && roleOwner === 'instructor' && <Route path='/valoration/:id' render={({ match: { params: { id }}}) => token
         ? <Valoration id={id} onBack={handleGoBack}  />
         : <Home /> } /> }
-
-      <Route path = '/valoration/' render={() =>
-        token ? <Valoration onBack={handleGoBack}  /> : <Redirect to="/" /> }/>
 
       { roleOwner && <Route path='/reservations/:id' render={({ match: { params: { id }}}) => token && id
         ? <Reservations id={id} onBack={handleGoBack} />
@@ -153,6 +147,9 @@ export default withRouter(function({ history }) {
 })
 
 
+{/*      <Route path = '/valoration/' render={() =>
+        token ? <Valoration onBack={handleGoBack}  /> : <Redirect to="/" /> }/>
+*/}
 
 {/*      <Route path = '/profile' render={() =>
         !token && !user ? <Redirect to="/" /> : <Profile onRetrieveUser={handleRetrieveUser} user={user} /> }/>

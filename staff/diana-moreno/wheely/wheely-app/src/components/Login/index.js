@@ -6,7 +6,7 @@ import { Link, withRouter, Redirect } from 'react-router-dom'
 import Context from '../CreateContext'
 
 export default withRouter(function({ error, history }) {
-
+  const [notification, setNotification] = useState(null)
   const { setRoleOwner, setNameSurname, setMyId } = useContext(Context)
 
   const handleSubmit = event => {
@@ -27,9 +27,8 @@ export default withRouter(function({ error, history }) {
       setRoleOwner(user.user.role)
       setNameSurname(nameSurname)
       history.push('/home')
-
-    } catch (error) {
-      console.error(error)
+    } catch ({ message }) {
+      setNotification({ error: true, message })
     }
   }
 
@@ -45,7 +44,7 @@ export default withRouter(function({ error, history }) {
         <input type="text" name="password" placeholder="password" className='login__form-item'/>
         <button className='login__button'>Enter</button>
       </form>
-      {error && <Feedback message={error} />}
+      <Feedback {...notification} />
     </main>
   </section>
   )

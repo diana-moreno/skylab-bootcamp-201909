@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import './index.sass'
 import Navbar from '../Navbar'
 import registerUser from '../../logic/register-user'
@@ -9,6 +9,7 @@ import { Link , withRouter } from 'react-router-dom'
 export default withRouter(function({ error, history }) {
   const { token } = sessionStorage
   const { setFeedback, roleOwner } = useContext(Context)
+  const [notification, setNotification] = useState(null)
 
   const handleSubmit = event => {
     event.preventDefault()
@@ -19,9 +20,9 @@ export default withRouter(function({ error, history }) {
   const handleRegister = async (name, surname, email, dni, password, role) => {
     try {
       const response = await registerUser(token, name, surname, email, dni, password, role)
-    /*  setFeedback({ message: response })*/
-    } catch ({message}) {
-   /*   setFeedback({ error: message })*/
+      setNotification({ error: false, message: 'Registration succesfully!'})
+    } catch ({ message }) {
+      setNotification({ error: true, message })
     }
   }
 {/*onClick={history.goBack()}*/}
@@ -47,7 +48,7 @@ export default withRouter(function({ error, history }) {
         </select>
         <button className='form__button form__button--register'>Create account</button>
       </form>
-{/*      {feedback && <Feedback feedback={feedback} />}*/}
+      <Feedback {...notification} />
     </section>
   </>
 })

@@ -16,7 +16,6 @@ export default function({}) {
 
   const handleLogout = () => {
     sessionStorage.clear()
-    /*handleGoBack()*/
   }
 
   return (

@@ -10,6 +10,7 @@ import { retrieveOtherUser } from '../../logic'
 export default withRouter(function({ id, history }) {
   const { roleOwner } = useContext(Context)
   const [role, setRole] = useState()
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     (async () => {
@@ -18,8 +19,8 @@ export default withRouter(function({ id, history }) {
         const user = await retrieveOtherUser(token, id)
         const { user: { role } } = user
         setRole(role)
-      }catch (error) {
-        console.log(error)
+      } catch ({ message }) {
+        setNotification({ error: true, message })
       }
     })()
   }, [])
@@ -35,10 +36,10 @@ export default withRouter(function({ id, history }) {
           <i className="material-icons detail-user__icon">create</i>
           <p>Profile</p>
         </Link>
-
         { role === 'student' && <NavigationLinksStudent id={id} /> }
         { role === 'instructor' && <NavigationLinksInstructor id={id} /> }
       </section>
+      {notification && <Feedback {...notification} />}
     </Fragment>
   )
 })

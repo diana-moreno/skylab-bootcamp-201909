@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import './index.sass'
+import Feedback from '../Feedback'
 import UsersItem from '../Users-item'
 import Context from '../CreateContext'
 import { listUsers } from '../../logic'
@@ -10,6 +11,7 @@ export default function({ onBack, id }) {
   const { roleOwner } = useContext(Context)
   const [usersList, setUsersList] = useState()
   const { token } = sessionStorage
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     (async () => {
@@ -19,8 +21,8 @@ export default function({ onBack, id }) {
           users = users.studentId
         }
         setUsersList(users)
-      } catch (error) {
-        console.log(error)
+      } catch ({ message }) {
+        setNotification({ error: true, message })
       }
     })()
   }, [setUsersList])
@@ -49,11 +51,12 @@ export default function({ onBack, id }) {
         <input className='users__searcher-input' type="text" placeholder="search user"/>
         <button className='users__searcher-button'>Search</button>
       </form>
-        <ul>
-        { usersList && usersList.map(currentUser =>
-          <UsersItem currentUser={currentUser} /> )
-        }
-        </ul>
+      <ul>
+      { usersList && usersList.map(currentUser =>
+        <UsersItem currentUser={currentUser} /> )
+      }
+      </ul>
+      {notification && <Feedback {...notification} />}
     </section>
     </>
 }
