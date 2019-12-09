@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Route, withRouter, Redirect } from 'react-router-dom'
-import { authenticateUser, registerUser, retrieveUser, getToken, listUsers, retrieveOtherUser } from '../../logic'
+import { retrieveUser } from '../../logic'
 import './index.sass'
 import Context from '../CreateContext'
 

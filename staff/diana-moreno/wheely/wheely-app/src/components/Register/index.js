@@ -1,14 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import { withRouter } from 'react-router-dom'
 import './index.sass'
-import Navbar from '../Navbar'
 import registerUser from '../../logic/register-user'
 import Feedback from '../Feedback'
 import Context from '../CreateContext'
-import { Link , withRouter } from 'react-router-dom'
 
 export default withRouter(function({ error, history }) {
   const { token } = sessionStorage
-  const { setFeedback, roleOwner } = useContext(Context)
   const [notification, setNotification] = useState(null)
 
   const handleSubmit = event => {
@@ -25,7 +23,7 @@ export default withRouter(function({ error, history }) {
       setNotification({ error: true, message })
     }
   }
-{/*onClick={history.goBack()}*/}
+
   return <>
     <div className='title'>
       <i onClick={() => history.goBack()} className="material-icons">undo</i>

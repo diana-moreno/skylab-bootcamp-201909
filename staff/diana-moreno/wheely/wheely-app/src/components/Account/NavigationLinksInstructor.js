@@ -1,7 +1,6 @@
-import { Link, Redirect } from 'react-router-dom'
-import React, { Fragment, useContext, useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import React, { useContext } from 'react'
 import Context from '../CreateContext'
-
 
 const NavigationLinksInstructor = ({ id }) => {
   const { roleOwner } = useContext(Context)
@@ -22,7 +21,7 @@ const NavigationLinksInstructor = ({ id }) => {
     </Link>
   )
 
-  return <Fragment>
+  return <>
     <Link to={`/reservations/${id}`}>
       <i className="material-icons detail-user__icon detail-user__icon--blue">search</i>
       <p>Reservations</p>
@@ -32,7 +31,7 @@ const NavigationLinksInstructor = ({ id }) => {
       <i className="material-icons detail-user__icon detail-user__icon--blue">search</i>
       <p>Schedule</p>
     </Link>
-  </Fragment>
+  </>
 }
 
 export default NavigationLinksInstructor

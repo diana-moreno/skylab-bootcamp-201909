@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import './index.sass'
 import NavigationLinksInstructor from './NavigationLinksInstructor'
 import NavigationLinksStudent from './NavigationLinksStudent'
@@ -26,7 +26,7 @@ export default withRouter(function({ id, history }) {
   }, [])
 
   return (
-    <Fragment>
+    <>
       <div className='title'>
         <i onClick={() => history.goBack()} className="material-icons">undo</i>
         <h3 className='title'>Your account</h3>
@@ -40,6 +40,6 @@ export default withRouter(function({ id, history }) {
         { role === 'instructor' && <NavigationLinksInstructor id={id} /> }
       </section>
       {notification && <Feedback {...notification} />}
-    </Fragment>
+    </>
   )
 })

@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import './index.sass'
-import Navbar from '../Navbar'
 import { withRouter } from 'react-router-dom'
 import Context from '../CreateContext'
 import { listUsers, retrieveOtherUser, listPractices, createPractice } from '../../logic'

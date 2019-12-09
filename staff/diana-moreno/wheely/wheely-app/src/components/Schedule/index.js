@@ -10,7 +10,6 @@ export default function({ id, onBack }) {
   const daysList = [0,1,2,3,4,5,6]
   const { token } = sessionStorage
   const { roleOwner } = useContext(Context)
-
   const [name, setName] = useState()
   const [days, setDays] = useState(daysList)
   const [hours, setHour] = useState(hoursList)
@@ -34,7 +33,7 @@ export default function({ id, onBack }) {
 
   const updateSlot = (day, hour) => async () => {
     // si es un instructor, solo puede visualizar los datos, no editarlos
-    if(roleOwner == 'admin') {
+    if(roleOwner === 'admin') {
       let result = await updateSchedule(token, id, day, hour)
       const { instructor: { profile: { schedule : { days } } } } = result
       setAvailableSchedule(days)

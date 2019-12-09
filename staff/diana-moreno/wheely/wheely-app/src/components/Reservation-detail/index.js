@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect } from 'react';
 import './index.sass'
 import Feedback from '../Feedback'
 import { retrievePractice, retrieveUser, cancelPractice} from '../../logic'
@@ -14,7 +14,6 @@ export default function ({ id, onBack }) {
   const [instructorId, setInstructorId] = useState()
   const [practiceId, setPracticeId] = useState()
   const [notification, setNotification] = useState(null)
-
 
   useEffect(() => {
     (async () => {

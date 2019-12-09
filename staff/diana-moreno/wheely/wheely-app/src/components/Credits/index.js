@@ -1,6 +1,5 @@
 import React from 'react'
 import './index.sass'
-import Navbar from '../Navbar'
 
 export default function ({ onBack, credits }) {
   return <>

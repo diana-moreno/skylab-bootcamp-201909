@@ -16,7 +16,7 @@ export default function({ onBack, id }) {
   useEffect(() => {
     (async () => {
       try {
-        const { users } = await handleListUsers()
+        let { users } = await handleListUsers()
         if(users.studentId) {
           users = users.studentId
         }
@@ -36,8 +36,8 @@ export default function({ onBack, id }) {
         users = await listUsers(token)
       }
       return users
-    } catch (error) {
-
+    } catch ({ message }) {
+      setNotification({ error: true, message })
     }
   }
 

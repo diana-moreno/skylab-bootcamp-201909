@@ -1,6 +1,6 @@
-import { Route, withRouter, Redirect } from 'react-router-dom'
+import React, { useContext } from 'react';
+import { withRouter } from 'react-router-dom'
 import Context from '../CreateContext'
-import React, { useState, useEffect, useContext } from 'react';
 import './index.sass'
 const moment = require('moment')
 

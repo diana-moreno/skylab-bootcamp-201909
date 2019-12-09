@@ -1,8 +1,7 @@
-import './index.sass'
-import Navbar from '../Navbar'
-import ProgressionItem from '../Progression-item'
-import { retrieveUser, listPractices } from '../../logic'
 import React, { useState, useEffect } from 'react';
+import './index.sass'
+import ProgressionItem from '../Progression-item'
+import { listPractices } from '../../logic'
 import Feedback from '../Feedback'
 const moment = require('moment')
 

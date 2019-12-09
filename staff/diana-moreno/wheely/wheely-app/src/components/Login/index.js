@@ -1,8 +1,8 @@
+import React, { useState, useContext } from 'react';
+import { withRouter } from 'react-router-dom'
 import './index.sass'
 import Feedback from '../Feedback'
 import { authenticateUser, retrieveUser } from '../../logic'
-import React, { useState, useEffect, useContext } from 'react';
-import { Link, withRouter, Redirect } from 'react-router-dom'
 import Context from '../CreateContext'
 
 export default withRouter(function({ error, history }) {
