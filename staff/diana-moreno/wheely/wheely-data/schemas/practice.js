@@ -22,7 +22,8 @@ module.exports = new Schema({
     ref: 'User'
   },
   feedback: {
-    type: String
+    type: String,
+    default: undefined
   },
   valoration: {
     type: String,

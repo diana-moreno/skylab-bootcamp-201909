@@ -24,7 +24,7 @@ module.exports = function(id) {
         .lean()
     } else if (instructor) {
       const practices = await Practice
-        .find({ "instructorId": ObjectId(id), "status": 'pending' }, { "studentId": 1 })
+        .find({ "instructorId": ObjectId(id), "feedback": undefined }, { "studentId": 1 })
         .populate('studentId') // quitar el id del schema
         .lean()
 

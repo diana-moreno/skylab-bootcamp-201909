@@ -17,11 +17,12 @@ describe('logic - authenticate user', () => {
     surname = `surname-${random()}`
     email = `email-${random()}@mail.com`
     password = `password-${random()}`
+    dni = `dni-${random()}`
     role = roles[floor(random() * roles.length)]
 
     await User.deleteMany()
 
-    const user = await User.create({ name, surname, email, password, role })
+    const user = await User.create({ name, surname, email, password, dni, role })
     id = user.id
   })
 

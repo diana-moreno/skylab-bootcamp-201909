@@ -9,7 +9,7 @@ const { database, models: { User, Student, Instructor } } = require('wheely-data
 describe('logic - retrieve user', () => {
   before(() => database.connect(TEST_DB_URL))
 
-  let id, name, surname, email, password, role, fakeId = '012345678901234567890123'
+  let id, name, surname, email, password, role, dni, fakeId = '012345678901234567890123'
 
   describe('when user is a student', () => {
     beforeEach(async () => {
@@ -17,11 +17,12 @@ describe('logic - retrieve user', () => {
       surname = `surname-${random()}`
       email = `email-${random()}@mail.com`
       password = `password-${random()}`
+      dni = `dni-${random()}`
       role = 'student'
 
       await User.deleteMany()
 
-      const user = await User.create({ name, surname, email, password, role })
+      const user = await User.create({ name, surname, email, dni, password, role })
       user.profile = new Student()
       await user.save()
 
@@ -38,6 +39,7 @@ describe('logic - retrieve user', () => {
       expect(user.surname).to.equal(surname)
       expect(user.email).to.equal(email)
       expect(user.password).to.be.undefined
+      expect(user.dni).to.equal(dni)
       expect(user.role).to.equal(role)
       expect(user.profile).to.exist
       expect(user.profile.credits).to.equal(0)
@@ -62,11 +64,12 @@ describe('logic - retrieve user', () => {
       surname = `surname-${random()}`
       email = `email-${random()}@mail.com`
       password = `password-${random()}`
+      dni = `dni-${random()}`
       role = 'instructor'
 
       await User.deleteMany()
 
-      const user = await User.create({ name, surname, email, password, role })
+      const user = await User.create({ name, surname, email, dni, password, role })
       user.profile = new Instructor()
       await user.save()
       id = user.id
@@ -82,6 +85,7 @@ describe('logic - retrieve user', () => {
       expect(user.surname).to.equal(surname)
       expect(user.email).to.equal(email)
       expect(user.password).to.be.undefined
+      expect(user.dni).to.equal(dni)
       expect(user.role).to.equal(role)
       expect(user.profile).to.exist
       expect(user.profile.credits).to.equal(undefined)
@@ -106,11 +110,12 @@ describe('logic - retrieve user', () => {
       surname = `surname-${random()}`
       email = `email-${random()}@mail.com`
       password = `password-${random()}`
+      dni = `dni-${random()}`,
       role = 'admin'
 
       await User.deleteMany()
 
-      const user = await User.create({ name, surname, email, password, role })
+      const user = await User.create({ name, surname, email, dni, password, role })
       id = user.id
     })
 
@@ -124,6 +129,7 @@ describe('logic - retrieve user', () => {
       expect(user.surname).to.equal(surname)
       expect(user.email).to.equal(email)
       expect(user.password).to.be.undefined
+      expect(user.dni).to.equal(dni)
       expect(user.role).to.equal(role)
       expect(user.profile).to.equal(undefined)
     })
@@ -156,7 +162,7 @@ describe('logic - retrieve user', () => {
       }
     })
 
-    it('should fail on incorrect name, surname, email, password, or expression type and content', () => {
+    it('should fail on incorrect id type and content', () => {
       expect(() => retrieveUser('1')).to.throw(ContentError, '1 is not a valid id')
       expect(() => retrieveUser(1)).to.throw(TypeError, '1 is not a string')
       expect(() => retrieveUser(true)).to.throw(TypeError, 'true is not a string')

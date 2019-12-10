@@ -43,7 +43,7 @@ module.exports = function(id, userId, name, surname, email, dni, credits, passwo
     if(instructor) {
       // check if password is correct
       instructor = await User.findOne({ _id: id, role: 'instructor', password: password })
-      if (!instructor) throw new NotFoundError(`password incorrect`)
+      if (!instructor) throw new ConflictError(`password incorrect`)
     }
 
     // check if user who wants to edit is an student
@@ -51,7 +51,7 @@ module.exports = function(id, userId, name, surname, email, dni, credits, passwo
     if(student) {
       student = await User.findOne({ _id: id, role: 'student', password: password })
       // check if password is correct
-      if (!student) throw new NotFoundError(`password incorrect`)
+      if (!student) throw new ConflictError(`password incorrect`)
          //edit
     }
 
@@ -79,7 +79,7 @@ module.exports = function(id, userId, name, surname, email, dni, credits, passwo
     dni && (update.dni = dni)
 
     await User.updateOne({ _id: ObjectId(userId) }, { $set: update })
-debugger
+
     if(credits) {
       await User.updateOne({ _id: ObjectId(userId) }, { $set: { 'profile.credits': credits } })
     }

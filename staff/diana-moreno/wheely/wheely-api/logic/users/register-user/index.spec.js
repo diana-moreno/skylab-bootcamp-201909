@@ -17,6 +17,7 @@ describe('logic - register user', () => {
     surname = `surname-${random()}`
     email = `email-${random()}@mail.com`
     password = `password-${random()}`
+    dni = `dni-${random()}`
     role = roles[floor(random() * roles.length)]
 
     await User.deleteMany()
@@ -27,6 +28,7 @@ describe('logic - register user', () => {
       surname: `surname-${random()}`,
       email: `email-${random()}@mail.com`,
       password: `password-${random()}`,
+      dni: `dni-${random()}`,
       role: 'admin'
     })
     adminId = admin.id
@@ -34,7 +36,7 @@ describe('logic - register user', () => {
   })
 
   it('should succeed on correct credentials for common data between users', async () => {
-    const response = await registerUser(adminId, name, surname, email, password, role)
+    const response = await registerUser(adminId, name, surname, email, dni, password, role)
     expect(response).to.be.undefined
 
     const user = await User.findOne({ email })
@@ -44,6 +46,7 @@ describe('logic - register user', () => {
     expect(user.surname).to.equal(surname)
     expect(user.email).to.equal(email)
     expect(user.password).to.equal(password)
+    expect(user.dni).to.equal(dni)
     expect(user.role).to.equal(role)
   })
 
@@ -63,6 +66,7 @@ describe('logic - register user', () => {
         surname: `surname-${random()}`,
         email: `email-${random()}@mail.com`,
         password: `password-${random()}`,
+        dni: `dni-${random()}`,
         role: 'admin'
       })
       admin.save()
@@ -70,8 +74,7 @@ describe('logic - register user', () => {
     })
 
     it('should succeed on correct credentials ', async () => {
-      debugger
-      const response = await registerUser(adminId, name, surname, email, password, role)
+      const response = await registerUser(adminId, name, surname, email, dni, password, role)
 
       expect(response).to.be.undefined
 
@@ -82,6 +85,7 @@ describe('logic - register user', () => {
       expect(user.surname).to.equal(surname)
       expect(user.email).to.equal(email)
       expect(user.password).to.equal(password)
+      expect(user.dni).to.equal(dni)
       expect(user.role).to.equal(role)
       expect(user.profile).to.exist
       expect(user.profile.credits).to.exist
@@ -103,6 +107,7 @@ describe('logic - register user', () => {
         surname: `surname-${random()}`,
         email: `email-${random()}@mail.com`,
         password: `password-${random()}`,
+        dni: `dni-${random()}`,
         role: 'admin'
       })
       adminId = admin.id
@@ -110,7 +115,7 @@ describe('logic - register user', () => {
     })
 
     it('should succeed on correct credentials ', async () => {
-      const response = await registerUser(adminId, name, surname, email, password, role)
+      const response = await registerUser(adminId, name, surname, email, dni, password, role)
 
       expect(response).to.be.undefined
 
@@ -121,6 +126,7 @@ describe('logic - register user', () => {
       expect(user.surname).to.equal(surname)
       expect(user.email).to.equal(email)
       expect(user.password).to.equal(password)
+      expect(user.dni).to.equal(dni)
       expect(user.role).to.equal(role)
       expect(user.profile).to.exist
       expect(user.profile.credits).to.equal(undefined)
@@ -133,6 +139,7 @@ describe('logic - register user', () => {
       surname = `surname-${random()}`
       email = `email-${random()}@mail.com`
       password = `password-${random()}`
+      dni = `dni-${random()}`
       role = 'admin'
 
       await User.deleteMany()
@@ -142,6 +149,7 @@ describe('logic - register user', () => {
         surname: `surname-${random()}`,
         email: `email-${random()}@mail.com`,
         password: `password-${random()}`,
+        dni: `dni-${random()}`,
         role: 'admin'
       })
       adminId = admin.id
@@ -149,7 +157,7 @@ describe('logic - register user', () => {
     })
 
     it('should succeed on correct credentials ', async () => {
-      const response = await registerUser(adminId, name, surname, email, password, role)
+      const response = await registerUser(adminId, name, surname, email, dni, password, role)
 
       expect(response).to.be.undefined
 
@@ -160,17 +168,18 @@ describe('logic - register user', () => {
       expect(user.surname).to.equal(surname)
       expect(user.email).to.equal(email)
       expect(user.password).to.equal(password)
+      expect(user.dni).to.equal(dni)
       expect(user.role).to.equal(role)
       expect(user.profile).to.exist
     })
   })
 
   describe('when user already exists', () => {
-    beforeEach(() => User.create({ name, surname, email, password, role }))
+    beforeEach(() => User.create({ name, surname, email, dni, password, role }))
 
     it('should fail on already existing user', async () => {
       try {
-        await registerUser(adminId, name, surname, email, password, role)
+        await registerUser(adminId, name, surname, email, dni, password, role)
         throw Error('should not reach this point')
 
       } catch (error) {
@@ -183,7 +192,7 @@ describe('logic - register user', () => {
     })
   })
 
-  it('should fail on incorrect name, surname, email, password, or expression type and content', () => {
+  it('should fail on incorrect name, surname, email, dni, password, or expression type and content', () => {
     expect(() => registerUser('1')).to.throw(ContentError, '1 is not a valid id')
     expect(() => registerUser(1)).to.throw(TypeError, '1 is not a string')
     expect(() => registerUser(true)).to.throw(TypeError, 'true is not a string')
@@ -222,8 +231,15 @@ describe('logic - register user', () => {
     expect(() => registerUser(adminId, name, surname, '')).to.throw(ContentError, 'e-mail is empty or blank')
     expect(() => registerUser(adminId, name, surname, ' \t\r')).to.throw(ContentError, 'e-mail is empty or blank')
 
-    expect(() => registerUser(adminId, name, surname, email, '')).to.throw(ContentError, 'password is empty or blank')
-    expect(() => registerUser(adminId, name, surname, email, ' \t\r')).to.throw(ContentError, 'password is empty or blank')
+    expect(() => registerUser(adminId, name, surname, email, 1)).to.throw(TypeError, '1 is not a string')
+    expect(() => registerUser(adminId, name, surname, email, true)).to.throw(TypeError, 'true is not a string')
+    expect(() => registerUser(adminId, name, surname, email, [])).to.throw(TypeError, ' is not a string')
+    expect(() => registerUser(adminId, name, surname, email, {})).to.throw(TypeError, '[object Object] is not a string')
+    expect(() => registerUser(adminId, name, surname, email, undefined)).to.throw(TypeError, 'undefined is not a string')
+    expect(() => registerUser(adminId, name, surname, email, null)).to.throw(TypeError, 'null is not a string')
+
+    expect(() => registerUser(adminId, name, surname, email, dni, '')).to.throw(ContentError, 'password is empty or blank')
+    expect(() => registerUser(adminId, name, surname, email, dni, ' \t\r')).to.throw(ContentError, 'password is empty or blank')
   })
 
   after(() => User.deleteMany().then(database.disconnect))

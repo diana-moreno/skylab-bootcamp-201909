@@ -1,4 +1,6 @@
 const { connect, disconnect } = require('mongoose')
+const mongoose = require('mongoose');
+mongoose.set('useFindAndModify', false);
 const { ObjectId } = require('mongodb')
 
 module.exports = {
