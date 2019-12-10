@@ -35,7 +35,6 @@ module.exports = function(instructorId, studentId, practiceId) {
       throw new ConflictError(`practice with id ${practiceId} is not possible to cancel`)
     }
 
-debugger
     // send email to both student and instructor
     let instructorName = instructor.name.concat(' ').concat(instructor.surname)
     let studentName = student.name.concat(' ').concat(student.surname)

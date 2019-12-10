@@ -3,7 +3,7 @@ const { env: { TEST_DB_URL } } = process
 const { expect } = require('chai')
 const createPractice = require('.')
 const { random } = Math
-const { database, models: { User, Practice, Student, Instructor, Week, Day } } = require('wheely-data')
+const { ObjectId, database, models: { User, Practice, Student, Instructor, Week, Day } } = require('wheely-data')
 const { validate, errors: { NotFoundError, ConflictError, ContentError } } = require('wheely-utils')
 const moment = require('moment')
 
@@ -11,7 +11,7 @@ const moment = require('moment')
 describe('logic - book a practice', () => {
   before(() => database.connect(TEST_DB_URL))
 
-  let studentId, instructorId, name, surname, email, password, price, role, status, date, credits
+  let studentId, instructorId, name, surname, email, dni, password, price, role, status, date, credits, instructor
 
   beforeEach(async () => {
     // create an student
@@ -19,11 +19,12 @@ describe('logic - book a practice', () => {
     surname = `surname-${random()}`
     email = `email-${random()}@mail.com`
     password = `password-${random()}`
+    dni = `dni-${random()}`
     role = 'student'
 
     await Promise.all([User.deleteMany(), Practice.deleteMany()])
 
-    let student = await User.create({ name, surname, email, password, role })
+    let student = await User.create({ name, surname, email, dni, password, role })
     student.profile = new Student()
     student.profile.credits = 3
 
@@ -34,28 +35,30 @@ describe('logic - book a practice', () => {
     name = `name-${random()}`
     surname = `surname-${random()}`
     email = `email-${random()}@mail.com`
+    dni = `dni-${random()}`
     password = `password-${random()}`
     role = 'instructor'
 
-    let instructor = await User.create({ name, surname, email, password, role})
-    instructor.profile = new Instructor()
-    await instructor.save()
+    let instructor = await User.create({ name, surname, email, dni, password, role })
 
-    // create a test schedule for instructor, he works every day 11-13h
-    if (!instructor.profile.schedule) {
-      instructor.profile.schedule = new Week()
-      for (let i = 0; i < 7; i++) {
-        instructor.profile.schedule.days.push(new Day({ index: i, hours: ['11:00', '12:00'] }))
-      }
-      await instructor.save()
+    // create a schedule for an instructor, he works every day 11-13h
+    instructor = await User.findOne({ _id: ObjectId(instructor.id), role: 'instructor' })
+
+    instructor.profile = new Instructor()
+    instructor = await User.findOneAndUpdate({ _id: ObjectId(instructor.id) }, { $set: instructor })
+    instructor.profile.schedule = new Week()
+
+    for (let i = 0; i < 7; i++) {
+      instructor.profile.schedule.days.push(new Day({ index: i, hours: ['11:00', '12:00'] }))
     }
+    await User.updateOne({ _id: ObjectId(instructor.id) }, { $set: instructor })
     instructorId = instructor.id
-    await User.updateOne({ _id: instructorId }, { $set: { 'profile.schedule': instructor.profile.schedule } }, { multi: true })
 
     // practice's features
     price = 1
-    status = 'pending'
-    date = "Mon, 2 December 2050 12:00:00"
+    let onlyDate = moment().add(5, 'day').format('DD-MM-YYYY')
+    let time = '11:00'
+    date = moment(`${onlyDate} ${time}`, 'DD-MM-YYYY HH:mm')
 
   })
 
@@ -63,7 +66,6 @@ describe('logic - book a practice', () => {
     // calculate the newCredits the student should have after doing a reservation
     let student = await User.findOne({ _id: studentId, role: 'student' })
     let newCredits = student.profile.credits - 1
-
     const practiceId = await createPractice(instructorId, studentId, date)
     expect(practiceId).to.exist
     expect(practiceId).to.be.a('string')
@@ -75,7 +77,6 @@ describe('logic - book a practice', () => {
     expect(practice.date).to.exist
     expect(practice.date).to.be.instanceOf(Date)
     expect(practice.date.getTime()).to.equal(new Date(date).getTime())
-    expect(practice.status).to.equal(status)
     expect(practice.date).to.exist
     expect(practice.price).to.equal(price)
     expect(practice.instructorId.toString()).to.equal(instructorId)
@@ -88,7 +89,9 @@ describe('logic - book a practice', () => {
   })
 
   it('should fail when the instructor does not have this date in his schedule', async () => {
-    date = "Mon, 2 December 2050 19:00:00"
+    let onlyDate = moment().add(5, 'day').format('DD-MM-YYYY')
+    let time = '14:00'
+    date = moment(`${onlyDate} ${time}`, 'DD-MM-YYYY HH:mm')
     try {
       await createPractice(instructorId, studentId, date)
       throw Error('should not reach this point')
@@ -157,12 +160,13 @@ describe('logic - book a practice', () => {
       name = `j-${random()}`
       surname = `surname-${random()}`
       email = `email-${random()}@mail.com`
+      dni = `dni-${random()}`
       password = `password-${random()}`
       role = 'student'
 
       await Promise.all([User.deleteMany(), Practice.deleteMany()])
 
-      let student = await User.create({ name, surname, email, password, role })
+      let student = await User.create({ name, surname, email, dni, password, role })
       student.profile = new Student()
 
       await student.save()
@@ -173,17 +177,17 @@ describe('logic - book a practice', () => {
       name = `name-${random()}`
       surname = `surname-${random()}`
       email = `email-${random()}@mail.com`
+      dni = `dni-${random()}`
       password = `password-${random()}`
       role = 'instructor'
 
-      let instructor = await User.create({ name, surname, email, password, role })
+      let instructor = await User.create({ name, surname, email, dni, password, role })
       instructor.profile = new Instructor()
       await instructor.save()
       instructorId = instructor.id
 
       // practice's features
       price = 1
-      status = 'pending'
       date = new Date()
     })
 
@@ -208,12 +212,13 @@ describe('logic - book a practice', () => {
       name = `name-${random()}`
       surname = `surname-${random()}`
       email = `email-${random()}@mail.com`
+      dni = `dni-${random()}`
       password = `password-${random()}`
       role = 'student'
 
       await Promise.all([User.deleteMany(), Practice.deleteMany()])
 
-      const student = await User.create({ name, surname, email, password, role })
+      const student = await User.create({ name, surname, email, dni, password, role })
       student.profile = new Student()
       student.profile.credits = 3
       await student.save()
@@ -223,29 +228,42 @@ describe('logic - book a practice', () => {
       name = `name-${random()}`
       surname = `surname-${random()}`
       email = `email-${random()}@mail.com`
+      dni = `dni-${random()}`
       password = `password-${random()}`
       role = 'instructor'
 
-      const instructor = await User.create({ name, surname, email, password, role })
+      let instructor = await User.create({ name, surname, email, dni, password, role })
+      // create a schedule for an instructor, he works every day 11-13h
+      instructor = await User.findOne({ _id: ObjectId(instructor.id), role: 'instructor' })
+
       instructor.profile = new Instructor()
-      await instructor.save()
+      instructor = await User.findOneAndUpdate({ _id: ObjectId(instructor.id) }, { $set: instructor })
+      instructor.profile.schedule = new Week()
+
+      for (let i = 0; i < 7; i++) {
+        instructor.profile.schedule.days.push(new Day({ index: i, hours: ['11:00', '12:00'] }))
+      }
+      await User.updateOne({ _id: ObjectId(instructor.id) }, { $set: instructor })
       instructorId = instructor.id
 
       // practice's features
       price = 1
-      status = 'pending'
-      date = new Date("Wed, 27 July 2050 13:00:00")
+      let onlyDate = moment().add(6, 'day').format('DD-MM-YYYY')
+      let time = '13:00'
+      date = moment(`${onlyDate} ${time}`, 'DD-MM-YYYY HH:mm')
       practice = await Practice.create({ date, instructorId, studentId })
       practiceId = practice.id
     })
 
     it('should fail on already existing practice', async () => {
       // we try to create a new practice with the same data which is imposible
-      date = new Date("Wed, 27 July 2050 13:00:00")
+      let onlyDate = moment().add(6, 'day').format('DD-MM-YYYY')
+      let time = '13:00'
+      date = moment(`${onlyDate} ${time}`, 'DD-MM-YYYY HH:mm')
       try {
         let practiceSaved = await Practice.findById(practiceId)
         expect(practiceSaved).to.exist
-
+        debugger
         await createPractice(instructorId, studentId, date)
         throw Error('should not reach this point')
 
@@ -254,7 +272,7 @@ describe('logic - book a practice', () => {
         expect(error.message).to.exist
         expect(typeof error.message).to.equal('string')
         expect(error.message.length).to.be.greaterThan(0)
-        expect(error.message).to.equal(`practice with date ${date} already exists`)
+        expect(error.message).to.equal(`instructor has not available date ${date}`)
       }
     })
 

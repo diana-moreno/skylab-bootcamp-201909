@@ -25,7 +25,7 @@ module.exports = function(userId, query) {
     }
 
     let practices
-debugger
+
     if(student) {
       practices = await Practice
         .find({ "studentId": ObjectId(userId) })
@@ -37,7 +37,6 @@ debugger
         .populate('studentId')
         .populate('instructorId')
     }
-debugger
     return practices
 
 /*

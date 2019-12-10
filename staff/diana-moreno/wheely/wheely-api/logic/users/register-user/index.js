@@ -2,7 +2,6 @@ const { validate, errors: { ConflictError, NotFoundError, ContentError } } = req
 const { ObjectId, models: { User, Student, Instructor, Week, Day } } = require('wheely-data')
 
 module.exports = function(adminId, name, surname, email, dni, password, role) {
-  debugger
   validate.string(adminId)
   validate.string.notVoid('adminId', adminId)
   if (!ObjectId.isValid(adminId)) throw new ContentError(`${adminId} is not a valid id`)
@@ -32,7 +31,6 @@ module.exports = function(adminId, name, surname, email, dni, password, role) {
     user = await User.findOne({ dni })
     if(user) throw new ConflictError(`user with dni ${dni} already exists`)
 
-debugger
     // create new user depending on the role
     user = await User.create({ name, surname, email, dni, password, role })
 
@@ -50,7 +48,6 @@ debugger
       }
       await User.updateOne({ _id: ObjectId(instructor.id) }, { $set: instructor })
     }
-
 
     // create profile specific for student
     let student = await User.findOne({ _id: ObjectId(user.id), role: 'student' })

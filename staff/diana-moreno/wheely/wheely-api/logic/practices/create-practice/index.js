@@ -4,7 +4,6 @@ const moment = require('moment')
 const sendEmail = require('../../../helpers/send-email')
 
 module.exports = function(instructorId, studentId, date) {
-  debugger
   // sincronous validate
   validate.string(instructorId)
   validate.string.notVoid('instructorId', instructorId)
@@ -14,9 +13,7 @@ module.exports = function(instructorId, studentId, date) {
   validate.string.notVoid('studentId', studentId)
   if (!ObjectId.isValid(studentId)) throw new ContentError(`${studentId} is not a valid id`)
 
-  /* validate.date(date)*/
-  /*  validate.instanceOf(Date, date)*/
-  // problemas al validar moment porque no es instancia de Date
+  moment.isMoment(date)
 
   return (async () => {
 
@@ -45,7 +42,7 @@ module.exports = function(instructorId, studentId, date) {
       const hour = moment(date).format("HH:mm")
       const indexDay = moment(date).day()
       let available = false
-
+debugger
       instructor.profile.schedule.days[indexDay].hours.forEach(hourSch => {
         hourSch === hour ? available = true : available
       })

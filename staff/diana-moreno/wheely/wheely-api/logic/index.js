@@ -9,7 +9,6 @@ module.exports = {
   listPractices: require('./practices/list-practices'),
   writeFeedback: require('./practices/write-feedback'),
   cancelPractice: require('./practices/cancel-practice'),
-  updatePractices: require('./practices/update-practices'),
   toggleSchedule: require('./schedule/toggle-schedule'),
   retrievePractice: require('./practices/retrieve-practice')
 }
