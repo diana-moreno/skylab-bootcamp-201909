@@ -5,23 +5,25 @@ const writeFeedback = require('.')
 const { random } = Math
 const { database, models: { User, Practice, Student, Instructor } } = require('wheely-data')
 const { validate, errors: { ContentError } } = require('wheely-utils')
+const moment = require('moment')
 
 describe('logic - write feedback', () => {
   before(() => database.connect(TEST_DB_URL))
 
-  let studentId, instructorId, practiceId, name, surname, email, password, role, price, status, date, valoration, feedback, fakeId = '012345678901234567890123'
+  let studentId, instructorId, name, surname, email, dni, password, role, price, status, date, valoration, feedback, practicesId, fakeId = '012345678901234567890123'
 
   beforeEach(async () => {
     // create an student
     name = `j-${random()}`
     surname = `surname-${random()}`
     email = `email-${random()}@mail.com`
+    dni = `dni-${random()}`
     password = `password-${random()}`
     role = 'student'
 
     await Promise.all([User.deleteMany(), Practice.deleteMany()])
 
-    let student = await User.create({ name, surname, email, password, role })
+    let student = await User.create({ name, surname, email, dni, password, role })
     student.profile = new Student()
     student.profile.credits = 3
     await student.save()
@@ -34,39 +36,89 @@ describe('logic - write feedback', () => {
     password = `password-${random()}`
     role = 'instructor'
 
-    let instructor = await User.create({ name, surname, email, password, role })
+    let instructor = await User.create({ name, surname, email, dni, password, role })
     instructor.profile = new Instructor()
     await instructor.save()
     instructorId = instructor.id
 
-    // create practice
-    status = 'done'
-    date = new Date("Wed, 27 July 2050 13:30:00")
-    let practice = await Practice.create({ date, instructorId, studentId, status })
-    practiceId = practice.id
+    practicesId = []
+    // create practice in the future
+    let futureDate = moment().add(5, 'day').format('DD-MM-YYYY')
+    let time = '11:00'
+    date = moment(`${futureDate} ${time}`, 'DD-MM-YYYY HH:mm')
+    let practice1 = await Practice.create({ date, instructorId, studentId })
+    let practiceId1 = practice1.id
+    practicesId.push(practiceId1)
+    // create practice in the past
+    let pastDate = moment().subtract(5, "days").format('DD-MM-YYYY')
+    date = moment(`${pastDate} ${time}`, 'DD-MM-YYYY HH:mm')
+    let practice2 = await Practice.create({ date, instructorId, studentId })
+    let practiceId2 = practice2.id
+    practicesId.push(practiceId2)
+    console.log(practiceId1, practiceId2, practicesId)
+
 
   })
 
-  it('should succeed on correct users and correct practice', async () => {
+  it('should succeed on correct users and practice in the past', async () => {
+    let practiceId = practicesId[1]
     let practice = await Practice.findOne({ _id: practiceId })
     expect(practice).to.exist
 
     feedback = 'Very well managing the clutch'
     valoration = 'good'
 
-    let practiceFeedback = await writeFeedback(instructorId, studentId, practiceId, feedback, valoration)
+    await writeFeedback(instructorId, studentId, practiceId, feedback, valoration)
+    let practiceFeedback = await Practice.findOne({ _id: practiceId })
 
     expect(practiceFeedback).to.exist
     expect(practiceFeedback.date).to.exist
     expect(practiceFeedback.date).to.be.instanceOf(Date)
-    expect(practiceFeedback.date.getTime()).to.equal(date.getTime())
-    expect(practiceFeedback.status).to.equal('done')
     expect(practiceFeedback.date).to.exist
     expect(practiceFeedback.price).to.equal(1)
     expect(practiceFeedback.instructorId.toString()).to.equal(instructorId)
     expect(practiceFeedback.studentId.toString()).to.equal(studentId)
     expect(practiceFeedback.feedback).to.equal('Very well managing the clutch')
     expect(practiceFeedback.valoration).to.equal('good')
+  })
+
+  it('should fail on practice in the future', async () => {
+    try {
+    let practiceId = practicesId[0]
+    let practice = await Practice.findOne({ _id: practiceId })
+    expect(practice).to.exist
+
+     let practiceFeedback = await writeFeedback(instructorId, studentId, practiceId, feedback, valoration)
+
+      throw Error('should not reach this point')
+
+    } catch (error) {
+      expect(error).to.exist
+      expect(error.message).to.exist
+      expect(typeof error.message).to.equal('string')
+      expect(error.message.length).to.be.greaterThan(0)
+      expect(error.message).to.equal(`practice with id ${practiceId} is already in the future`)
+    }
+  })
+
+  it('should fail on already written feedback and valoration', async () => {
+    try {
+      let practiceId = practicesId[1]
+      let practice = await Practice.findOne({ _id: practiceId })
+      expect(practice).to.exist
+      feedback = 'Regular managing the clutch'
+      valoration = 'regular'
+      await writeFeedback(instructorId, studentId, practiceId, feedback, valoration)
+
+      throw Error('should not reach this point')
+
+    } catch (error) {
+      expect(error).to.exist
+      expect(error.message).to.exist
+      expect(typeof error.message).to.equal('string')
+      expect(error.message.length).to.be.greaterThan(0)
+      expect(error.message).to.equal(`practice with id ${practiceId} has been already valorated`)
+    }
   })
 
   it('should fail on unexisting practice', async () => {
@@ -115,17 +167,20 @@ describe('logic - write feedback', () => {
   })
 
   describe('when feedback has been already written', () => {
+    let practiceId
+
     beforeEach(async () => {
       // create an student
       name = `j-${random()}`
       surname = `surname-${random()}`
       email = `email-${random()}@mail.com`
+      dni = `dni-${random()}`
       password = `password-${random()}`
       role = 'student'
 
       await Promise.all([User.deleteMany(), Practice.deleteMany()])
 
-      let student = await User.create({ name, surname, email, password, role })
+      let student = await User.create({ name, surname, email, dni, password, role })
       student.profile = new Student()
       student.profile.credits = 3
 
@@ -139,37 +194,22 @@ describe('logic - write feedback', () => {
       password = `password-${random()}`
       role = 'instructor'
 
-      let instructor = await User.create({ name, surname, email, password, role })
+      let instructor = await User.create({ name, surname, email, dni, password, role })
       instructor.profile = new Instructor()
       await instructor.save()
       instructorId = instructor.id
 
       // create practice
-      status = 'done'
-      date = new Date("Wed, 29 July 2050 13:30:00")
+      let pastDate = moment().subtract(5, "days").format('DD-MM-YYYY')
+      let time = '12:00'
+      date = moment(`${pastDate} ${time}`, 'DD-MM-YYYY HH:mm')
       feedback = 'Very bad managing the clutch'
       valoration = 'bad'
-      let practice = await Practice.create({ date, instructorId, studentId, status, feedback, valoration })
+      let practice = await Practice.create({ date, instructorId, studentId, feedback, valoration })
       practiceId = practice.id
-
     })
 
-    it('should fail on already written feedback and valoration', async () => {
-      try {
-        feedback = 'Regular managing the clutch'
-        valoration = 'regular'
-        let practiceFeedback = await writeFeedback(instructorId, studentId, practiceId, feedback, valoration)
 
-        throw Error('should not reach this point')
-
-      } catch (error) {
-        expect(error).to.exist
-        expect(error.message).to.exist
-        expect(typeof error.message).to.equal('string')
-        expect(error.message.length).to.be.greaterThan(0)
-        expect(error.message).to.equal(`practice with id ${practiceId} has been already valorated`)
-      }
-    })
 
     it('should fail on incorrect instructorId, studentId, practiceId, feedback, valoration type or content', () => {
       expect(() => writeFeedback('1')).to.throw(ContentError, '1 is not a valid id')

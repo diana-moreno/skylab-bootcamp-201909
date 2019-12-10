@@ -1,16 +1,11 @@
 const { validate, errors: { NotFoundError, ConflictError, ContentError } } = require('wheely-utils')
 const { ObjectId, models: { User, Practice, Instructor } } = require('wheely-data')
 
-module.exports = function(userId, query) {
+module.exports = function(userId) {
   // sincronous validate
   validate.string(userId)
   validate.string.notVoid('userId', userId)
   if (!ObjectId.isValid(userId)) throw new ContentError(`${userId} is not a valid id`)
-
-  if(query) {
-    validate.string(query)
-    validate.string.notVoid('query', query)
-  }
 
   return (async () => {
     //check if the user exists

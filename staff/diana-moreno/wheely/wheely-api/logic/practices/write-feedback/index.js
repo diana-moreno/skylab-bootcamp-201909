@@ -1,5 +1,6 @@
 const { validate, errors: { NotFoundError, ConflictError, ContentError } } = require('wheely-utils')
 const { ObjectId, models: { User, Practice, Instructor } } = require('wheely-data')
+const moment = require('moment')
 
 module.exports = function(instructorId, studentId, practiceId, feedback, valoration) {
   // sincronous validate
@@ -32,6 +33,11 @@ module.exports = function(instructorId, studentId, practiceId, feedback, valorat
     // check if the practice exists and matches with student and instructor
     let practice = await Practice.findOne({ _id: practiceId, studentId: studentId, instructorId: instructorId })
     if (!practice) throw new ConflictError(`practice with id ${practiceId} does not exists`)
+
+    // check if the practice is in the past
+    if(moment(practice.date).isAfter(moment())) {
+      throw new ConflictError(`practice with id ${practiceId} is already in the future`)
+    }
 
     // check if the practice has already feedback and valoration
     if(practice.feedback || practice.valoration) {
