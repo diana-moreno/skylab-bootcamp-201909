@@ -14,6 +14,7 @@ export default function ({ id, onBack }) {
   const [instructorId, setInstructorId] = useState()
   const [practiceId, setPracticeId] = useState()
   const [notification, setNotification] = useState(null)
+  const [isCanceled, setIsCanceled] = useState(false)
 
   useEffect(() => {
     (async () => {
@@ -41,6 +42,8 @@ export default function ({ id, onBack }) {
   const handleCancel = async () => {
     try {
       await cancelPractice(token, instructorId, practiceId)
+      setNotification({ error: false, message: 'Reservation canceled successfully!' })
+      setIsCanceled(true)
     } catch ({ message }) {
       setNotification({ error: true, message: 'We are sorry! It is not possible to cancel with less than 24h of advance' })
     }
@@ -62,7 +65,7 @@ export default function ({ id, onBack }) {
         <p>Keep in mind that you can cancel it notifying with 24h of advance. In this case, your credit will be returned.</p>
       </div>
         <Feedback {...notification} />
-        <button className='reservation-detail__button'onClick={handleCancel} >Cancel</button>
+      { !isCanceled && <button className='reservation-detail__button'onClick={handleCancel} >Cancel</button> }
     </section>
   </>
 }

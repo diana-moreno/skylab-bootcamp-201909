@@ -28,6 +28,7 @@ router.post('/', jsonBodyParser, tokenVerifier, (req, res) => {
   }
 })
 
+
 router.delete('/:id', jsonBodyParser, tokenVerifier, (req, res) => {
   try {
   const { id, params: { id: practiceId }, body: { instructorId } } = req
@@ -46,26 +47,7 @@ router.delete('/:id', jsonBodyParser, tokenVerifier, (req, res) => {
   }
 })
 
-/*router.patch('/', (req, res) => {
-  try {
-    updatePractices()
-      .then(() => res.end() )
-      .catch(error => {
-        const { message } = error
 
-        if (error instanceof NotFoundError)
-          return res.status(404).json({ message })
-        if (error instanceof ConflictError)
-          return res.status(409).json({ message })
-
-        res.status(500).json({ message })
-      })
-  } catch ({ message }) {
-    res.status(400).json({ message })
-  }
-})*/
-
-// he añadido el :id
 router.get('/:id', tokenVerifier, jsonBodyParser, (req, res) => {
   try {
   const { params: { id } } = req
@@ -86,6 +68,7 @@ router.get('/:id', tokenVerifier, jsonBodyParser, (req, res) => {
     res.status(400).json({ message })
   }
 })
+
 
 router.get('/detail/:id', tokenVerifier, jsonBodyParser, (req, res) => {
   try {
@@ -115,7 +98,7 @@ router.put('/feedback/:practiceId', jsonBodyParser, tokenVerifier, (req, res) =>
     const { id, params: { practiceId }, body: { studentId, comment, valoration } } = req
 
     writeFeedback(id, studentId, practiceId, comment, valoration)
-      .then(() => res.end())
+      .then(() => res.status(201).end())
       .catch(error => {
         const { message } = error
 

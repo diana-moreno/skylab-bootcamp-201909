@@ -39,6 +39,7 @@ export default withRouter(function({ history, practice, role }) {
           ? <p><b>Instructor: </b>{nameInstructor} {surnameInstructor}</p>
           : <p><b>Student: </b>{nameStudent} {surnameStudent}</p>
         }
+        <p><b>Status: </b>{status}</p>
       </div>
     </li>
   </>

@@ -1,5 +1,6 @@
 const { validate, errors: { NotFoundError, ConflictError, ContentError } } = require('wheely-utils')
 const { ObjectId, models: { User, Practice, Instructor } } = require('wheely-data')
+const sendEmailCancelation = require('../../../helpers/send-email-cancelation')
 const moment = require('moment')
 
 module.exports = function(instructorId, studentId, practiceId) {
@@ -34,6 +35,16 @@ module.exports = function(instructorId, studentId, practiceId) {
       throw new ConflictError(`practice with id ${practiceId} is not possible to cancel`)
     }
 
+debugger
+    // send email to both student and instructor
+    let instructorName = instructor.name.concat(' ').concat(instructor.surname)
+    let studentName = student.name.concat(' ').concat(student.surname)
+    let toStudent = student.email
+    let toInstructor = instructor.email // instructor email
+    let [dateEmail, time] = moment(practice.date).format("YYYY-MM-DD HH:mm").split(' ')
+
+    sendEmailCancelation(toStudent, toInstructor, dateEmail, time, instructorName, studentName)
+
     // update student profile with a credit more
     student.profile.credits = student.profile.credits + practice.price
       await User.updateOne({ _id: studentId }, { $set: { 'profile.credits': student.profile.credits } }, { multi: true })
@@ -42,5 +53,3 @@ module.exports = function(instructorId, studentId, practiceId) {
     await Practice.deleteOne({ _id: ObjectId(practiceId) })
   })()
 }
-
-    // falta enviar email!!

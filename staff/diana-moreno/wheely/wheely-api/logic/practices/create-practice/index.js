@@ -67,7 +67,7 @@ module.exports = function(instructorId, studentId, date) {
       let studentName = student.name.concat(' ').concat(student.surname)
       let toStudent = student.email
       let toInstructor = instructor.email // instructor email
-      let [dateEmail, time] = moment(date).format("YYYY-MM-DD HH:mm:ss").split(' ')
+      let [dateEmail, time] = moment(date).format("YYYY-MM-DD HH:mm").split(' ')
 
       sendEmail(toStudent, toInstructor, dateEmail, time, instructorName, studentName)
 

@@ -23,7 +23,7 @@ debugger
       body: JSON.stringify({ instructorId })
     })
 
-    if (res.status === 200) return
+    if (res.status === 201) return
     if (res.status === 401) throw new CredentialsError(JSON.parse(res.body).message)
     if (res.status === 404) throw new NotFoundError(JSON.parse(res.body).message)
     if (res.status === 409) throw new ConflictError(JSON.parse(res.body).message)
