@@ -238,7 +238,7 @@ export default function({ id, onBack }) {
 
         {/*cancel and submit buttons*/}
         {isEditMode &&
-          <div>
+          <div class='detail-user__buttons'>
             <button
               type='button'
               className='detail-user__button detail-user__button--cancel'
