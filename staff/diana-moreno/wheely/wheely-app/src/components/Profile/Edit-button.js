@@ -7,7 +7,7 @@ export default function ({ elem, permission, onEditMode }) {
   return <Fragment>
       <div
         className={roleOwner !== permission
-          && 'detail-user__input--separation-no-icon'}
+          ? 'detail-user__input--separation-no-icon' : ''}
       >
         { roleOwner === permission &&
           <button

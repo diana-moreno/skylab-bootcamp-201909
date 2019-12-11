@@ -56,7 +56,7 @@ export default function({ id, onBack }) {
             : HOURS.map((hour, j) => (
                 DAYS_IN_NUMBERS.map((day, i) =>
                   <ScheduleItem
-                    key={`${i}-${j}`} // double to avoid key conflict
+                    key={`${i}-${j}`}
                     day={day}
                     hour={hour}
                     handleClick={updateSlot(day, hour)}

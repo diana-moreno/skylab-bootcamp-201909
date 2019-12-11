@@ -34,13 +34,13 @@ export default withRouter(function({ history }) {
         if(token) {
           const result = await retrieveUser(token)
           // retrieve and save in state my profile
-          const { user: {id, name, surname, role }} = result
+          const { user: {id, name, surname, role } } = result
           const nameSurname = name.concat(' ').concat(surname)
           setMyId(id)
           setRoleOwner(role)
           setNameSurname(nameSurname)
           if(roleOwner === 'student') {
-            const { profile: { credits }} = result
+            const { user: { profile: { credits } } } = result
             setCredits(credits)
           }
         }
@@ -48,7 +48,7 @@ export default withRouter(function({ history }) {
         console.log(error)
       }
     })()
-  }, [])
+  }, )
 
 
   const handleGoBack = (event) => {

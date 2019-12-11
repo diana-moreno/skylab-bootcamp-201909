@@ -26,7 +26,7 @@ export default function({ onBack, id }) {
         setNotification({ error: true, message })
       }
     })()
-  }, [handleListUsers])
+  }, [])
 
   const handleListUsers = async () => {
     try {

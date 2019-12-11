@@ -6,7 +6,7 @@ export default function({ onToggleMenu, onLogout }) {
   const { myId } = useContext(Context)
   const linkMapping = [
     { url: '/home', text: 'Home', fn: onToggleMenu },
-    { url: '/booking', text: 'Register', fn: onToggleMenu },
+    { url: '/booking', text: 'Booking', fn: onToggleMenu },
     { url: `/account/${myId}`, text: 'Account', fn: onToggleMenu },
     { url: '/', text: 'Logout', fn: onLogout },
   ]
