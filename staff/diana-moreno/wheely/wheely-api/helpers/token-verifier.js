@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken')
 module.exports = function(secret) {
   return function(req, res, next) {
     const token = extractToken(req)
-
     if (!token) return res.status(401).json({ message: 'no token provided' })
 
     try {

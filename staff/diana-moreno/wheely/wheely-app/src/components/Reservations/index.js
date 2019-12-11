@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './index.sass'
 import Feedback from '../Feedback'
 import ReservationCard from './Reservation-card'
-import { listPractices, retrieveOtherUser } from '../../logic'
+import { listPractices, retrieveUser } from '../../logic'
 const moment = require('moment')
 
 export default function({ id, onBack }) {
@@ -15,7 +15,7 @@ export default function({ id, onBack }) {
   useEffect(() => {
     (async () => {
       try {
-        const user = await retrieveOtherUser(token, id)
+        const user = await retrieveUser(token, id)
         const { user: { role } } = user
         setRole(role)
         const result = await listPractices(token, id)

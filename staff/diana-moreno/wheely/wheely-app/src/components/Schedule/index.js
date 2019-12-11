@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import './index.sass'
 import Feedback from '../Feedback'
 import ScheduleItem from './Schedule-item'
-import { updateSchedule, retrieveOtherUser } from '../../logic'
+import { updateSchedule, retrieveUser } from '../../logic'
 import { HOURS, DAYS_IN_NUMBERS, SHORT_WEEK_DAYS } from './constants'
 import Context from '../CreateContext'
 
@@ -17,7 +17,7 @@ export default function({ id, onBack }) {
   useEffect(() => {
     (async () => {
       try {
-        const result = await retrieveOtherUser(token, id)
+        const result = await retrieveUser(token, id)
         const { user: { name, profile: { schedule : { days } } } } = result
         setName(name)
         setAvailableSchedule(days)

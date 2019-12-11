@@ -4,7 +4,7 @@ import NavigationLinksInstructor from './Navigation-links-instructor'
 import NavigationLinksStudent from './Navigation-links-student'
 import Feedback from '../Feedback'
 import { Link } from 'react-router-dom'
-import { retrieveOtherUser } from '../../logic'
+import { retrieveUser } from '../../logic'
 
 export default function({ id, history, onBack }) {
   const [role, setRole] = useState()
@@ -15,7 +15,7 @@ export default function({ id, history, onBack }) {
     (async () => {
       try {
         // retrieve the user which we want information
-        const user = await retrieveOtherUser(token, id)
+        const user = await retrieveUser(token, id)
         const { user: { role } } = user
         setRole(role)
       } catch ({ message }) {

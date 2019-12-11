@@ -20,7 +20,14 @@ export default withRouter(function({ error, history }) {
     try {
       const token = await authenticateUser(email, password)
       sessionStorage.token = token
-      const user = await retrieveUser(token)
+
+      // retrieve user id from token
+      const [,payload,] = token.split('.')
+      const json = atob(payload)
+      const { sub } = JSON.parse(json)
+      const id = sub
+
+      const user = await retrieveUser(token, id)
       const nameSurname = user.user.name.concat(' ').concat(user.user.surname)
 
       // save my user data in Context

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import './index.sass'
-import { listUsers, retrieveOtherUser, listPractices, createPractice } from '../../logic'
+import { listUsers, retrieveUser, listPractices, createPractice } from '../../logic'
 import Feedback from '../Feedback'
 
 const moment = require('moment')
@@ -42,7 +42,7 @@ export default function({ onBack }) {
   // retrieve choosed instructor schedule
   const getAvailableSchedule = async (id) => {
     try {
-      let result = await retrieveOtherUser(token, id)
+      let result = await retrieveUser(token, id)
       const { user: { profile: { schedule: { days }}} } = result
       return days
     } catch ({ message }) {

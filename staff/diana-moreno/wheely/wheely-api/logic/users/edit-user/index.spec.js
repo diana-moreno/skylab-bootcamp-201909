@@ -9,7 +9,7 @@ const { ObjectId, database, models: { User, Student, Instructor } } = require('w
 describe('logic - edit user', () => {
   before(() => database.connect(TEST_DB_URL))
 
-  let id, name, surname, email, password, dni, role
+  let id, name, surname, email, password, dni, role, token, newName, newSurname, newEmail, newDni, newCredits
 
   describe('when user is a student', () => {
     beforeEach(async () => {
@@ -168,7 +168,7 @@ describe('logic - edit user', () => {
   })
 
   describe('when user is an admin editing a student', () => {
-    let studentId
+    let studentId, newName, newSurname, newDni, newCredits, newEmail
 
     beforeEach(async () => {
       name = `name-${random()}`
@@ -318,7 +318,7 @@ describe('logic - edit user', () => {
   })
 
   describe('when user is an admin editing a instructor', () => {
-    let instructorId
+    let instructorId, newName, newSurname, newDni, newCredits, newEmail
 
     beforeEach(async () => {
       name = `name-${random()}`

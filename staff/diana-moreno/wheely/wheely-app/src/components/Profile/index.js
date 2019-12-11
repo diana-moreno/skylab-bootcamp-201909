@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import './index.sass'
 import Feedback from '../Feedback'
 import Context from '../CreateContext'
-import { retrieveOtherUser, deleteUser, editUser } from '../../logic'
+import { retrieveUser, deleteUser, editUser } from '../../logic'
 import EditButton from './Edit-button'
 import LabelOrInput from './Label-or-input'
 
@@ -29,7 +29,7 @@ export default function ({ onBack, id  }) {
   useEffect(() => {
     (async () => {
       try {
-        const user = await retrieveOtherUser(token, id)
+        const user = await retrieveUser(token, id)
         const { user: { name, surname, email, dni, role, profile: { credits } } } = user
         setDni(dni)
         setFirstName(name)

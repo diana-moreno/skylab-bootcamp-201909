@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Route, withRouter, Redirect } from 'react-router-dom'
+import { Route, withRouter } from 'react-router-dom'
 import { retrieveUser } from '../../logic'
 import './index.sass'
 import Context from '../CreateContext'
@@ -32,9 +32,15 @@ export default withRouter(function({ history }) {
     (async () => {
       try {
         if(token) {
-          const result = await retrieveUser(token)
+          // retrieve user id from token
+          const [,payload,] = token.split('.')
+          const json = atob(payload)
+          const { sub } = JSON.parse(json)
+          const id = sub
+
+          const result = await retrieveUser(token, id)
           // retrieve and save in state my profile
-          const { user: {id, name, surname, role } } = result
+          const { user: { name, surname, role } } = result
           const nameSurname = name.concat(' ').concat(surname)
           setMyId(id)
           setRoleOwner(role)

@@ -3,7 +3,6 @@ module.exports = {
   registerUser: require('./register-user'),
   retrieveUser: require('./retrieve-user'),
   listUsers: require('./list-users'),
-  retrieveOtherUser: require('./retrieve-other-user'),
   listPractices: require('./list-practices'),
   updateSchedule: require('./update-schedule'),
   deleteUser: require('./delete-user'),

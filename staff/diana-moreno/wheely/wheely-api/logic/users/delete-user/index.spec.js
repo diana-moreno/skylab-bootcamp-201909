@@ -10,7 +10,7 @@ describe('logic - delete user', () => {
   before(() => database.connect(TEST_DB_URL))
 
   let roles = ['admin', 'student', 'instructor']
-  let name, surname, email, password, role, names, surnames, emails, passwords, ids, adminId
+  let name, surname, email, password, role, names, surnames, emails, passwords, ids, adminId, dnis
 
   beforeEach(async () => {
     await Promise.all([User.deleteMany()])
@@ -57,7 +57,7 @@ describe('logic - delete user', () => {
   })
 
   it('should succeed on correct user admin deleting other users', async () => {
-    ids.forEach(async (id) => {
+/*    ids.forEach(async (id) => {
       await deleteUser(adminId, id)
     })
 
@@ -67,6 +67,21 @@ describe('logic - delete user', () => {
     id = ids[6]
     let user6 = await User.findOne({ id })
     expect(user6).to.equal(null)
+*/
+// TEST IT!!
+
+    let newArr = ids.map(async (id) => {
+      await deleteUser(adminId, id)
+    })
+
+    await Promise.all(newArr)
+
+    let noIds = ids.map(async (id) => {
+      let user = await User.findOne({ id })
+      expect(user).toBe(null)
+    })
+
+    await Promise.all(noIds)
   })
 
   it('should fail on wrong user id', async () => {

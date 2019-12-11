@@ -29,24 +29,6 @@ router.post('/', tokenVerifier, jsonBodyParser, (req, res) => {
   }
 })
 
-/*
-router.post('/users', jsonBodyParser, async (req, res) => {
-  const { body: { name, surname, email, password, role } } = req
-
-  try {
-    await registerUser(name, surname, email, password, role)
-    res.status(201).end()
-  } catch (error) {
-    const { message } = error
-
-    if (error instanceof ConflictError)
-      return res.status(409).json({ message })
-    res.status(400).json({ message })
-  }
-})
-*/
-
-
 router.post('/auth', jsonBodyParser, (req, res) => {
   const { body: { email, password } } = req
 
@@ -54,7 +36,6 @@ router.post('/auth', jsonBodyParser, (req, res) => {
     authenticateUser(email, password)
       .then(id => {
         const token = jwt.sign({ sub: id }, SECRET, { expiresIn: '1d' })
-        //revisar como se convierte id en token!
         res.json({ token })
       })
       .catch(error => {
@@ -70,31 +51,7 @@ router.post('/auth', jsonBodyParser, (req, res) => {
   }
 })
 
-router.get('/user', tokenVerifier, (req, res) => { // recupera mi usuario
-  //tokenVerifier añade el id que reciben del token en header en req?
-  try {
-    const { id } = req
-
-    retrieveUser(id)
-      .then(user => res.json({ user }))
-      .catch(error => {
-        const { message } = error
-
-        if (error instanceof NotFoundError)
-          return res.status(404).json({ message })
-
-        res.status(500).json({ message })
-      })
-  } catch (error) {
-    const { message } = error
-
-    res.status(400).json({ message })
-  }
-})
-
-
-router.get('/:id', tokenVerifier, (req, res) => { // recupera otro usuario
-  //tokenVerifier añade el id que reciben del token en header en req?
+router.get('/:id', tokenVerifier, (req, res) => {
   try {
     const { params: { id } } = req
     retrieveUser(id)
@@ -263,6 +220,3 @@ router.get('/progression', jsonBodyParser, tokenVerifier, (req, res) => {
 })
 
 module.exports = router
-
-
-/*      validate.matches('status', status, 'TODO', 'DOING', 'REVIEW', 'DONE')*/
