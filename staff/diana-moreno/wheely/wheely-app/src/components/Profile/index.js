@@ -6,8 +6,7 @@ import { retrieveUser, deleteUser, editUser } from '../../logic'
 import EditButton from './Edit-button'
 import LabelOrInput from './Label-or-input'
 
-
-export default function ({ onBack, id  }) {
+export default function({ id, onBack }) {
   const [isEditMode, setEditMode] = useState(false)
   const [isFirstNameEdit, setFirstNameEdit] = useState(false)
   const [isLastNameEdit, setLastNameEdit] = useState(false)
@@ -37,6 +36,7 @@ export default function ({ onBack, id  }) {
         setEmail(email)
         setRole(role)
         setCredits(credits)
+
       } catch ({ message }) {
         setNotification({ error: true, message })
       }
@@ -73,6 +73,9 @@ export default function ({ onBack, id  }) {
   const handleDeleteUser = async () => {
     try {
       await deleteUser(token, id)
+      onBack()
+      onBack()
+      setNotification({ error: false, message: 'User deleted successfully!' })
     } catch ({ message }) {
       setNotification({ error: true, message })
     }
@@ -257,7 +260,7 @@ export default function ({ onBack, id  }) {
       {notification && <Feedback {...notification} />}
 
       {/*delete user button*/}
-      {roleOwner === 'admin' && !isEditMode &&
+      {roleOwner === 'admin' && !isEditMode && !notification &&
         <button
           type='button'
           onClick={handleDeleteUser}

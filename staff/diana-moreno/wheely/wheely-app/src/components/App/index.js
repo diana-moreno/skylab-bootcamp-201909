@@ -80,7 +80,7 @@ export default withRouter(function({ history }) {
 
       { token && <Route path='/home' render={() => <Home />} />}
 
-      { token && roleOwner === 'admin' && <Route path = '/register' render={() => <Register /> }/> }
+      { token && roleOwner === 'admin' && <Route path = '/register' render={() => <Register onBack={handleGoBack} /> }/> }
 
       { token && roleOwner && <Route path='/account/:id' render={({ match: { params: { id }}}) => <Account id={id} onBack={handleGoBack} /> } /> }
 {/*
