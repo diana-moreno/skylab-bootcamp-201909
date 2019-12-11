@@ -78,7 +78,7 @@ describe('logic - delete user', () => {
 
     let noIds = ids.map(async (id) => {
       let user = await User.findOne({ id })
-      expect(user).toBe(null)
+      expect(user).to.equal(null)
     })
 
     await Promise.all(noIds)
