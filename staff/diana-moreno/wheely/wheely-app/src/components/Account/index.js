@@ -3,10 +3,10 @@ import './index.sass'
 import NavigationLinksInstructor from './Navigation-links-instructor'
 import NavigationLinksStudent from './Navigation-links-student'
 import Feedback from '../Feedback'
-import { Link, withRouter } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { retrieveOtherUser } from '../../logic'
 
-export default withRouter(function({ id, history }) {
+export default function({ id, history, onBack }) {
   const [role, setRole] = useState()
   const [notification, setNotification] = useState(null)
   const { token } = sessionStorage
@@ -26,7 +26,7 @@ export default withRouter(function({ id, history }) {
 
   return <>
     <div className='title'>
-      <i onClick={() => history.goBack()} className='material-icons'>undo</i>
+      <i onClick={() => onBack()} className='material-icons'>undo</i>
       <h3 className='title'>Your account</h3>
     </div>
     <section className='account'>
@@ -39,4 +39,4 @@ export default withRouter(function({ id, history }) {
     </section>
     { notification && <Feedback {...notification} />}
   </>
-})
+}

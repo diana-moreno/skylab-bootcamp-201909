@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
-import { withRouter } from 'react-router-dom'
 import './index.sass'
 import registerUser from '../../logic/register-user'
 import Feedback from '../Feedback'
 
-export default withRouter(function({ error, history }) {
+export default function({ error, onBack }) {
   const { token } = sessionStorage
   const [notification, setNotification] = useState(null)
 
@@ -25,7 +24,7 @@ export default withRouter(function({ error, history }) {
 
   return <>
     <div className='title'>
-      <i onClick={() => history.goBack()} className='material-icons'>undo</i>
+      <i onClick={onBack} className='material-icons'>undo</i>
       <h3>Register</h3>
     </div>
     <section className='register'>
@@ -48,4 +47,4 @@ export default withRouter(function({ error, history }) {
       <Feedback {...notification} />
     </section>
   </>
-})
+}

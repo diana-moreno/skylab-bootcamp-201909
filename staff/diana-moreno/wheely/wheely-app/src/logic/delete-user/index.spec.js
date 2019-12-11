@@ -1,126 +1,138 @@
-/*const { env: { REACT_APP_TEST_DB_URL: TEST_DB_URL, REACT_APP_TEST_SECRET: TEST_SECRET } } = process
-const removeTask = require('.')
-const { random } = Math
-const { errors: { NotFoundError, ConflictError }, polyfills: { arrayRandom } } = require('wheely-utils')
-const { database, ObjectId, models: { User, Task } } = require('wheely-data')
+require('dotenv').config()
+const { env: { REACT_APP_TEST_DB_URL: TEST_DB_URL, REACT_APP_TEST_SECRET: TEST_SECRET } } = process
+const { random, floor } = Math
 const jwt = require('jsonwebtoken')
-require('../../helpers/jest-matchers')
+const deleteUser = require('.')
+const { errors: { NotFoundError, ContentError } } = require('wheely-utils')
+const { database, models: { User, Student, Instructor } } = require('wheely-data')
 
-arrayRandom()
+describe('logic - delete user', () => {
+  beforeAll(() => database.connect(TEST_DB_URL))
 
-describe('logic - remove task', () => {
-    beforeAll(() => database.connect(TEST_DB_URL))
+  let roles = ['admin', 'student', 'instructor']
+  let name, surname, email, password, role, names, surnames, emails, passwords, ids, token, dnis
 
-    let id, token, name, surname, email, username, password, taskIds, titles, descriptions
+  beforeEach(async () => {
+    await Promise.all([User.deleteMany()])
 
-    beforeEach(async () => {
-        name = `name-${random()}`
-        surname = `surname-${random()}`
-        email = `email-${random()}@mail.com`
-        username = `username-${random()}`
-        password = `password-${random()}`
+    ids = []
+    names = []
+    surnames = []
+    emails = []
+    passwords = []
+    emails = []
+    dnis = []
+    const insertions = []
 
-        await Promise.all([User.deleteMany(), Task.deleteMany()])
+    for (let i = 0; i < 10; i++) {
+      const user = {
+        name: `name-${random()}`,
+        surname: `surname-${random()}`,
+        email: `email-${random()}@mail.com`,
+        password: `password-${random()}`,
+        dni: `dni-${random()}`,
+        role: roles[floor(random() * 3)]
+      }
+      const currentUser = await User.create(user)
+      insertions.push(currentUser)
+      names.push(currentUser.name)
+      surnames.push(currentUser.surname)
+      emails.push(currentUser.email)
+      passwords.push(currentUser.password)
+      dnis.push(currentUser.dni)
+      ids.push(currentUser._id.toString())
+    }
+    await Promise.all(insertions)
 
-        const user = await User.create({ name, surname, email, username, password })
+    //create an admin who wants to delete the other users
+    const admin = await User.create({
+      name: `name-${random()}`,
+      surname: `surname-${random()}`,
+      email: `email-${random()}@mail.com`,
+      password: `password-${random()}`,
+      dni: `dni-${random()}`,
+      role: 'admin'
+    })
+    const id = admin.id
+    token = jwt.sign({ sub: id }, TEST_SECRET)
+  })
 
-        id = user.id
-        token = jwt.sign({ sub: id }, TEST_SECRET)
+  it('should succeed on correct user admin deleting other users', async () => {
 
-        taskIds = []
-        titles = []
-        descriptions = []
-
-        const insertions = []
-
-        for (let i = 0; i < 10; i++) {
-            const task = {
-                user: id,
-                title: `title-${random()}`,
-                description: `description-${random()}`,
-                status: 'REVIEW',
-                date: new Date
-            }
-
-            insertions.push(Task.create(task)
-                .then(task => taskIds.push(task.id)))
-
-            titles.push(task.title)
-            descriptions.push(task.description)
-        }
-
-        for (let i = 0; i < 10; i++)
-            insertions.push(Task.create({
-                user: ObjectId(),
-                title: `title-${random()}`,
-                description: `description-${random()}`,
-                status: 'REVIEW',
-                date: new Date
-            }))
-
-        await Promise.all(insertions)
+    const newArr = ids.map(async (id) => {
+      await deleteUser(token, id)
     })
 
-    it('should succeed on correct user and task data', async () => {
-        const taskId = taskIds.random()
+    await Promise.all(newArr)
 
-        const response = await removeTask(token, taskId)
-
-        expect(response).toBeUndefined()
-
-        const task = await Task.findById(taskId)
-
-        expect(task).toBeNull()
+    const noIds = ids.map(async (id) => {
+      const user = await User.findOne({ id })
+      expect(user).toBe(null)
     })
 
-    it('should fail on unexisting user and correct task data', async () => {
-        const id = ObjectId().toString()
-        const token = jwt.sign({ sub: id }, TEST_SECRET)
-        const taskId = taskIds.random()
+    await Promise.all(noIds)
+  })
 
-        try {
-            await removeTask(token, taskId)
+  it('should fail on wrong user id', async () => {
+    const fakeId = '012345678901234567890123'
+    try {
+      await deleteUser(token, fakeId)
+      throw Error('should not reach this point')
 
-            throw new Error('should not reach this point')
-        } catch (error) {
-            expect(error).toBeDefined()
-            expect(error).toBeInstanceOf(NotFoundError)
-            expect(error.message).toBe(`user with id ${id} not found`)
-        }
-    })
+    } catch (error) {
+      expect(error).toBeDefined()
+      expect(error).toBeInstanceOf(NotFoundError)
+      expect(error.message).toBe(`user with id ${fakeId} not found`)
+    }
+  })
 
-    it('should fail on correct user and unexisting task data', async () => {
-        const taskId = ObjectId().toString()
+  it('should fail on wrong admin id', async () => {
+    const id = '012345678901234567890123'
+    const token = jwt.sign({ sub: id }, TEST_SECRET)
+    const userId = ids[0]
+    try {
+      await deleteUser(token, userId)
+      throw Error('should not reach this point')
 
-        try {
-            await removeTask(token, taskId)
+    } catch (error) {
+      expect(error).toBeDefined()
+      expect(error).toBeInstanceOf(NotFoundError)
+      expect(error.message).toBe(`user with id ${id} not found`)
+    }
+  })
 
-            throw new Error('should not reach this point')
-        } catch (error) {
-            expect(error).toBeDefined()
-            expect(error).toBeInstanceOf(NotFoundError)
-            expect(error.message).toBe(`user does not have task with id ${taskId}`)
-        }
-    })
+  it('should fail on wrong id type', async () => {
+    const fakeId = '0123890123'
+    try {
+      await deleteUser(token, fakeId)
+      throw Error('should not reach this point')
 
-    it('should fail on correct user and wrong task data', async () => {
-        const { _id } = await Task.findOne({ _id: { $nin: taskIds.map(taskId => ObjectId(taskId)) } })
+    } catch (error) {
+      expect(error).toBeDefined()
+/*      expect(error).toBeInstanceOf(ContentError)*/
+      expect(error.message).toBe(`${fakeId} is not a valid id`)
+    }
+  })
 
-        const taskId = _id.toString()
+  it('should fail on incorrect ids type or content', () => {
+    expect(() => deleteUser(1)).toThrow(TypeError, '1 is not a string')
+    expect(() => deleteUser(true)).toThrow(TypeError, 'true is not a string')
+    expect(() => deleteUser([])).toThrow(TypeError, ' is not a string')
+    expect(() => deleteUser({})).toThrow(TypeError, '[object Object] is not a string')
+    expect(() => deleteUser(undefined)).toThrow(TypeError, 'undefined is not a string')
+    expect(() => deleteUser(null)).toThrow(TypeError, 'null is not a string')
+    expect(() => deleteUser('')).toThrow(ContentError, 'adminId is empty or blank')
+    expect(() => deleteUser(' \t\r')).toThrow(ContentError, 'adminId is empty or blank')
 
-        try {
-            await removeTask(token, taskId)
+    expect(() => deleteUser(token, 1)).toThrow(TypeError, '1 is not a string')
+    expect(() => deleteUser(token, true)).toThrow(TypeError, 'true is not a string')
+    expect(() => deleteUser(token, [])).toThrow(TypeError, ' is not a string')
+    expect(() => deleteUser(token, {})).toThrow(TypeError, '[object Object] is not a string')
+    expect(() => deleteUser(token, undefined)).toThrow(TypeError, 'undefined is not a string')
+    expect(() => deleteUser(token, null)).toThrow(TypeError, 'null is not a string')
+    expect(() => deleteUser(token, '')).toThrow(ContentError, 'id is empty or blank')
+    expect(() => deleteUser(token, ' \t\r')).toThrow(ContentError, 'id is empty or blank')
+  })
 
-            throw new Error('should not reach this point')
-        } catch (error) {
-            expect(error).toBeDefined()
-            expect(error).toBeInstanceOf(ConflictError)
-            expect(error.message).toBe(`user with id ${id} does not correspond to task with id ${taskId}`)
-        }
-    })
-
-    // TODO other test cases
-
-    afterAll(() => Promise.all([User.deleteMany(), Task.deleteMany()]).then(database.disconnect))
+  afterAll(() => User.deleteMany().then(database.disconnect))
 })
-*/

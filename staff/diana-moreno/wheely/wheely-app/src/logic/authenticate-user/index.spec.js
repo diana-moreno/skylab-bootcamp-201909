@@ -4,6 +4,7 @@ const { random, floor } = Math
 const { errors: { ContentError, CredentialsError } } = require('wheely-utils')
 const { database, models: { User } } = require('wheely-data')
 
+
 describe('logic - authenticate user', () => {
   beforeAll(() => database.connect(TEST_DB_URL))
 
@@ -18,14 +19,13 @@ describe('logic - authenticate user', () => {
     dni = `dni-${random()}`
     role = roles[floor(random() * roles.length)]
 
- /*   await User.deleteMany()*/
+    await User.deleteMany()
 
     const user = await User.create({ name, surname, email, dni, password, role })
     id = user.id
   })
 
   it('should succeed on correct credentials', async () => {
-    debugger
     const token = await authenticateUser(email, password)
 
     expect(token).toBeDefined()

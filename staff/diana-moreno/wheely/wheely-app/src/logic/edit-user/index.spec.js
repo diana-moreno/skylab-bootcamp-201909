@@ -1,280 +1,465 @@
-/*const { env: { REACT_APP_TEST_DB_URL: TEST_DB_URL, REACT_APP_TEST_SECRET: TEST_SECRET } } = process
-const modifyTask = require('.')
+const { env: { REACT_APP_TEST_DB_URL: TEST_DB_URL, REACT_APP_TEST_SECRET: TEST_SECRET } } = process
 const { random } = Math
-const { errors: { NotFoundError, ConflictError, ContentError }, polyfills: { arrayRandom } } = require('wheely-utils')
-const { database, ObjectId, models: { User, Task } } = require('wheely-data')
+const editUser = require('.')
 const jwt = require('jsonwebtoken')
-require('../../helpers/jest-matchers')
+const { errors: { NotFoundError, ContentError, ConflictError } } = require('wheely-utils')
+const { ObjectId, database, models: { User, Student, Instructor } } = require('wheely-data')
 
-arrayRandom()
+describe('logic - edit user', () => {
+  beforeAll(() => database.connect(TEST_DB_URL))
 
-describe('logic - modify task', () => {
-    beforeAll(() => database.connect(TEST_DB_URL))
+  let id, name, surname, email, password, dni, role, token, newName, newSurname, newEmail, newDni, newCredits
 
-    const statuses = ['TODO', 'DOING', 'REVIEW', 'DONE']
-    let id, token, name, surname, email, username, password, taskIds, titles, descriptions
+  describe('when user is a student', () => {
+    beforeEach(async () => {
+      name = `name-${random()}`
+      surname = `surname-${random()}`
+      email = `email-${random()}@mail.com`
+      password = `password-${random()}`
+      dni = `dni-${random()}`
+      role = 'student'
+
+      await User.deleteMany()
+
+      const user = await User.create({ name, surname, email, password, dni, role })
+      id = user.id
+      user.profile = new Student()
+      await user.save()
+      token = jwt.sign({ sub: id }, TEST_SECRET)
+    })
+
+    it('should succeed on edit email and correct password', async () => {
+      newName = undefined
+      newSurname = undefined
+      newEmail = `email-${random()}@mail.com`
+      newDni = undefined
+      newCredits = undefined
+
+      await editUser(token, id, newName, newSurname, newEmail, newDni, newCredits, password)
+      const user = await User.findById(id)
+
+      expect(user).toBeDefined()
+      expect(user.id).toBe(id)
+      expect(user.name).toBe(name)
+      expect(user.surname).toBe(surname)
+      expect(user.email).toBe(newEmail)
+      expect(user.password).toBe(password)
+      expect(user.dni).toBe(dni)
+      expect(user.role).toBe(role)
+      expect(user.profile).toBeDefined()
+      expect(user.profile.credits).toBe(0)
+    })
+
+    it('should fail on incorrect password', async () => {
+      newName = undefined
+      newSurname = undefined
+      newEmail = `email-${random()}@mail.com`
+      newDni = undefined
+      newCredits = undefined
+      password = '56789'
+
+      try {
+        await editUser(token, id, newName, newSurname, newEmail, newDni, newCredits, password)
+        const user = await User.findById(id)
+        throw Error('should not reach this point')
+
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(error).toBeInstanceOf(ConflictError)
+        expect(error.message).toBe(`password incorrect`)
+      }
+    })
+
+    it('should fail on wrong user id', async () => {
+      newName = undefined
+      newSurname = undefined
+      newEmail = `email-${random()}@mail.com`
+      newDni = undefined
+      newCredits = undefined
+      const id = '012345678901234567890123'
+      try {
+        await editUser(token, id, newName, newSurname, newEmail, newDni, newCredits, password)
+        throw Error('should not reach this point')
+
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(error).toBeInstanceOf(NotFoundError)
+        expect(error.message).toBe(`user with id ${id} not found`)
+      }
+    })
+  })
+
+  describe('when user is an instructor', () => {
+    beforeEach(async () => {
+      name = `name-${random()}`
+      surname = `surname-${random()}`
+      email = `email-${random()}@mail.com`
+      password = `password-${random()}`
+      dni = `dni-${random()}`
+      role = 'instructor'
+
+      await User.deleteMany()
+
+      const user = await User.create({ name, surname, email, password, dni, role })
+      user.profile = new Instructor()
+      await user.save()
+
+      id = user.id
+      token = jwt.sign({ sub: id }, TEST_SECRET)
+    })
+
+    it('should succeed on edit email and correct password', async () => {
+      newName = undefined
+      newSurname = undefined
+      newEmail = `email-${random()}@mail.com`
+      newDni = undefined
+      newCredits = undefined
+
+      await editUser(token, id, newName, newSurname, newEmail, newDni, newCredits, password)
+      const user = await User.findById(id)
+
+      expect(user).toBeDefined()
+      expect(user.id).toBe(id)
+      expect(user.name).toBe(name)
+      expect(user.surname).toBe(surname)
+      expect(user.email).toBe(newEmail)
+      expect(user.password).toBe(password)
+      expect(user.dni).toBe(dni)
+      expect(user.role).toBe(role)
+      expect(user.profile).toBeDefined()
+    })
+
+    it('should fail on incorrect password', async () => {
+      newName = undefined
+      newSurname = undefined
+      newEmail = `email-${random()}@mail.com`
+      newDni = undefined
+      newCredits = undefined
+      password = '56789'
+
+      try {
+        await editUser(token, id, newName, newSurname, newEmail, newDni, newCredits, password)
+        const user = await User.findById(id)
+        throw Error('should not reach this point')
+
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(error).toBeInstanceOf(ConflictError)
+        expect(error.message).toBe(`password incorrect`)
+      }
+    })
+
+    it('should fail on wrong user id', async () => {
+      newName = undefined
+      newSurname = undefined
+      newEmail = `email-${random()}@mail.com`
+      newDni = undefined
+      newCredits = undefined
+      const id = '012345678901234567890123'
+      try {
+        await editUser(token, id, newName, newSurname, newEmail, newDni, newCredits, password)
+        throw Error('should not reach this point')
+
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(error).toBeInstanceOf(NotFoundError)
+        expect(error.message).toBe(`user with id ${id} not found`)
+      }
+    })
+  })
+
+  describe('when user is an admin editing a student', () => {
+    let studentId, newName, newSurname, newDni, newCredits, newEmail
 
     beforeEach(async () => {
-        name = `name-${random()}`
-        surname = `surname-${random()}`
-        email = `email-${random()}@mail.com`
-        username = `username-${random()}`
-        password = `password-${random()}`
+      // create admin
+      name = `name-${random()}`
+      surname = `surname-${random()}`
+      email = `email-${random()}@mail.com`
+      password = `password-${random()}`
+      dni = `dni-${random()}`
+      role = 'admin'
 
-        await Promise.all([User.deleteMany(), Task.deleteMany()])
+      await User.deleteMany()
 
-        const user = await User.create({ name, surname, email, username, password })
+      const user = await User.create({ name, surname, email, dni, password, role })
+      id = user.id
+      token = jwt.sign({ sub: id }, TEST_SECRET)
 
-        id = user.id
-        token = jwt.sign({ sub: id }, TEST_SECRET)
+      // create and student
+      name = `name-${random()}`
+      surname = `surname-${random()}`
+      email = `email-${random()}@mail.com`
+      password = `password-${random()}`
+      dni = `dni-${random()}`
+      role = 'student'
 
-        taskIds = []
-        titles = []
-        descriptions = []
+      const student = await User.create({ name, surname, email, dni, password, role })
+      studentId = student.id
 
-        const insertions = []
-
-        for (let i = 0; i < 10; i++) {
-            const task = {
-                user: ObjectId(id),
-                title: `title-${random()}`,
-                description: `description-${random()}`,
-                status: 'REVIEW',
-                date: new Date
-            }
-
-            insertions.push(Task.create(task)
-                .then(task => taskIds.push(task.id)))
-
-            titles.push(task.title)
-            descriptions.push(task.description)
-        }
-
-        for (let i = 0; i < 10; i++)
-            insertions.push(Task.create({
-                user: ObjectId(),
-                title: `title-${random()}`,
-                description: `description-${random()}`,
-                status: 'REVIEW',
-                date: new Date
-            }))
-
-        await Promise.all(insertions)
     })
 
-    it('should succeed on correct user and task data', async () => {
-        const taskId = taskIds.random()
-        const newTitle = `new-title-${random()}`
-        const newDescription = `new-description-${random()}`
-        const newStatus = statuses.random()
+    it('should succeed on edit name and correct user id', async () => {
+      newName = `name-${random()}`
+      newSurname = undefined
+      newEmail = undefined
+      newDni = undefined
+      newCredits = undefined
 
-        const response = await modifyTask(token, taskId, newTitle, newDescription, newStatus)
+      await editUser(token, studentId, newName, newSurname, newEmail, newDni, newCredits, password)
+      const user = await User.findById(studentId)
 
-        expect(response).toBeUndefined()
-
-        const task = await Task.findById(taskId)
-
-        expect(task.user.toString()).toBe(id)
-
-        expect(task.title).toBeDefined()
-        expect(task.title).toBeOfType('string')
-        expect(task.title).toHaveLengthGreaterThan(0)
-        expect(task.title).toBe(newTitle)
-
-        expect(task.description).toBeDefined()
-        expect(task.description).toBeOfType('string')
-        expect(task.description).toHaveLengthGreaterThan(0)
-        expect(task.description).toBe(newDescription)
-
-        expect(task.status).toBeDefined()
-        expect(task.status).toBeOfType('string')
-        expect(task.status).toHaveLengthGreaterThan(0)
-        expect(task.status).toBe(newStatus)
-
-        expect(task.date).toBeDefined()
-        expect(task.date).toBeInstanceOf(Date)
-
-        expect(task.lastAccess).toBeDefined()
-        expect(task.lastAccess).toBeInstanceOf(Date)
+      expect(user).toBeDefined()
+      expect(user.id).toBe(studentId)
+      expect(user.name).toBe(newName)
+      expect(user.surname).toBe(surname)
+      expect(user.email).toBe(email)
+      expect(user.password).toBe(password)
+      expect(user.dni).toBe(dni)
+      expect(user.role).toBe(role)
     })
 
-    it('should succeed on correct user and new task data, except for title', async () => {
-        const taskId = taskIds.random()
-        const newDescription = `new-description-${random()}`
-        const newStatus = statuses.random()
+    it('should succeed on edit surname and correct user id', async () => {
+      newName = undefined
+      newSurname = `surname-${random()}`
+      newEmail = undefined
+      newDni = undefined
+      newCredits = undefined
 
-        const { title } = await Task.findById(taskId)
+      await editUser(token, studentId, newName, newSurname, newEmail, newDni, newCredits, password)
+      const user = await User.findById(studentId)
 
-        const response = await modifyTask(token, taskId, undefined, newDescription, newStatus)
-
-        expect(response).toBeUndefined()
-
-        const task = await Task.findById(taskId)
-
-        expect(task.user.toString()).toBe(id)
-
-        expect(task.title).toBeDefined()
-        expect(task.title).toBeOfType('string')
-        expect(task.title).toHaveLengthGreaterThan(0)
-        expect(task.title).toBe(title)
-
-        expect(task.description).toBeDefined()
-        expect(task.description).toBeOfType('string')
-        expect(task.description).toHaveLengthGreaterThan(0)
-        expect(task.description).toBe(newDescription)
-
-        expect(task.status).toBeDefined()
-        expect(task.status).toBeOfType('string')
-        expect(task.status).toHaveLengthGreaterThan(0)
-        expect(task.status).toBe(newStatus)
-
-        expect(task.date).toBeDefined()
-        expect(task.date).toBeInstanceOf(Date)
-
-        expect(task.lastAccess).toBeDefined()
-        expect(task.lastAccess).toBeInstanceOf(Date)
+      expect(user).toBeDefined()
+      expect(user.id).toBe(studentId)
+      expect(user.name).toBe(name)
+      expect(user.surname).toBe(newSurname)
+      expect(user.email).toBe(email)
+      expect(user.password).toBe(password)
+      expect(user.dni).toBe(dni)
+      expect(user.role).toBe(role)
     })
 
-    it('should succeed on correct user and new task data, except for description', async () => {
-        const taskId = taskIds.random()
-        const newTitle = `new-title-${random()}`
-        const newStatus = statuses.random()
+    it('should succeed on edit email and correct user id', async () => {
+      newName = undefined
+      newSurname = undefined
+      newEmail = `email-${random()}@mail.com`
+      newDni = undefined
+      newCredits = undefined
 
-        const { description } = await Task.findById(taskId)
+      await editUser(token, studentId, newName, newSurname, newEmail, newDni, newCredits, password)
+      const user = await User.findById(studentId)
 
-        const response = await modifyTask(token, taskId, newTitle, undefined, newStatus)
-
-        expect(response).toBeUndefined()
-
-        const task = await Task.findById(taskId)
-
-        expect(task.user.toString()).toBe(id)
-
-        expect(task.title).toBeDefined()
-        expect(task.title).toBeOfType('string')
-        expect(task.title).toHaveLengthGreaterThan(0)
-        expect(task.title).toBe(newTitle)
-
-        expect(task.description).toBeDefined()
-        expect(task.description).toBeOfType('string')
-        expect(task.description).toHaveLengthGreaterThan(0)
-        expect(task.description).toBe(description)
-
-        expect(task.status).toBeDefined()
-        expect(task.status).toBeOfType('string')
-        expect(task.status).toHaveLengthGreaterThan(0)
-        expect(task.status).toBe(newStatus)
-
-        expect(task.date).toBeDefined()
-        expect(task.date).toBeInstanceOf(Date)
-
-        expect(task.lastAccess).toBeDefined()
-        expect(task.lastAccess).toBeInstanceOf(Date)
+      expect(user).toBeDefined()
+      expect(user.id).toBe(studentId)
+      expect(user.name).toBe(name)
+      expect(user.surname).toBe(surname)
+      expect(user.email).toBe(newEmail)
+      expect(user.password).toBe(password)
+      expect(user.dni).toBe(dni)
+      expect(user.role).toBe(role)
     })
 
-    it('should succeed on correct user and new task data, except for status', async () => {
-        const taskId = taskIds.random()
-        const newTitle = `new-title-${random()}`
-        const newDescription = `new-description-${random()}`
+    it('should succeed on edit dni and correct user id', async () => {
+      newName = undefined
+      newSurname = undefined
+      newEmail = undefined
+      newDni = `dni-${random()}`
+      newCredits = undefined
 
-        const { status } = await Task.findById(taskId)
+      await editUser(token, studentId, newName, newSurname, newEmail, newDni, newCredits, password)
+      const user = await User.findById(studentId)
 
-        const response = await modifyTask(token, taskId, newTitle, newDescription, undefined)
-
-        expect(response).toBeUndefined()
-
-        const task = await Task.findById(taskId)
-
-        expect(task.user.toString()).toBe(id)
-
-        expect(task.title).toBeDefined()
-        expect(task.title).toBeOfType('string')
-        expect(task.title).toHaveLengthGreaterThan(0)
-        expect(task.title).toBe(newTitle)
-
-        expect(task.description).toBeDefined()
-        expect(task.description).toBeOfType('string')
-        expect(task.description).toHaveLengthGreaterThan(0)
-        expect(task.description).toBe(newDescription)
-
-        expect(task.status).toBeDefined()
-        expect(task.status).toBeOfType('string')
-        expect(task.status).toHaveLengthGreaterThan(0)
-        expect(task.status).toBe(status)
-
-        expect(task.date).toBeDefined()
-        expect(task.date).toBeInstanceOf(Date)
-
-        expect(task.lastAccess).toBeDefined()
-        expect(task.lastAccess).toBeInstanceOf(Date)
+      expect(user).toBeDefined()
+      expect(user.id).toBe(studentId)
+      expect(user.name).toBe(name)
+      expect(user.surname).toBe(surname)
+      expect(user.email).toBe(email)
+      expect(user.password).toBe(password)
+      expect(user.dni).toBe(newDni)
+      expect(user.role).toBe(role)
     })
 
-    it('should fail on unexisting user and correct task data', async () => {
-        const id = ObjectId().toString()
-        const token = jwt.sign({ sub: id }, TEST_SECRET)
-        const taskId = taskIds.random()
-        const newTitle = `new-title-${random()}`
-        const newDescription = `new-description-${random()}`
-        const newStatus = statuses.random()
+    it('should succeed on adding credits to a student and correct user id', async () => {
+      newName = undefined
+      newSurname = undefined
+      newEmail = undefined
+      newDni = undefined
+      newCredits = 5
 
-        try {
-            await modifyTask(token, taskId, newTitle, newDescription, newStatus)
+      await editUser(token, studentId, newName, newSurname, newEmail, newDni, newCredits, password)
+      const user = await User.findById(studentId)
 
-            throw new Error('should not reach this point')
-        } catch (error) {
-            expect(error).toBeDefined()
-            expect(error).toBeInstanceOf(NotFoundError)
-            expect(error.message).toBe(`user with id ${id} not found`)
-        }
+      expect(user).toBeDefined()
+      expect(user.id).toBe(studentId)
+      expect(user.name).toBe(name)
+      expect(user.surname).toBe(surname)
+      expect(user.email).toBe(email)
+      expect(user.password).toBe(password)
+      expect(user.dni).toBe(dni)
+      expect(user.role).toBe(role)
+      expect(user.profile.credits).toBe(newCredits)
     })
 
-    it('should fail on correct user and unexisting task data', async () => {
-        const taskId = ObjectId().toString()
-        const newTitle = `new-title-${random()}`
-        const newDescription = `new-description-${random()}`
-        const newStatus = statuses.random()
+    it('should fail on wrong user id', async () => {
+      newName = undefined
+      newSurname = undefined
+      newEmail = `email-${random()}@mail.com`
+      newDni = undefined
+      newCredits = undefined
+      studentId = '012345678901234567890123'
+      try {
+        await editUser(token, studentId, newName, newSurname, newEmail, newDni, newCredits, password)
+        const user = await User.findById(studentId)
+        throw Error('should not reach this point')
 
-        try {
-            await modifyTask(token, taskId, newTitle, newDescription, newStatus)
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(error).toBeInstanceOf(NotFoundError)
+        expect(error.message).toBe(`user with id ${studentId} not found`)
+      }
+    })
+  })
 
-            throw new Error('should not reach this point')
-        } catch (error) {
-            expect(error).toBeDefined()
-            expect(error).toBeInstanceOf(NotFoundError)
-            expect(error.message).toBe(`user does not have task with id ${taskId}`)
-        }
+  describe('when user is an admin editing a instructor', () => {
+    let instructorId, newName, newSurname, newDni, newCredits, newEmail
+
+    beforeEach(async () => {
+      name = `name-${random()}`
+      surname = `surname-${random()}`
+      email = `email-${random()}@mail.com`
+      password = `password-${random()}`
+      dni = `dni-${random()}`
+      role = 'admin'
+
+      await User.deleteMany()
+
+      const user = await User.create({ name, surname, email, dni, password, role })
+      id = user.id
+      token = jwt.sign({ sub: id }, TEST_SECRET)
+
+      // create and student
+      name = `name-${random()}`
+      surname = `surname-${random()}`
+      email = `email-${random()}@mail.com`
+      password = `password-${random()}`
+      dni = `dni-${random()}`
+      role = 'instructor'
+
+      const instructor = await User.create({ name, surname, email, dni, password, role })
+      instructorId = instructor.id
+
     })
 
-    it('should fail on correct user and wrong task data', async () => {
-        const { _id } = await Task.findOne({ _id: { $nin: taskIds.map(taskId => ObjectId(taskId)) } })
+    it('should succeed on edit name and correct user id', async () => {
+      newName = `name-${random()}`
+      newSurname = undefined
+      newEmail = undefined
+      newDni = undefined
+      newCredits = undefined
 
-        const taskId = _id.toString()
-        const newTitle = `new-title-${random()}`
-        const newDescription = `new-description-${random()}`
-        const newStatus = statuses.random()
+      await editUser(token, instructorId, newName, newSurname, newEmail, newDni, newCredits, password)
+      const user = await User.findById(instructorId)
 
-        try {
-            await modifyTask(token, taskId, newTitle, newDescription, newStatus)
-
-            throw new Error('should not reach this point')
-        } catch (error) {
-            expect(error).toBeDefined()
-            expect(error).toBeInstanceOf(ConflictError)
-            expect(error.message).toBe(`user with id ${id} does not correspond to task with id ${taskId}`)
-        }
+      expect(user).toBeDefined()
+      expect(user.id).toBe(instructorId)
+      expect(user.name).toBe(newName)
+      expect(user.surname).toBe(surname)
+      expect(user.email).toBe(email)
+      expect(user.password).toBe(password)
+      expect(user.dni).toBe(dni)
+      expect(user.role).toBe(role)
     })
 
-    it('should fail on correct user and wrong task status', () => {
-        const taskId = taskIds.random()
-        const newTitle = `new-title-${random()}`
-        const newDescription = `new-description-${random()}`
-        const newStatus = 'wrong-status'
+    it('should succeed on edit surname and correct user id', async () => {
+      newName = undefined
+      newSurname = `surname-${random()}`
+      newEmail = undefined
+      newDni = undefined
+      newCredits = undefined
 
-        expect(() => modifyTask(token, taskId, newTitle, newDescription, newStatus)).toThrow(ContentError, `${newStatus} does not match any of the valid status values: ${statuses}`)
+      await editUser(token, instructorId, newName, newSurname, newEmail, newDni, newCredits, password)
+      const user = await User.findById(instructorId)
+
+      expect(user).toBeDefined()
+      expect(user.id).toBe(instructorId)
+      expect(user.name).toBe(name)
+      expect(user.surname).toBe(newSurname)
+      expect(user.email).toBe(email)
+      expect(user.password).toBe(password)
+      expect(user.dni).toBe(dni)
+      expect(user.role).toBe(role)
     })
 
-    // TODO other test cases
+    it('should succeed on edit email and correct user id', async () => {
+      newName = undefined
+      newSurname = undefined
+      newEmail = `email-${random()}@mail.com`
+      newDni = undefined
+      newCredits = undefined
 
-    afterAll(() => Promise.all([User.deleteMany(), Task.deleteMany()]).then(database.disconnect))
+      await editUser(token, instructorId, newName, newSurname, newEmail, newDni, newCredits, password)
+      const user = await User.findById(instructorId)
+
+      expect(user).toBeDefined()
+      expect(user.id).toBe(instructorId)
+      expect(user.name).toBe(name)
+      expect(user.surname).toBe(surname)
+      expect(user.email).toBe(newEmail)
+      expect(user.password).toBe(password)
+      expect(user.dni).toBe(dni)
+      expect(user.role).toBe(role)
+    })
+
+    it('should succeed on edit dni and correct user id', async () => {
+      newName = undefined
+      newSurname = undefined
+      newEmail = undefined
+      newDni = `dni-${random()}`
+      newCredits = undefined
+
+      await editUser(token, instructorId, newName, newSurname, newEmail, newDni, newCredits, password)
+      const user = await User.findById(instructorId)
+
+      expect(user).toBeDefined()
+      expect(user.id).toBe(instructorId)
+      expect(user.name).toBe(name)
+      expect(user.surname).toBe(surname)
+      expect(user.email).toBe(email)
+      expect(user.password).toBe(password)
+      expect(user.dni).toBe(newDni)
+      expect(user.role).toBe(role)
+    })
+
+    it('should fail on wrong user id', async () => {
+      newName = undefined
+      newSurname = undefined
+      newEmail = `email-${random()}@mail.com`
+      newDni = undefined
+      newCredits = undefined
+      instructorId = '012345678901234567890123'
+      try {
+        await editUser(token, instructorId, newName, newSurname, newEmail, newDni, newCredits, password)
+        const user = await User.findById(instructorId)
+        throw Error('should not reach this point')
+
+      } catch (error) {
+        expect(error).toBeDefined()
+        expect(error).toBeInstanceOf(NotFoundError)
+        expect(error.message).toBe(`user with id ${instructorId} not found`)
+      }
+    })
+  })
+
+  it('should fail on incorrect id type or content', () => {
+    expect(() => editUser(1)).toThrow(TypeError, '1 is not a string')
+    expect(() => editUser(true)).toThrow(TypeError, 'true is not a string')
+    expect(() => editUser([])).toThrow(TypeError, ' is not a string')
+    expect(() => editUser({})).toThrow(TypeError, '[object Object] is not a string')
+    expect(() => editUser(undefined)).toThrow(TypeError, 'undefined is not a string')
+    expect(() => editUser(null)).toThrow(TypeError, 'null is not a string')
+    expect(() => editUser('')).toThrow(ContentError, 'id is empty or blank')
+    expect(() => editUser(' \t\r')).toThrow(ContentError, 'id is empty or blank')
+  })
+
+  afterAll(() => User.deleteMany().then(database.disconnect))
 })
-*/

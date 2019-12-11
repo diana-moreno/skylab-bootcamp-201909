@@ -5,7 +5,7 @@ import { listPractices } from '../../logic'
 import Feedback from '../Feedback'
 const moment = require('moment')
 
-export default function ({ id, user, onBack }) {
+export default function ({ id, onBack }) {
   const [practices, setPractices] = useState(undefined)
   const [notification, setNotification] = useState(null)
   const { token } = sessionStorage

@@ -2,7 +2,7 @@ const call = require('../../utils/call')
 const { validate, errors: { CredentialsError, NotFoundError } } = require('wheely-utils')
 const API_URL = process.env.REACT_APP_API_URL
 
-module.exports = function(token, id) {
+module.exports = function(token) {
   validate.string(token)
   validate.string.notVoid('token', token)
 
@@ -14,7 +14,6 @@ module.exports = function(token, id) {
 
     if (res.status === 200) {
       const user = JSON.parse(res.body)
-      user.lastAccess = new Date(user.lastAccess)
       return user
     }
     if (res.status === 401) throw new CredentialsError(JSON.parse(res.body).message)

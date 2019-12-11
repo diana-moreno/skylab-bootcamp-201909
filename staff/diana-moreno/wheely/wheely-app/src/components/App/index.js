@@ -54,7 +54,7 @@ export default withRouter(function({ history }) {
   const handleGoBack = (event) => {
     history.goBack()
   }
-
+/*
   const OnlyLoggedIn = (Component, props) =>
     token ? <Component {...props} />
     : <Redirect to="/" />
@@ -63,22 +63,21 @@ export default withRouter(function({ history }) {
     roleOwner === 'admin'
       ? <Component {...props} />
       : <Home />
-
+*/
 // bloquear ciertas pantallas para usuarios
   return <>
     <Context.Provider value={{ roleOwner, setRoleOwner, nameSurname, setNameSurname, setMyId, myId }}>
 
-      <Route exact path='/' render={() => <Login />} />
-      {token && roleOwner && <Navbar /> }
+      { !token && <Route exact path='/' render={() => <Login />} /> }
 
-      {token && <Route path='/home' render={() => <Home />} />}
+      { token && roleOwner && <Navbar /> }
 
-      {token && roleOwner === 'admin' && <Route path = '/register' render={() => <Register /> }/> }
+      { token && <Route path='/home' render={() => <Home />} />}
 
-{/*      {token && (roleOwner === 'instructor' || roleOwner === 'student') && <Route path = '/register' render={() => <Home /> }/> }*/}
+      { token && roleOwner === 'admin' && <Route path = '/register' render={() => <Register /> }/> }
 
-{/*      {!token && <Route path = '/register' render={() => <Login /> }/>}*/}
-
+      { token && roleOwner && <Route path='/account/:id' render={({ match: { params: { id }}}) => <Account id={id} onBack={handleGoBack} /> } /> }
+{/*
       { token && roleOwner === 'student' && <Route path='/account/:id' render={({ match: { params: { id }}}) => token && id === myId
         ? <Account id={id} onBack={handleGoBack}  />
         : <Home /> } /> }
@@ -86,7 +85,7 @@ export default withRouter(function({ history }) {
 
       { token && (roleOwner === 'instructor' || roleOwner === 'admin') && <Route exact path='/account/:id/' render={({ match: { params: { id }}}) => token && id
         ? <Account id={id} onBack={handleGoBack}  />
-        : <Home /> } /> }
+        : <Home /> } /> }*/}
 
       {
         token && roleOwner === 'admin'
@@ -101,12 +100,12 @@ export default withRouter(function({ history }) {
 
       { /* Profile */ }
       { token && roleOwner === 'student' && <Route path='/profile/:id' render={({ match: { params: { id }}}) => token && id === myId
-        ? <Profile roleOwner={roleOwner} id={id} onBack={handleGoBack}  />
+        ? <Profile id={id} onBack={handleGoBack}  />
         : <Home /> } /> }
 
       { /* Profile */ }
       { token && (roleOwner === 'instructor' || roleOwner === 'admin') && <Route path='/profile/:id' render={({ match: { params: { id }}}) => token && id
-        ? <Profile roleOwner={roleOwner} id={id} onBack={handleGoBack}  />
+        ? <Profile id={id} onBack={handleGoBack}  />
         : <Home /> } /> }
 
 
@@ -121,10 +120,10 @@ export default withRouter(function({ history }) {
 
      { roleOwner && <Route path='/progression/:id' render={({ match: { params: { id }}}) => token && id
         ? <Progression id={id} onBack={handleGoBack} />
-        : <Navbar nameSurname={nameSurname}/> } /> }
+        : <Navbar /> } /> }
 
       { token && (roleOwner === 'admin' || roleOwner === 'instructor') && <Route path='/schedule/:id' render={({ match: { params: { id }}}) => token && id
-        ? <Schedule roleOwner={roleOwner} id={id} onBack={handleGoBack}  />
+        ? <Schedule id={id} onBack={handleGoBack} />
         : <Home /> } /> }
 
       { token && roleOwner === 'instructor' && <Route path='/valoration/:id' render={({ match: { params: { id }}}) => token
@@ -144,3 +143,7 @@ export default withRouter(function({ history }) {
 })
 
 
+
+{/*      {token && (roleOwner === 'instructor' || roleOwner === 'student') && <Route path = '/register' render={() => <Home /> }/> }*/}
+
+{/*      {!token && <Route path = '/register' render={() => <Login /> }/>}*/}

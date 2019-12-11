@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import './index.sass'
-import { withRouter } from 'react-router-dom'
 import { listUsers, retrieveOtherUser, listPractices, createPractice } from '../../logic'
 import Feedback from '../Feedback'
 
 const moment = require('moment')
 
-export default withRouter(function({ history }) {
+export default function({ onBack }) {
   const [instructors, setInstructors] = useState()
   const [calendar, setCalendar] = useState()
   const [indexDay, setIndexDay] = useState()
@@ -153,7 +152,7 @@ export default withRouter(function({ history }) {
 
   return <>
     <div className='title'>
-      <i onClick={() => history.goBack()} className='material-icons'>undo</i>
+      <i onClick={() => onBack()} className='material-icons'>undo</i>
       <h3>Booking</h3>
     </div>
     <section className='booking'>
@@ -195,5 +194,4 @@ export default withRouter(function({ history }) {
       {notification && <Feedback {...notification} />}
     </section>
   </>
-})
-
+}
