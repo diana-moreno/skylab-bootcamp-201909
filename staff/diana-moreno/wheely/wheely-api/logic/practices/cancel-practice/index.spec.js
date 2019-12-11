@@ -107,36 +107,6 @@ describe('logic - cancel practice', () => {
     }
   })
 
-  it('should fail on incorrect student id and practice done', async () => {
-    try {
-      await cancelPractice(instructorId, fakeId, practiceId)
-      throw Error('should not reach this point')
-
-    } catch (error) {
-      expect(error).to.exist
-      expect(error.message).to.exist
-      expect(typeof error.message).to.equal('string')
-      expect(error.message.length).to.be.greaterThan(0)
-      expect(error).to.be.an.instanceOf(ContentError)
-      expect(error.message).to.equal(`${fakeId} is not a valid id`)
-    }
-  })
-
-  it('should fail on incorrect instructor id and practice done', async () => {
-    try {
-      await cancelPractice(fakeId, studentId, practiceId)
-      throw Error('should not reach this point')
-
-    } catch (error) {
-      expect(error).to.exist
-      expect(error.message).to.exist
-      expect(typeof error.message).to.equal('string')
-      expect(error.message.length).to.be.greaterThan(0)
-      expect(error).to.be.an.instanceOf(ContentError)
-      expect(error.message).to.equal(`${fakeId} is not a valid id`)
-    }
-  })
-
   describe('when practice is done', () => {
     beforeEach(async () => {
       // create an student

@@ -57,19 +57,6 @@ describe('logic - delete user', () => {
   })
 
   it('should succeed on correct user admin deleting other users', async () => {
-/*    ids.forEach(async (id) => {
-      await deleteUser(adminId, id)
-    })
-
-    let id = ids[0]
-    let user0 = await User.findOne({ id })
-    expect(user0).to.equal(null)
-    id = ids[6]
-    let user6 = await User.findOne({ id })
-    expect(user6).to.equal(null)
-*/
-// TEST IT!!
-
     let newArr = ids.map(async (id) => {
       await deleteUser(adminId, id)
     })

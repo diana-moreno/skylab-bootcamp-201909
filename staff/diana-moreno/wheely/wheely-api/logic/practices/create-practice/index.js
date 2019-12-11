@@ -18,18 +18,19 @@ module.exports = function(instructorId, studentId, date) {
   return (async () => {
 
     // check if student exists
-    let student = await User.findOne({ _id: studentId, role: 'student' })
+    let student = await User.findOne({ _id: ObjectId(studentId), role: 'student' })
+    debugger
     if (!student) throw new NotFoundError(`user with id ${studentId} not found`)
 
     // check if the student has credits available
     if (student.profile.credits > 0) {
 
       // check if instructor exists
-      let instructor = await User.findOne({ _id: instructorId, role: 'instructor' })
+      let instructor = await User.findOne({ _id: ObjectId(instructorId), role: 'instructor' })
       if (!instructor) throw new NotFoundError(`user with id ${instructorId} not found`)
 
       // check if a practice with the same instructor, date and time exists
-      let existingDate = await Practice.findOne({ _id: instructorId, date: date })
+      let existingDate = await Practice.findOne({ instructorId: instructorId, date: date })
       if (existingDate) throw new ConflictError(`practice with date ${date} already exists`)
 
 

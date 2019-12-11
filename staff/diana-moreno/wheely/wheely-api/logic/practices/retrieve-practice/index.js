@@ -16,5 +16,3 @@ module.exports = function(id) {
     return practice.toObject()
   })()
 }
-
-//missing token
