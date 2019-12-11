@@ -25,7 +25,7 @@ module.exports = function(id) {
     } else if (instructor) {
       const practices = await Practice
         .find({ "instructorId": ObjectId(id), "feedback": undefined }, { "studentId": 1 })
-        .populate('studentId') // quitar el id del schema
+        .populate('studentId')
         .lean()
 
       users = practices.reduce((users, practice) => {
@@ -44,4 +44,3 @@ module.exports = function(id) {
     return users
   })()
 }
-// revisar test porque ahora devuelve otra cosa!!!

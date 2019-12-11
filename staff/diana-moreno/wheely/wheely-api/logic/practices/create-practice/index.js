@@ -42,7 +42,7 @@ module.exports = function(instructorId, studentId, date) {
       const hour = moment(date).format("HH:mm")
       const indexDay = moment(date).day()
       let available = false
-debugger
+
       instructor.profile.schedule.days[indexDay].hours.forEach(hourSch => {
         hourSch === hour ? available = true : available
       })

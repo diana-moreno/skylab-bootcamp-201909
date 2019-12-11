@@ -24,7 +24,6 @@ module.exports = function(adminId, name, surname, email, dni, password, role) {
     let admin = await User.findOne({ _id: adminId, role: 'admin' })
     if (!admin) throw new NotFoundError(`user with id ${adminId} not found or has no permission`)
 
-
     // checks if user already exists
     let user = await User.findOne({ email })
     if(user) throw new ConflictError(`user with email ${email} already exists`)
@@ -33,7 +32,6 @@ module.exports = function(adminId, name, surname, email, dni, password, role) {
 
     // create new user depending on the role
     user = await User.create({ name, surname, email, dni, password, role })
-
 
     // create specific profile for instructor
     let instructor = await User.findOne({ _id: ObjectId(user.id), role: 'instructor' })
@@ -58,4 +56,3 @@ module.exports = function(adminId, name, surname, email, dni, password, role) {
     }
   })()
 }
-// falta corregir los tests, ahora sí funcionan los esquemas!!!!

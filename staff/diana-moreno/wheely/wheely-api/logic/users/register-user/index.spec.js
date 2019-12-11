@@ -10,7 +10,7 @@ describe('logic - register user', () => {
   before(() => database.connect(TEST_DB_URL))
 
   let roles = ['student', 'admin', 'instructor']
-  let name, surname, email, password, role, adminId
+  let name, surname, email, password, role, adminId, dni
 
   beforeEach(async () => {
     name = `name-${random()}`

@@ -72,26 +72,6 @@ describe('logic - write feedback', () => {
     expect(practiceFeedback.valoration).to.equal('good')
   })
 
-/*  it('should fail on already written feedback and valoration', async () => {
-    try {
-      let practiceId = practicesId[1]
-      let practice = await Practice.findOne({ _id: practiceId })
-      expect(practice).to.exist
-      feedback = 'Regular managing the clutch'
-      valoration = 'regular'
-      await writeFeedback(instructorId, studentId, practiceId, feedback, valoration)
-
-      throw Error('should not reach this point')
-
-    } catch (error) {
-      expect(error).to.exist
-      expect(error.message).to.exist
-      expect(typeof error.message).to.equal('string')
-      expect(error.message.length).to.be.greaterThan(0)
-      expect(error.message).to.equal(`practice with id ${practiceId} has been already valorated`)
-    }
-  })*/
-
   it('should fail on unexisting practice', async () => {
     try {
       let practiceFeedback = await writeFeedback(instructorId, studentId, fakeId, feedback, valoration)

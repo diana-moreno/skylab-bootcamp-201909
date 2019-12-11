@@ -37,7 +37,6 @@ describe('logic - toogle schedule instructor', () => {
     await User.updateOne({ _id: ObjectId(instructor.id) }, { $set: instructor })
     instructorId = instructor.id
 
-
     // create an admin
     name = `name-${random()}`
     surname = `surname-${random()}`

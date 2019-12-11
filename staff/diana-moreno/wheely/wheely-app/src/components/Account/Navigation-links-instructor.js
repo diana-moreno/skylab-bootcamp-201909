@@ -7,8 +7,6 @@ import SearchIcon from './Search-icon'
 export default function({ id }) {
   const { roleOwner } = useContext(Context)
 
-  const isAdmin = roleOwner === 'admin'
-
   // special link for admin when wants to check users of one user
   const adminRoute = (
     <Link to={`/account/${id}/users/`}>

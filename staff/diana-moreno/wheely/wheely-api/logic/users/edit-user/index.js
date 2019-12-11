@@ -62,14 +62,6 @@ module.exports = function(id, userId, name, surname, email, dni, credits, passwo
     let user = await User.findById(userId) // findOne with id and password
     if (!user) throw new NotFoundError(`user with id ${userId} not found`)
 
-/*    // check if email exists in other user
-    user = await User.findOne({ email })
-    if(user) throw new ConflictError(`user with email ${email} already exists`)
-
-    // check if dni exists in other user
-    user = await User.findOne({ dni })
-    if(user) throw new ConflictError(`user with DNI ${dni} already exists`)
-*/
     //update data
     const update = {}
 
@@ -85,5 +77,3 @@ module.exports = function(id, userId, name, surname, email, dni, credits, passwo
     }
   })()
 }
-
-// cambiar test, ahora cambia creditos

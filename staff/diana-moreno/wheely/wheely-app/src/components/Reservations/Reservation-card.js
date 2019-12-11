@@ -7,7 +7,7 @@ const moment = require('moment')
 export default withRouter(function({ history, practice, role }) {
   const { roleOwner } = useContext(Context)
 
-  const { instructorId: { name: nameInstructor, surname: surnameInstructor }, studentId: { name: nameStudent, surname: surnameStudent }, _id, status, date, feedback } = practice
+  const { instructorId: { name: nameInstructor, surname: surnameInstructor }, studentId: { name: nameStudent, surname: surnameStudent }, _id, status, date } = practice
   const [day, hour] = moment(date).format('DD-MM-YYYY HH:mm').split(' ')
 
   // depending on if is a student or a instructor who select a reservation, is redirecting to one place or another

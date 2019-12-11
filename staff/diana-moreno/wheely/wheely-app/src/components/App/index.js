@@ -6,15 +6,15 @@ import Context from '../CreateContext'
 
 import Home from '../Home'
 import Login from '../Login'
-import Reservations from '../Reservations' // double
+import Reservations from '../Reservations'
 import Booking from '../Booking'
 import Credits from '../Credits'
 import Progression from '../Progression'
 import Schedule from '../Schedule'
-import UsersList from '../Users-list' // double
+import UsersList from '../Users-list'
 import Register from '../Register'
 import Valoration from '../Valoration'
-import Account from '../Account' // double
+import Account from '../Account'
 import Profile from '../Profile'
 import Navbar from '../Navbar'
 import ReservationDetail from '../Reservation-detail'
@@ -33,10 +33,10 @@ export default withRouter(function({ history }) {
       try {
         if(token) {
           const result = await retrieveUser(token)
-
+          // retrieve and save in state my profile
           const { user: {id, name, surname, role, profile: { credits }}} = result
           const nameSurname = name.concat(' ').concat(surname)
-          setMyId(id) // to retrieve my profile
+          setMyId(id)
           setRoleOwner(role)
           setNameSurname(nameSurname)
           setCredits(credits)

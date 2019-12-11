@@ -4,4 +4,3 @@ const Day = require('./day')
 module.exports = new Schema({
   days: [Day]
 })
-

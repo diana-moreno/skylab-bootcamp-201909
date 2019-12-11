@@ -111,7 +111,7 @@ describe('logic - retrieve user', () => {
       email = `email-${random()}@mail.com`
       password = `password-${random()}`
       dni = `dni-${random()}`,
-      role = 'admin'
+        role = 'admin'
 
       await User.deleteMany()
 

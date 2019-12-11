@@ -1,9 +1,9 @@
 module.exports = class ConflictError extends Error {
-    constructor(message) {
-        super(message)
+  constructor(message) {
+    super(message)
 
-        Error.captureStackTrace(this, ConflictError)
+    Error.captureStackTrace(this, ConflictError)
 
-        this.name = ConflictError.name
-    }
+    this.name = ConflictError.name
+  }
 }

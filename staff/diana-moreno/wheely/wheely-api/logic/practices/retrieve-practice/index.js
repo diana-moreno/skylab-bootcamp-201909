@@ -7,7 +7,6 @@ module.exports = function(id) {
   if (!ObjectId.isValid(id)) throw new ContentError(`${id} is not a valid id`)
 
   return (async () => {
-    // find user
     const practice = await Practice
       .findById(id)
       .populate('instructorId')
@@ -17,3 +16,5 @@ module.exports = function(id) {
     return practice.toObject()
   })()
 }
+
+//missing token
