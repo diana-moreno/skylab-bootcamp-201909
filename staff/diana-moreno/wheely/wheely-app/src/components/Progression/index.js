@@ -26,7 +26,7 @@ export default function ({ id, user, onBack }) {
         setNotification({ error: true, message })
       }
     })()
-  }, [])
+  }, [token, id])
 
   return <>
     <div className='title'>

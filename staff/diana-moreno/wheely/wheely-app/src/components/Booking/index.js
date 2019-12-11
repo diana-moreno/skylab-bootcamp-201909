@@ -25,7 +25,7 @@ export default withRouter(function({ history }) {
         setNotification({ error: true, message })
       }
     })()
-  }, [])
+  }, [token])
 
   const generateAvailableCalendar = async (event) => {
     // prepare empty calendar

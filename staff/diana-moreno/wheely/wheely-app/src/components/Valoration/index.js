@@ -6,13 +6,11 @@ const moment = require('moment')
 
 export default function ({ id, onBack }) {
   const { token } = sessionStorage
-  const [role, setRole] = useState()
   const [nameStudent, setNameStudent] = useState()
   const [surnameStudent, setSurnameStudent] = useState()
   const [day, setDay] = useState()
   const [time, setTime] = useState()
   const [instructorId, setInstructorId] = useState()
-  const [practiceId, setPracticeId] = useState()
   const [valoration, setValoration] = useState()
   const [comment, setComment] = useState()
   const [studentId, setStudentId] = useState()
@@ -24,13 +22,12 @@ export default function ({ id, onBack }) {
     (async () => {
       try {
         const result = await retrievePractice(token, id)
-        const { studentId: { name: nameStudent, surname: surnameStudent, _id: studentId }, date , _id} = result.practice
+        const { studentId: { name: nameStudent, surname: surnameStudent, _id: studentId }, date } = result.practice
         let [day, time] = moment(date).format('DD-MM-YYYY HH:mm').split(' ')
         setNameStudent(nameStudent)
         setSurnameStudent(surnameStudent)
         setDay(day)
         setTime(time)
-        setPracticeId(_id)
         setInstructorId(instructorId)
         setStudentId(studentId)
       } catch ({ message }) {

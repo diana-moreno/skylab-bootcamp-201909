@@ -34,18 +34,21 @@ export default withRouter(function({ history }) {
         if(token) {
           const result = await retrieveUser(token)
           // retrieve and save in state my profile
-          const { user: {id, name, surname, role, profile: { credits }}} = result
+          const { user: {id, name, surname, role }} = result
           const nameSurname = name.concat(' ').concat(surname)
           setMyId(id)
           setRoleOwner(role)
           setNameSurname(nameSurname)
-          setCredits(credits)
+          if(roleOwner === 'student') {
+            const { profile: { credits }} = result
+            setCredits(credits)
+          }
         }
       }catch (error) {
         console.log(error)
       }
     })()
-  })
+  }, [])
 
 
   const handleGoBack = (event) => {
@@ -72,9 +75,9 @@ export default withRouter(function({ history }) {
 
       {token && roleOwner === 'admin' && <Route path = '/register' render={() => <Register /> }/> }
 
-      {token && (roleOwner === 'instructor' || roleOwner === 'student') && <Route path = '/register' render={() => <Home /> }/> }
+{/*      {token && (roleOwner === 'instructor' || roleOwner === 'student') && <Route path = '/register' render={() => <Home /> }/> }*/}
 
-      {!token && <Route path = '/register' render={() => <Login /> }/>}
+{/*      {!token && <Route path = '/register' render={() => <Login /> }/>}*/}
 
       { token && roleOwner === 'student' && <Route path='/account/:id' render={({ match: { params: { id }}}) => token && id === myId
         ? <Account id={id} onBack={handleGoBack}  />
@@ -108,9 +111,9 @@ export default withRouter(function({ history }) {
 
 
       {(roleOwner === 'admin' || roleOwner === 'instructor') && <Route path = '/users' render={() => <UsersList onBack={handleGoBack} /> }/> }
-      {token && <Route path = '/booking' render={() =>
-        token ? <Booking onBack={handleGoBack}  /> : '' }/>}
 
+      {token && roleOwner === 'student' && <Route path = '/booking'
+        render={() => token ? <Booking onBack={handleGoBack}  /> : '' }/>}
 
       {token && roleOwner === 'student' && <Route path = '/credits' render={() =>
         token ? <Credits onBack={handleGoBack} credits={credits} /> : '' }/>}

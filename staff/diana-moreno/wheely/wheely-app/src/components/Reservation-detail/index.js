@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './index.sass'
 import Feedback from '../Feedback'
-import { retrievePractice, retrieveUser, cancelPractice} from '../../logic'
+import { retrievePractice, cancelPractice} from '../../logic'
 const moment = require('moment')
 
 export default function ({ id, onBack }) {
@@ -33,7 +33,7 @@ export default function ({ id, onBack }) {
         setNotification({ error: true, message })
       }
     })()
-  }, [])
+  }, [token, id])
 
   const handleCancel = async () => {
     try {

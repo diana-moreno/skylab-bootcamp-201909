@@ -25,7 +25,7 @@ export default function({ id, onBack }) {
         setNotification({ error: true, message })
       }
     })()
-  }, [])
+  }, [token, id])
 
   // if is an instructor, only can visualize the data but modify nothing
   const updateSlot = (day, hour) => async () => {

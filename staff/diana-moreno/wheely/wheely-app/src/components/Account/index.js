@@ -3,17 +3,16 @@ import './index.sass'
 import NavigationLinksInstructor from './Navigation-links-instructor'
 import NavigationLinksStudent from './Navigation-links-student'
 import Feedback from '../Feedback'
-import Context from '../CreateContext'
 import { Link, withRouter } from 'react-router-dom'
 import { retrieveOtherUser } from '../../logic'
 
 export default withRouter(function({ id, history }) {
   const [role, setRole] = useState()
   const [notification, setNotification] = useState(null)
+  const { token } = sessionStorage
 
   useEffect(() => {
     (async () => {
-      const { token } = sessionStorage
       try {
         // retrieve the user which we want information
         const user = await retrieveOtherUser(token, id)
@@ -23,7 +22,7 @@ export default withRouter(function({ id, history }) {
         setNotification({ error: true, message })
       }
     })()
-  }, [])
+  }, [token, id])
 
   return <>
     <div className='title'>

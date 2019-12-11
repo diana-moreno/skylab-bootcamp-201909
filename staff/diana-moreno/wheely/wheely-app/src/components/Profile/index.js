@@ -41,7 +41,7 @@ export default function ({ onBack, id  }) {
         setNotification({ error: true, message })
       }
     })()
-  }, [])
+  }, [token, id])
 
   // save in state for every input, a boolean to know if it's in edit mode or not
   const enableEditMode = (str) => {

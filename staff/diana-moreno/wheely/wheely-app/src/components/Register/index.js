@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom'
 import './index.sass'
 import registerUser from '../../logic/register-user'
 import Feedback from '../Feedback'
-import Context from '../CreateContext'
 
 export default withRouter(function({ error, history }) {
   const { token } = sessionStorage
@@ -17,7 +16,7 @@ export default withRouter(function({ error, history }) {
 
   const handleRegister = async (name, surname, email, dni, password, role) => {
     try {
-      const response = await registerUser(token, name, surname, email, dni, password, role)
+      await registerUser(token, name, surname, email, dni, password, role)
       setNotification({ error: false, message: 'Registration succesfully!'})
     } catch ({ message }) {
       setNotification({ error: true, message })

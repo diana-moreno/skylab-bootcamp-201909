@@ -5,7 +5,7 @@ import MenuStudent from './Menu-student'
 import MenuInstructor from './Menu-instructor'
 import MenuAdmin from './Menu-admin'
 
-export default function({}) {
+export default function() {
   const { roleOwner, nameSurname } = useContext(Context)
   const [toggleMenu, setToggleMenu] = useState(false)
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './index.sass'
 import Feedback from '../Feedback'
 import ReservationCard from './Reservation-card'
-import { retrieveUser, listPractices, retrieveOtherUser } from '../../logic'
+import { listPractices, retrieveOtherUser } from '../../logic'
 const moment = require('moment')
 
 export default function({ id, onBack }) {
@@ -29,7 +29,7 @@ export default function({ id, onBack }) {
         setNotification({ error: true, message })
       }
     })()
-  }, [])
+  }, [token, id])
 
   // depending on the time and/or if a practices has feedback or not, we defined a status to each practice
   const addStatus = practice => {
