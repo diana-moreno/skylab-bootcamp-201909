@@ -272,7 +272,7 @@ describe('logic - book a practice', () => {
         expect(error.message).to.exist
         expect(typeof error.message).to.equal('string')
         expect(error.message.length).to.be.greaterThan(0)
-        expect(error.message).to.equal(`instructor has not available date ${date}`)
+        expect(error.message).to.equal(`practice with date ${date} already exists`)
       }
     })
 

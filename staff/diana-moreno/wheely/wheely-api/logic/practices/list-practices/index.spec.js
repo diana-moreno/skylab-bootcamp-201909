@@ -10,13 +10,14 @@ const moment = require('moment')
 describe('logic - list practices', () => {
   before(() => database.connect(TEST_DB_URL))
 
-  let studentId, instructorId, adminId, name, surname, email, password, role, price, date, status, dates
+  let studentId, instructorId, adminId, name, surname, email, password, role, price, date, status, dates, dni, date1, date2
 
   beforeEach(async () => {
     // create an student
     name = `j-${random()}`
     surname = `surname-${random()}`
     email = `email-${random()}@mail.com`
+    dni = `dni-${random()}`
     password = `password-${random()}`
     role = 'student'
 

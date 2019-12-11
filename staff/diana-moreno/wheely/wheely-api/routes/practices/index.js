@@ -12,7 +12,6 @@ const router = Router()
 
 router.post('/', jsonBodyParser, tokenVerifier, (req, res) => {
   try {
-    debugger
   const { id, body: { instructorId, dateTime } } = req
     createPractice(instructorId, id, dateTime)
       .then((practice) => res.json({ practice }))

@@ -10,7 +10,7 @@ const moment = require('moment')
 describe('logic - retrieve practice', () => {
   before(() => database.connect(TEST_DB_URL))
 
-  let studentId, instructorId, adminId, name, surname, email, password, role, price, date, status, dates, practiceId
+  let studentId, instructorId, adminId, name, surname, email, password, role, price, date, status, dates, practiceId, dni
 
   beforeEach(async () => {
     // create an student
@@ -19,6 +19,7 @@ describe('logic - retrieve practice', () => {
     email = `email-${random()}@mail.com`
     password = `password-${random()}`
     role = 'student'
+    dni = `dni-${random()}`
 
     await Promise.all([User.deleteMany(), Practice.deleteMany()])
 
