@@ -9,6 +9,7 @@ export default withRouter(function({ error, history }) {
   const [notification, setNotification] = useState(null)
   const { setRoleOwner, setNameSurname, setMyId } = useContext(Context)
 
+  // prepare the data from submit form
   const handleSubmit = event => {
     event.preventDefault()
     const { email: { value: email }, password: { value: password } } = event.target
@@ -22,7 +23,7 @@ export default withRouter(function({ error, history }) {
       const user = await retrieveUser(token)
       const nameSurname = user.user.name.concat(' ').concat(user.user.surname)
 
-      // guardar mi usuario en context
+      // save my user data in Context
       setMyId(user.user.id)
       setRoleOwner(user.user.role)
       setNameSurname(nameSurname)
@@ -40,8 +41,18 @@ export default withRouter(function({ error, history }) {
     <main  className='login__container'>
       <p className='login__subtitle'>Instructors and students area</p>
       <form className='login__form' onSubmit={handleSubmit}>
-        <input type="text" name="email" placeholder="email" className='login__form-item'/>
-        <input type="text" name="password" placeholder="password" className='login__form-item'/>
+        <input
+          type="text"
+          name="email"
+          placeholder="email"
+          className='login__form-item'
+        />
+        <input
+          type="text"
+          name="password"
+          placeholder="password"
+          className='login__form-item'
+        />
         <button className='login__button'>Enter</button>
       </form>
       <Feedback {...notification} />

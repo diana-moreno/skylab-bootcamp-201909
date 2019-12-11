@@ -39,7 +39,6 @@ export default function ({ id, onBack }) {
     })()
   }, [])
 
-
   const handleValoratePractice = (event) => {
     event.preventDefault()
     try {
@@ -53,13 +52,13 @@ export default function ({ id, onBack }) {
 
   return <>
     <div className='title'>
-      <i onClick={onBack} className="material-icons">undo</i>
+      <i onClick={onBack} className='material-icons'>undo</i>
       <h3>Valoration</h3>
     </div>
     <section className='valoration'>
       <div className='valoration__detail-container'>
         <div className='valoration__icon'>
-          <i className="material-icons">create</i>
+          <i className='material-icons'>create</i>
         </div>
         <div className='valoration__detail'>
           <p><b>Date: </b>{day}</p>
@@ -70,31 +69,31 @@ export default function ({ id, onBack }) {
       <form onSubmit={handleValoratePractice} className='valoration__form'>
         <textarea
           className='valoration__message'
-          cols="30"
-          rows="10"
+          cols='30'
+          rows='10'
           placeholder="Please, write an accurate feedback to your student. Keep in mind that once sent, it won't be possible to edit."
           onChange={(event) => { setComment(event.target.value)}}
         >
         </textarea>
         <h4>How was {nameStudent}'s performance?</h4>
-        <div className="valoration__puntuation">
+        <div className='valoration__puntuation'>
           <label>Bad
             <input
-              type="radio"
+              type='radio'
               value={'bad'}
               onChange={(event) => { setValoration(event.target.value) }}
             />
           </label>
           <label>Regular
             <input
-              type="radio"
+              type='radio'
               value={'regular'}
               onChange={(event) => { setValoration(event.target.value) }}
             />
           </label>
           <label>Good
             <input
-              type="radio"
+              type='radio'
               value={'good'}
               onChange={(event) => { setValoration(event.target.value) }}
             />

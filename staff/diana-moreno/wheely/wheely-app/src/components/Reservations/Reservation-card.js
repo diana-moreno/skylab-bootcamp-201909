@@ -6,18 +6,11 @@ const moment = require('moment')
 
 export default withRouter(function({ history, practice, role }) {
   const { roleOwner } = useContext(Context)
-  const { instructorId: { name: nameInstructor, surname: surnameInstructor }, studentId: { name: nameStudent, surname: surnameStudent }, _id, date, feedback } = practice
+
+  const { instructorId: { name: nameInstructor, surname: surnameInstructor }, studentId: { name: nameStudent, surname: surnameStudent }, _id, status, date, feedback } = practice
   const [day, hour] = moment(date).format('DD-MM-YYYY HH:mm').split(' ')
 
-  let status
-  if(moment(date).isBefore(moment()) && feedback) {
-    status = 'finished'
-  } else if(moment(date).isBefore(moment()) && !feedback) {
-    status = 'feedback'
-  } else if(moment(date).isAfter(moment())) {
-    status = 'pending'
-  }
-
+  // depending on if is a student or a instructor who select a reservation, is redirecting to one place or another
   const handleDetail = () => {
     if(roleOwner === 'student' && status === 'pending') {
       history.push(`/reservation-detail/${_id}`)
@@ -29,13 +22,17 @@ export default withRouter(function({ history, practice, role }) {
   return <>
     <li className={`reservation reservation--${status}`} onClick={handleDetail} >
       <div className='reservation__icon'>
-        {status === 'pending' && <i className="material-icons">hourglass_empty</i>}
-        {status === 'feedback' && roleOwner === 'instructor' && <i className="material-icons">create</i>}
+        { status === 'pending' &&
+          <i className='material-icons'>hourglass_empty</i>
+        }
+        { status === 'feedback' && roleOwner === 'instructor' &&
+          <i className='material-icons'>create</i>
+        }
       </div>
       <div className='reservation__detail'>
         <p><b>Date: </b>{day}</p>
         <p><b>Time: </b>{hour}</p>
-        {role === 'student'
+        { role === 'student'
           ? <p><b>Instructor: </b>{nameInstructor} {surnameInstructor}</p>
           : <p><b>Student: </b>{nameStudent} {surnameStudent}</p>
         }

@@ -4,19 +4,19 @@ import Context from '../CreateContext'
 
 export default function({ onToggleMenu, onLogout }) {
   const { myId } = useContext(Context)
+  const linkMapping = [
+    { url: '/home', text: 'Home', fn: onToggleMenu },
+    { url: '/booking', text: 'Register', fn: onToggleMenu },
+    { url: `/account/${myId}`, text: 'Account', fn: onToggleMenu },
+    { url: '/', text: 'Logout', fn: onLogout },
+  ]
 
   return <>
-    <li className='navbar__menu-item'>
-      <Link onClick={onToggleMenu} to={`/home`}>Home</Link>
-    </li>
-    <li className='navbar__menu-item'>
-      <Link onClick={onToggleMenu} to={`/booking`}>Booking</Link>
-    </li>
-    <li className='navbar__menu-item'>
-      <Link onClick={onToggleMenu} to={`/account/${myId}`}>Your account</Link>
-    </li>
-    <li className='navbar__menu-item'>
-      <Link to={'/'} onClick={onLogout} >Logout</Link>
-    </li>
+    { linkMapping.map(({ url, text, fn }) => (
+        <li className='navbar__menu-item'>
+          <Link onClick={fn} to={url}>{text}</Link>
+        </li>
+      ))
+    }
   </>
 }

@@ -4,7 +4,7 @@ import './index.sass'
 export default function ({ onBack, credits }) {
   return <>
     <div className='title'>
-      <i onClick={onBack} className="material-icons">undo</i>
+      <i onClick={onBack} className='material-icons'>undo</i>
       <h3>Credits</h3>
     </div>
     <section className='credits'>

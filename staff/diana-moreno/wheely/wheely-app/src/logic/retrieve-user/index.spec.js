@@ -1,4 +1,4 @@
-const { env: { REACT_APP_TEST_DB_URL: TEST_DB_URL, REACT_APP_TEST_SECRET: TEST_SECRET } } = process
+/*const { env: { REACT_APP_TEST_DB_URL: TEST_DB_URL, REACT_APP_TEST_SECRET: TEST_SECRET } } = process
 const retrieveUser = require('.')
 const { random } = Math
 const { errors: { NotFoundError } } = require('wheely-utils')
@@ -67,3 +67,4 @@ describe('logic - retrieve user', () => {
 
     afterAll(() => User.deleteMany().then(database.disconnect))
 })
+*/

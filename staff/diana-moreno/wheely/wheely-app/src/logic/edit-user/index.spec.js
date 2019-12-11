@@ -1,4 +1,4 @@
-const { env: { REACT_APP_TEST_DB_URL: TEST_DB_URL, REACT_APP_TEST_SECRET: TEST_SECRET } } = process
+/*const { env: { REACT_APP_TEST_DB_URL: TEST_DB_URL, REACT_APP_TEST_SECRET: TEST_SECRET } } = process
 const modifyTask = require('.')
 const { random } = Math
 const { errors: { NotFoundError, ConflictError, ContentError }, polyfills: { arrayRandom } } = require('wheely-utils')
@@ -277,3 +277,4 @@ describe('logic - modify task', () => {
 
     afterAll(() => Promise.all([User.deleteMany(), Task.deleteMany()]).then(database.disconnect))
 })
+*/

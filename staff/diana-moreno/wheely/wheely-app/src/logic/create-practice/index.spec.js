@@ -1,4 +1,4 @@
-const { env: { REACT_APP_TEST_DB_URL: TEST_DB_URL, REACT_APP_TEST_SECRET: TEST_SECRET } } = process
+/*const { env: { REACT_APP_TEST_DB_URL: TEST_DB_URL, REACT_APP_TEST_SECRET: TEST_SECRET } } = process
 const createTask = require('.')
 const { random } = Math
 const { database, models: { User, Task } } = require('wheely-data')
@@ -50,3 +50,4 @@ describe('logic - create task', () => {
 
     afterAll(() => Promise.all([User.deleteMany(), Task.deleteMany()]).then(database.disconnect))
 })
+*/

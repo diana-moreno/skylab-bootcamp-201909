@@ -1,37 +1,38 @@
 import { Link } from 'react-router-dom'
 import React, { useContext } from 'react'
 import Context from '../CreateContext'
+import SearchIcon from './Search-icon'
 
-const NavigationLinksInstructor = ({ id }) => {
+
+export default function({ id }) {
   const { roleOwner } = useContext(Context)
 
-  const newRedirect = roleOwner === 'admin'
+  const isAdmin = roleOwner === 'admin'
 
+  // special link for admin when wants to check users of one user
   const adminRoute = (
     <Link to={`/account/${id}/users/`}>
-      <i className="material-icons detail-user__icon detail-user__icon--blue">search</i>
+      <SearchIcon />
       <p>The instructor students</p>
     </Link>
   )
 
   const normalRoute = (
     <Link to="/users">
-      <i className="material-icons detail-user__icon detail-user__icon--blue">search</i>
+      <SearchIcon />
       <p>Your students</p>
     </Link>
   )
 
   return <>
     <Link to={`/reservations/${id}`}>
-      <i className="material-icons detail-user__icon detail-user__icon--blue">search</i>
+      <SearchIcon />
       <p>Reservations</p>
     </Link>
-    { newRedirect ? adminRoute : normalRoute }
+    { roleOwner === 'admin' ? adminRoute : normalRoute }
     <Link to={`/schedule/${id}`}>
-      <i className="material-icons detail-user__icon detail-user__icon--blue">search</i>
+      <SearchIcon />
       <p>Schedule</p>
     </Link>
   </>
 }
-
-export default NavigationLinksInstructor

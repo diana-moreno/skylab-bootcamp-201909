@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import './index.sass'
 import Feedback from '../Feedback'
-import UsersItem from '../Users-item'
+import UsersItem from './User-item'
 import Context from '../CreateContext'
 import { listUsers } from '../../logic'
 import './index.sass'
@@ -12,6 +12,7 @@ export default function({ onBack, id }) {
   const [usersList, setUsersList] = useState()
   const { token } = sessionStorage
   const [notification, setNotification] = useState(null)
+  const [activeFilter, setactiveFilter] = useState('')
 
   useEffect(() => {
     (async () => {
@@ -41,6 +42,17 @@ export default function({ onBack, id }) {
     }
   }
 
+  // handle data from searcher and set it to the state
+  const filterUser = ({ target }) => {
+    setactiveFilter(target.value.toLowerCase())
+  }
+
+  // check if the query introduced matches with any user
+  const filterByActiveFilter = (user) => {
+    return user.name.toLowerCase().includes(activeFilter)
+      || user.surname.toLowerCase().includes(activeFilter)
+  }
+
   return <>
     <div className='title'>
       <i onClick={onBack} className="material-icons">undo</i>
@@ -48,12 +60,16 @@ export default function({ onBack, id }) {
     </div>
     <section className='users'>
       <form className='users__searcher' action="">
-        <input className='users__searcher-input' type="text" placeholder="search user"/>
-        <button className='users__searcher-button'>Search</button>
+        <input
+          className='users__searcher-input'
+          type="text"
+          placeholder="search user"
+          onChange={filterUser}
+        />
       </form>
       <ul>
-      { usersList && usersList.map(currentUser =>
-        <UsersItem currentUser={currentUser} /> )
+      { usersList && usersList.filter(filterByActiveFilter).map((currentUser, i) =>
+        <UsersItem key={i} currentUser={currentUser} /> )
       }
       </ul>
       {notification && <Feedback {...notification} />}

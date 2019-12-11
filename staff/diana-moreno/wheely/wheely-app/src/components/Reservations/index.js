@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import './index.sass'
 import Feedback from '../Feedback'
-import ReservationCard from '../Reservation-card'
+import ReservationCard from './Reservation-card'
 import { retrieveUser, listPractices, retrieveOtherUser } from '../../logic'
-/*import SearchOptions from '../Search-options'*/
 const moment = require('moment')
 
 export default function({ id, onBack }) {
   const [practices, setPractices] = useState(undefined)
   const [role, setRole] = useState()
   const [notification, setNotification] = useState(null)
+  const [activeFilter, setactiveFilter] = useState('all')
   const { token } = sessionStorage
 
   useEffect(() => {
@@ -20,16 +20,38 @@ export default function({ id, onBack }) {
         setRole(role)
         const result = await listPractices(token, id)
         const { practices } = result
-        setPractices(practices)
 
-        if (practices) {
-          practices.length === 0 ? setPractices(undefined) : setPractices(practices)
-        }
+        // if there are no reservations, we receive and empty array which throws and error. To avoid this, we set the value to undefined.
+        setPractices(practices.length === 0
+          ? undefined
+          : practices.map(addStatus))
       } catch ({ message }) {
         setNotification({ error: true, message })
       }
     })()
   }, [])
+
+  // depending on the time and/or if a practices has feedback or not, we defined a status to each practice
+  const addStatus = practice => {
+    if (moment(practice.date).isAfter(moment())) {
+      return {...practice, status: 'pending'}
+    } else if(moment(practice.date).isBefore(moment()) && !practice.feedback) {
+      return {...practice, status: 'feedback'}
+    } else if (moment(practice.date).isBefore(moment()) && practice.feedback) {
+      return {...practice, status: 'finished'}
+    } else return {...practice}
+  }
+
+  // update in the state the value of the filter selected by the user
+  const updateFilter = ({ target }) => {
+    setactiveFilter(target.value)
+  }
+
+  // render the reservations depending on the filter selected
+  const filterByActiveFilter = practice => {
+    if (activeFilter === 'all') return practice // every practice
+    return practice.status === activeFilter // only the same status
+  }
 
   return < >
     <div className='title'>
@@ -38,14 +60,17 @@ export default function({ id, onBack }) {
     </div> <
     section className = 'reservations' >
     <form action="">
-        <select name="role" className='reservations__search'>
-     {/*     <SearchOptions />*/}
+        <select name="role" className='reservations__search' onChange={updateFilter}>
+          <option value="all">All</option>
+          <option value="pending">Pending</option>
+          <option value="feedback">Missing feedback</option>
+          <option value="finished">Finished</option>
         </select>
-        <button>Filter</button>
       </form>
     <div className = 'reservations__container' >
       <ul>
         { practices && practices
+          .filter(filterByActiveFilter)
           .sort((a, b) =>  moment(b.date).diff(moment(a.date)))
           .map((practice, i) =>
             <ReservationCard key={i} practice={practice} role={role} /> )

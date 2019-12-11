@@ -1,20 +1,20 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-/*import './index.sass'*/
 
 export default function({ onToggleMenu, onLogout }) {
+  const linkMapping = [
+    { url: '/home', text: 'Home', fn: onToggleMenu },
+    { url: '/register', text: 'Register', fn: onToggleMenu },
+    { url: '/users', text: 'Users', fn: onToggleMenu },
+    { url: '/', text: 'Logout', fn: onLogout },
+  ]
+
   return <>
-    <li className='navbar__menu-item'>
-      <Link onClick={onToggleMenu} to={`/home`}>Home</Link>
-    </li>
-    <li className='navbar__menu-item'>
-      <Link onClick={onToggleMenu} to={`/register`}>Register</Link>
-    </li>
-    <li className='navbar__menu-item'>
-      <Link onClick={onToggleMenu} to={`/users`}>Users</Link>
-    </li>
-    <li className='navbar__menu-item'>
-      <Link to={'/'} onClick={onLogout} >Logout</Link>
-    </li>
+    { linkMapping.map(({ url, text, fn }) => (
+        <li className='navbar__menu-item'>
+          <Link onClick={fn} to={url}>{text}</Link>
+        </li>
+      ))
+    }
   </>
 }

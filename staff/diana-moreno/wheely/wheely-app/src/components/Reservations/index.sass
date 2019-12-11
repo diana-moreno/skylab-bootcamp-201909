@@ -33,3 +33,39 @@
       margin-left: 0
       padding: 0
       margin: 0
+
+.reservation
+  display: flex
+  padding: 0.5rem 0
+  margin: 1rem 0
+  box-shadow: 0 2px 7px 2px rgba(0,0,0,0.04), 0 1px 3px 0 rgba(0,0,0,0.24)
+  border-radius: 7px
+
+  &--pending
+    background-color: white
+
+  &--finished
+    background-color: #dedbdb
+
+  &--feedback
+    border: 2px solid #ff9700
+
+  &__icon
+    width: 22%
+    font-size: 2rem
+    color: #FF9800
+    display: flex
+    justify-content: center
+    align-items: center
+
+  &__detail
+    width: 70%
+  p
+    margin: 0.2rem 0
+
+  &--done
+    background: #f1f1f1
+    box-shadow: none
+
+.category__item-icon--done
+    color: #009688

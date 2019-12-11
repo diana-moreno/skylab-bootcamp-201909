@@ -6,7 +6,6 @@ const moment = require('moment')
 
 export default function ({ id, onBack }) {
   const { token } = sessionStorage
-  const [role, setRole] = useState()
   const [nameInstructor, setNameInstructor] = useState()
   const [surnameInstructor, setSurnameInstructor] = useState()
   const [day, setDay] = useState()
@@ -19,10 +18,7 @@ export default function ({ id, onBack }) {
   useEffect(() => {
     (async () => {
       try {
-        const user = await retrieveUser(token) // no sirve, hay que pasar el id de quien hace la practica // da igual porque admin no puede ver los detalles, mucha locura!
-        const { user: { role } } = user
-        setRole(role)
-
+        // retrieve practices when render first time
         const result = await retrievePractice(token, id)
         const { instructorId: { name: nameInstructor, surname: surnameInstructor, _id: instructorId }, date , _id} = result.practice
         let [day, time] = moment(date).format('DD-MM-YYYY HH:mm').split(' ')
@@ -51,7 +47,7 @@ export default function ({ id, onBack }) {
 
   return <>
     <div className='title'>
-      <i onClick={onBack} className="material-icons">undo</i>
+      <i onClick={onBack} className='material-icons'>undo</i>
       <h3>Reservation detail</h3>
     </div>
     <section className='reservation-detail'>
@@ -65,7 +61,12 @@ export default function ({ id, onBack }) {
         <p>Keep in mind that you can cancel it notifying with 24h of advance. In this case, your credit will be returned.</p>
       </div>
         <Feedback {...notification} />
-      { !isCanceled && <button className='reservation-detail__button'onClick={handleCancel} >Cancel</button> }
+      { !isCanceled &&
+        <button
+          className='reservation-detail__button'
+          onClick={handleCancel}>
+            Cancel
+        </button> }
     </section>
   </>
 }

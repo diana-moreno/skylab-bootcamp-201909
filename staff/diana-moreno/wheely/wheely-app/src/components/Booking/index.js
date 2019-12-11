@@ -2,9 +2,6 @@ import React, { useState, useEffect } from 'react'
 import './index.sass'
 import { withRouter } from 'react-router-dom'
 import { listUsers, retrieveOtherUser, listPractices, createPractice } from '../../logic'
-import OptionsInstructors from './options-instructors.js'
-import OptionsDate from './options-date.js'
-import OptionsTime from './options-time.js'
 import Feedback from '../Feedback'
 
 const moment = require('moment')
@@ -20,7 +17,7 @@ export default withRouter(function({ history }) {
   useEffect(() => {
     (async () => {
       try {
-        // recoge todos los profesores
+        // list all instructors
         let result = await listUsers(token)
         const { users } = result
         setInstructors(users)
@@ -30,10 +27,8 @@ export default withRouter(function({ history }) {
     })()
   }, [])
 
-
   const generateAvailableCalendar = async (event) => {
     // prepare empty calendar
-  /*  setNotification(null)*/
     setCalendar([])
     setIndexDay(undefined)
 
@@ -44,7 +39,6 @@ export default withRouter(function({ history }) {
     let availableCalendar = getAvailableCalendar(calendar, reservations)
     setCalendar(availableCalendar)
   }
-
 
   // retrieve choosed instructor schedule
   const getAvailableSchedule = async (id) => {
@@ -57,16 +51,17 @@ export default withRouter(function({ history }) {
     }
   }
 
-
-  // genera un calendario con días y horas reales a partir del schedule
+  // transform schedule in a object with specific dates and times
   const generateCalendar = (schedule) => {
     let calendar = []
-    // transform schedule in a object with real dates and array of times
-    for (let i = 0; i < 30; i++) {
+    if (typeof schedule === undefined) return calendar
+
+    const daysInAdvance = 30
+    for (let i = 0; i < daysInAdvance; i++) {
       const weekday = moment().add(i, 'day').day()
       const today = Number(moment().day())
 
-      if ( schedule && schedule[weekday].hours.length > 0) {
+      if (schedule && schedule[weekday].hours.length > 0) {
         let day = moment().day(i + today, 'day').format('DD-MM-YYYY')
         const hours = schedule[weekday].hours
         calendar.push({ day, hours })
@@ -75,7 +70,6 @@ export default withRouter(function({ history }) {
     calendar = checkPastTime(calendar)
     return calendar
   }
-
 
   // checks if the first day of the array is today. If is today, removes from the array of hours, the hours that are past (to no offer a new practice in the past)
   const checkPastTime = (calendar) => {
@@ -86,7 +80,7 @@ export default withRouter(function({ history }) {
       let timePending = []
 
       calendar[0].hours.forEach(hour => {
-        const timeAvailable = moment(hour, "HH:mm") //parse string to moment hour
+        const timeAvailable = moment(hour, 'HH:mm') //parse string to moment hour
 
         if (timeNow < timeAvailable) {
           timePending.push(moment(timeAvailable).format('HH:mm'))
@@ -98,28 +92,25 @@ export default withRouter(function({ history }) {
     return calendar
   }
 
-
-// recoge las reservas pendientes del profesor
+// retrieve the instructor reservation
   const retrieveReservations = async (id) => {
     let reservations = []
     try {
       let result = await listPractices(token, id)
       const { practices } = result
-      if(practices) {
-        let pendingPractices = practices.filter(pract => pract.status === 'pending')
-        pendingPractices && pendingPractices.forEach(practice => {
-          const [day, hour] = moment(practice.date).format('DD-MM-YYYY HH:mm').split(' ')
-          reservations.push({ day, hour })
-        })
-      }
+      practices.forEach(practice => {
+        const [day, hour] = moment(practice.date)
+          .format('DD-MM-YYYY HH:mm')
+          .split(' ')
+        reservations.push({ day, hour })
+      })
       return reservations
     } catch ({ message }) {
       setNotification({ error: true, message })
     }
   }
 
-
- // genera el calendario disponible, restando las reservas pendientes y eliminando los días que no tienen horas disponibles
+  // generates the calendar as a result of subtracting reservations to instructor availability
   const getAvailableCalendar = (calendar, reservations) => {
     reservations && reservations.forEach(reservation =>
       calendar.forEach(date => {
@@ -130,25 +121,27 @@ export default withRouter(function({ history }) {
     }
   ))
   // clean empty days
-  let availableCalendar = calendar.filter(day => day.hours.length > 0)
-  return availableCalendar
+  return calendar.filter(day => day.hours.length > 0)
  }
 
- // el día que ha seleccionado el usuario
+  // save the position in the array of days, of the day selected by the user
   const selectData = (event) => {
     const indexDay = event.target.value
     setIndexDay(indexDay)
   }
 
+  // prepare all data from submit form
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    let { instructor: {value: instructorId}, day: { value: indexDay }, hour: { value: hour } } = event.target
-    let day = calendar[indexDay].day
-    let dateTime = moment(`${day} ${hour}`, "DD-MM-YYYY HH:mm")
+    const { instructor: {value: instructorId}, day: { value: indexDay }, hour: { value: hour } } = event.target
+
+    const day = calendar[indexDay].day
+    const dateTime = moment(`${day} ${hour}`, 'DD-MM-YYYY HH:mm')
     handleReservatePractice(instructorId, dateTime)
   }
 
+  // reservate a practice and show a notification
   const handleReservatePractice = async (instructorId, dateTime) => {
     try {
       await createPractice(token, instructorId, dateTime)
@@ -160,7 +153,7 @@ export default withRouter(function({ history }) {
 
   return <>
     <div className='title'>
-      <i onClick={() => history.goBack()} className="material-icons">undo</i>
+      <i onClick={() => history.goBack()} className='material-icons'>undo</i>
       <h3>Booking</h3>
     </div>
     <section className='booking'>
@@ -170,22 +163,31 @@ export default withRouter(function({ history }) {
         <p>Every practice costs 1 credit.</p>
       </div>
       <form onSubmit={handleSubmit} >
-       <select name="instructor" onChange={generateAvailableCalendar} >
-          <option value="" >-- instructor --</option>
-         { instructors && instructors.map((instructor, i) =>
-            <OptionsInstructors name='instructor' key={i} id={instructor._id} instructor={instructor} />)
+       <select name='instructor' onChange={generateAvailableCalendar} >
+          <option value='' >-- instructor --</option>
+         { instructors && instructors.map(({ name, surname, _id }, i) =>
+            <option name='instructor' key={i} value={_id}>
+              {name} {surname}
+            </option>
+           )
          }
         </select>
-       <select name="day" onChange={selectData} >
-          <option value="">-- date --</option>
-         { calendar && calendar.map((elem, i) =>
-            <OptionsDate name='day' key={i} index={i} day={elem.day} />)
+       <select name='day' onChange={selectData} >
+          <option value=''>-- date --</option>
+         { calendar && calendar.sort().map(({ day }, i) =>
+            <option name='day' key={i} value={i}>
+              {day}
+            </option>
+          )
          }
         </select>
-       <select name="hour">
-          <option value="">-- time --</option>
-         { indexDay && calendar[indexDay].hours.map((hour, i) =>
-            <OptionsTime name='hour' key={i} hour={hour} />)
+       <select name='hour'>
+          <option value=''>-- time --</option>
+         { indexDay && calendar[indexDay].hours.sort().map((hour, i) =>
+            <option name='hour' key={i} value={hour}>
+              {hour}
+            </option>
+            )
          }
         </select>
         <button>Confirm</button>

@@ -4,6 +4,8 @@ import Feedback from '../Feedback'
 import Context from '../CreateContext'
 import { retrieveOtherUser, deleteUser, editUser } from '../../logic'
 import EditButton from './Edit-button'
+import LabelOrInput from './Label-or-input'
+
 
 export default function ({ onBack, id  }) {
   const [isEditMode, setEditMode] = useState(false)
@@ -20,7 +22,6 @@ export default function ({ onBack, id  }) {
   const [credits, setCredits] = useState()
   const [dni, setDni] = useState()
   const [notification, setNotification] = useState(null)
-
 
   const { roleOwner } = useContext(Context)
   const { token } = sessionStorage
@@ -42,6 +43,7 @@ export default function ({ onBack, id  }) {
     })()
   }, [])
 
+  // save in state for every input, a boolean to know if it's in edit mode or not
   const enableEditMode = (str) => {
     if(str === 'firstName') {
       setFirstNameEdit(!isFirstNameEdit)
@@ -57,6 +59,7 @@ export default function ({ onBack, id  }) {
     setEditMode(true)
   }
 
+  // disable all edits mode at a time
   const disableEditMode = () => {
     setEditMode(false)
     setFirstNameEdit(false)
@@ -75,6 +78,7 @@ export default function ({ onBack, id  }) {
     }
   }
 
+  // prepare all data from form in submit
   const handleSubmit = event => {
     event.preventDefault()
     handleEditUser(firstName, lastName, email, dni, credits, password)
@@ -92,7 +96,7 @@ export default function ({ onBack, id  }) {
 
   return <>
     <div className='title'>
-      <i onClick={onBack} className="material-icons">undo</i>
+      <i onClick={onBack} className='material-icons'>undo</i>
       <h3>Profile</h3>
     </div>
     <section className='detail-user'>
@@ -100,96 +104,112 @@ export default function ({ onBack, id  }) {
 
         {/* firstname*/}
         <div>
-          <EditButton elem={'firstName'} permission={'admin'} onEditMode={enableEditMode} />
-          <p className={isFirstNameEdit
-            ? 'detail-user__input--separation' : ''}><b>First name: </b>
-            { isFirstNameEdit
-              ? <input
-                  className='detail-user__input'
-                  type='text'
-                  placeholder={ firstName }
-                  name='name'
-                  value={firstName}
-                  onChange={event => setFirstName(event.target.value)} />
-                : <span>{ firstName }</span>
-            }
-          </p>
+          <EditButton
+            elem={'firstName'}
+            permission={'admin'}
+            onEditMode={enableEditMode}
+          />
+          <LabelOrInput
+            isEditting={isFirstNameEdit}
+            label='First name: '
+            content={firstName}
+          >
+            <input
+              className='detail-user__input'
+              type='text'
+              placeholder={ firstName }
+              name='name'
+              value={firstName}
+              onChange={event => setFirstName(event.target.value)}
+            />
+          </LabelOrInput>
         </div>
 
         {/*lastName*/}
         <div>
-          <EditButton elem={'lastName'} permission={'admin'} onEditMode={enableEditMode} />
-          <p className={isLastNameEdit
-            ? 'detail-user__input--separation' : ''}><b>Last name: </b>
-            { isLastNameEdit
-              ? <input
-                  className='detail-user__input'
-                  type='text'
-                  placeholder={ lastName }
-                  name='surname'
-                  value={lastName}
-                  onChange={event => setLastName(event.target.value)} />
-                : <span>{ lastName }</span>
-            }
-          </p>
+          <EditButton
+            elem={'lastName'}
+            permission={'admin'}
+            onEditMode={enableEditMode}
+          />
+          <LabelOrInput
+            isEditting={isLastNameEdit}
+            label='Last name: '
+            content={lastName}
+          >
+            <input
+              className='detail-user__input'
+              type='text'
+              placeholder={ lastName }
+              name='surname'
+              value={lastName}
+              onChange={event => setLastName(event.target.value)}
+            />
+          </LabelOrInput>
         </div>
 
         {/*email*/}
         <div>
           <EditButton elem={'email'} permission={roleOwner} onEditMode={enableEditMode} />
-          <p className={isEmailEdit
-            ? 'detail-user__input--separation' : ''}><b>e-mail: </b>
-            { isEmailEdit
-              ? <input
-                  className='detail-user__input'
-                  type='text'
-                  placeholder={ email }
-                  name='email'
-                  value={email}
-                  onChange={event => setEmail(event.target.value)} />
-                : <span>{ email }</span>
-            }
-          </p>
+          <LabelOrInput
+            isEditting={isEmailEdit}
+            label='e-mail: '
+            content={email}
+          >
+            <input
+              className='detail-user__input'
+              type='text'
+              placeholder={ email }
+              name='email'
+              value={email}
+              onChange={event => setEmail(event.target.value)}
+            />
+          </LabelOrInput>
         </div>
 
         {/*credits*/}
         {roleOwner === 'admin' && role === 'student' &&
           <div>
             <EditButton elem={'credits'} permission={roleOwner} onEditMode={enableEditMode} />
-            <p className={isCreditsEdit
-              ? 'detail-user__input--separation' : ''}><b>credits: </b>
-            { isCreditsEdit
-              ? <input
-                  className='detail-user__input'
-                  type="number"
-                  pattern="[0-9]*"
-                  placeholder={credits}
-                  name='credits'
-                  min='0'
-                  value={credits}
-                  onChange={event => setCredits(Number(event.target.value))} />
-              : <span>{ credits }</span>
-            }
-            </p>
+            <LabelOrInput
+              isEditting={isCreditsEdit}
+              label='Credits : '
+              content={credits}
+            >
+              <input
+                className='detail-user__input'
+                type='number'
+                pattern='[0-9]*'
+                placeholder={credits}
+                name='credits'
+                min='0'
+                value={credits}
+                onChange={event => setCredits(Number(event.target.value))}
+              />
+            </LabelOrInput>
           </div>
         }
 
         {/*dni*/}
-        <div>
-          <EditButton elem={'dni'} permission={'admin'} onEditMode={enableEditMode} />
-          <p className={isDniEdit
-            ? 'detail-user__input--separation' : ''}><b>DNI: </b>
-            { isDniEdit
-              ? <input
-                  className='detail-user__input'
-                  type="text"
-                  placeholder={ dni }
-                  name='dni'
-                  value={dni}
-                  onChange={event => setDni(event.target.value)} />
-              : <span>{ dni }</span>}
-          </p>
-        </div>
+        {roleOwner === 'admin' && role === 'student' &&
+          <div>
+            <EditButton elem={'dni'} permission={'admin'} onEditMode={enableEditMode} />
+            <LabelOrInput
+              isEditting={isDniEdit}
+              label='DNI : '
+              content={dni}
+            >
+              <input
+                className='detail-user__input'
+                type='text'
+                placeholder={dni}
+                name='dni'
+                value={dni}
+                onChange={event => setDni(event.target.value)}
+              />
+            </LabelOrInput>
+          </div>
+        }
 
         {/*role*/}
         {!isEditMode &&
@@ -202,26 +222,51 @@ export default function ({ onBack, id  }) {
         {isEditMode && roleOwner !== 'admin' &&
           <>
             <p>Introduce your password to confirm changes</p>
-            <input className='detail-user__input--password' type='password' placeholder='password' name='password' value={password} onChange={event => setPassword(event.target.value)} />
+            <input
+              className='detail-user__input--password'
+              type='password'
+              placeholder='password'
+              name='password'
+              value={password}
+              onChange={event => setPassword(event.target.value)}
+            />
           </>
         }
-
 
         {/*cancel and submit buttons*/}
         {isEditMode &&
           <div>
-            <button type="button" className='detail-user__button detail-user__button--cancel' onClick={disableEditMode}>Cancel</button>
-            <button type='submit' className='detail-user__button detail-user__button--submit'>Submit</button>
+            <button
+              type='button'
+              className='detail-user__button detail-user__button--cancel'
+              onClick={disableEditMode}
+            >
+              Cancel
+            </button>
+            <button
+              type='submit'
+              className='detail-user__button detail-user__button--submit'
+            >
+              Submit
+            </button>
           </div>
         }
+
       </form>
 
       {notification && <Feedback {...notification} />}
 
-      {/*delte user*/}
+      {/*delete user button*/}
       {roleOwner === 'admin' && !isEditMode &&
-        <button type="button" onClick={handleDeleteUser}
-        className='detail-user__button detail-user__button--delete'>Delete user</button>}
+        <button
+          type='button'
+          onClick={handleDeleteUser}
+          className='detail-user__button detail-user__button--delete'
+        >
+          Delete user
+        </button>
+      }
+
     </section>
   </>
 }

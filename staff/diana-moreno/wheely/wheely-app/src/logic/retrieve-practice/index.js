@@ -16,7 +16,6 @@ module.exports = function(token, id) {
       const practice = JSON.parse(res.body)
       return practice
     }
-
     if (res.status === 401) throw new CredentialsError(JSON.parse(res.body).message)
     if (res.status === 404) throw new NotFoundError(JSON.parse(res.body).message)
     throw new Error(JSON.parse(res.body).message)
