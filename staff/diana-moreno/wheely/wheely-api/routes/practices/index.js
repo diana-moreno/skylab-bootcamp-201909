@@ -7,8 +7,8 @@ const bodyParser = require('body-parser')
 const { errors: { NotFoundError, ConflictError, CredentialsError } } = require('wheely-utils')
 
 const jsonBodyParser = bodyParser.json()
-
 const router = Router()
+
 
 router.post('/', jsonBodyParser, tokenVerifier, (req, res) => {
   try {
@@ -94,7 +94,6 @@ router.get('/detail/:id', tokenVerifier, jsonBodyParser, (req, res) => {
 
 router.put('/feedback/:practiceId', jsonBodyParser, tokenVerifier, (req, res) => {
   try {
-    debugger
     const { id, params: { practiceId }, body: { studentId, comment, valoration } } = req
 
     writeFeedback(id, studentId, practiceId, comment, valoration)

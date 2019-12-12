@@ -7,7 +7,6 @@ const bodyParser = require('body-parser')
 const { errors: { NotFoundError, ConflictError, CredentialsError } } = require('wheely-utils')
 
 const jsonBodyParser = bodyParser.json()
-
 const router = Router()
 
 router.post('/', tokenVerifier, jsonBodyParser, (req, res) => {
@@ -99,7 +98,6 @@ router.get('/:id/users', tokenVerifier, (req, res) => {
 
   function checkIfAdminAndContinue(user){
     if (user.role === 'admin') {
-      // hacemos cosas
       return retrieveUser(id)
         .then(checkIfInstrAndContinue)
         .catch(catchError)
