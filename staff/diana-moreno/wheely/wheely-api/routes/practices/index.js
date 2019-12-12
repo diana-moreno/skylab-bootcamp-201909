@@ -28,7 +28,6 @@ router.post('/', jsonBodyParser, tokenVerifier, (req, res) => {
   }
 })
 
-
 router.delete('/:id', jsonBodyParser, tokenVerifier, (req, res) => {
   try {
   const { id, params: { id: practiceId }, body: { instructorId } } = req
@@ -46,7 +45,6 @@ router.delete('/:id', jsonBodyParser, tokenVerifier, (req, res) => {
     res.status(400).json({ message })
   }
 })
-
 
 router.get('/:id', tokenVerifier, jsonBodyParser, (req, res) => {
   try {
@@ -69,7 +67,6 @@ router.get('/:id', tokenVerifier, jsonBodyParser, (req, res) => {
   }
 })
 
-
 router.get('/detail/:id', tokenVerifier, jsonBodyParser, (req, res) => {
   try {
   const { params: { id } } = req
@@ -90,7 +87,6 @@ router.get('/detail/:id', tokenVerifier, jsonBodyParser, (req, res) => {
     res.status(400).json({ message })
   }
 })
-
 
 router.put('/feedback/:practiceId', jsonBodyParser, tokenVerifier, (req, res) => {
   try {

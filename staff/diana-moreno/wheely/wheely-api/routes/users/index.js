@@ -70,25 +70,17 @@ router.get('/:id', tokenVerifier, (req, res) => {
   }
 })
 
-function tryCatch(res){
-  return (fn) => {
-    try{
-      fn()
-    } catch ({ message }) {
-      res.status(400).json({ message })
-    }
-  }
-}
-
 router.get('/:id/users', tokenVerifier, (req, res) => {
-  // devuelve los usuarios del usuario con id 'id' en caso de ser admin y el
-  // usuario con id 'id' siendo profesor
+  // if is admin, can retrieve users of user 'id'
+  // if is not admin, only can retrieve user with id 'id'
   const { params: { id }, id: ownerId } = req
-  tryCatch(res)(() => {
+  try {
     retrieveUser(ownerId)
       .then(checkIfAdminAndContinue)
       .catch(catchError)
-  })
+  } catch ({ message }) {
+    res.status(400).json({ message })
+  }
 
   function catchError({ message }) {
     if (error instanceof NotFoundError)
