@@ -1,8 +1,9 @@
 import React, { useContext } from 'react'
+import Context from '../CreateContext'
 import './index.sass'
 import OptionsInstructor from './Options-instructor'
 import OptionsStudent from './Options-student'
-import Context from '../CreateContext'
+import OptionsAdmin from './Options-admin'
 
 export default function({ name }) {
   const { roleOwner } = useContext(Context)
@@ -16,6 +17,7 @@ export default function({ name }) {
       <ul>
         { roleOwner === 'student' && <OptionsStudent />}
         { roleOwner === 'instructor' && <OptionsInstructor />}
+        { roleOwner === 'admin' && <OptionsAdmin />}
       </ul>
     </section>
   </>
