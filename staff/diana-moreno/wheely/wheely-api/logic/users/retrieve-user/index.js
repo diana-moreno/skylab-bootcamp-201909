@@ -7,7 +7,6 @@ module.exports = function(id) {
   if (!ObjectId.isValid(id)) throw new ContentError(`${id} is not a valid id`)
 
   return (async () => {
-    // find user
     const user = await User.findById(id)
     if (!user) throw new NotFoundError(`user with id ${id} not found`)
 

@@ -47,7 +47,7 @@ module.exports = function(adminId, name, surname, email, dni, password, role) {
       await User.updateOne({ _id: ObjectId(instructor.id) }, { $set: instructor })
     }
 
-    // create profile specific for student
+    // create specific profile for student
     let student = await User.findOne({ _id: ObjectId(user.id), role: 'student' })
 
     if (student) {

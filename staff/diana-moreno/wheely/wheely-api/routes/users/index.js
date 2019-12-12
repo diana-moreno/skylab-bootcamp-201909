@@ -10,9 +10,9 @@ const jsonBodyParser = bodyParser.json()
 const router = Router()
 
 router.post('/', tokenVerifier, jsonBodyParser, (req, res) => {
+  try {
   const { id, body: { name, surname, email, dni, password, role } } = req
 
-  try {
     registerUser(id, name, surname, email, dni, password, role)
       .then(() => res.status(201).end())
       .catch(error => {
@@ -29,9 +29,9 @@ router.post('/', tokenVerifier, jsonBodyParser, (req, res) => {
 })
 
 router.post('/auth', jsonBodyParser, (req, res) => {
+  try {
   const { body: { email, password } } = req
 
-  try {
     authenticateUser(email, password)
       .then(id => {
         const token = jwt.sign({ sub: id }, SECRET, { expiresIn: '1d' })
@@ -53,6 +53,7 @@ router.post('/auth', jsonBodyParser, (req, res) => {
 router.get('/:id', tokenVerifier, (req, res) => {
   try {
     const { params: { id } } = req
+
     retrieveUser(id)
       .then(user => res.json({ user }))
       .catch(error => {
@@ -74,6 +75,7 @@ router.get('/:id/users', tokenVerifier, (req, res) => {
   // if is admin, can retrieve users of user 'id'
   // if is not admin, only can retrieve user with id 'id'
   const { params: { id }, id: ownerId } = req
+
   try {
     retrieveUser(ownerId)
       .then(checkIfAdminAndContinue)
@@ -109,6 +111,7 @@ router.get('/:id/users', tokenVerifier, (req, res) => {
 router.delete('/:userId', tokenVerifier, (req, res) => {
   try {
     const { id, params: { userId } } = req
+
     deleteUser(id, userId)
       .then(() => res.end())
       .catch(error => {
@@ -129,6 +132,7 @@ router.delete('/:userId', tokenVerifier, (req, res) => {
 router.patch('/:userId', jsonBodyParser, tokenVerifier, (req, res) => {
   try {
     const { id, params: { userId }, body: { name, surname, email, dni, credits, password } } = req
+
     editUser(id, userId, name, surname, email, dni, credits, password)
       .then(() => res.end() )
       .catch(error => {

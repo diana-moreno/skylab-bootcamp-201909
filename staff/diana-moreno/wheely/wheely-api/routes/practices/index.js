@@ -13,6 +13,7 @@ const router = Router()
 router.post('/', jsonBodyParser, tokenVerifier, (req, res) => {
   try {
   const { id, body: { instructorId, dateTime } } = req
+
     createPractice(instructorId, id, dateTime)
       .then((practice) => res.json({ practice }))
       .catch(error => {
@@ -31,6 +32,7 @@ router.post('/', jsonBodyParser, tokenVerifier, (req, res) => {
 router.delete('/:id', jsonBodyParser, tokenVerifier, (req, res) => {
   try {
   const { id, params: { id: practiceId }, body: { instructorId } } = req
+
     cancelPractice(instructorId, id, practiceId)
       .then(() => res.status(201).end())
       .catch(error => {

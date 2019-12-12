@@ -12,6 +12,7 @@ const router = Router()
 router.patch('/:instructorId', jsonBodyParser, tokenVerifier, (req, res) => {
   try {
     const { id, params: { instructorId}, body: { indexDay, hour } } = req
+
     toggleSchedule(id, instructorId, indexDay, hour)
       .then((instructor) => res.json({ instructor }))
       .catch(error => {
