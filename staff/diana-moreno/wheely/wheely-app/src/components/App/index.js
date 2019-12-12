@@ -24,6 +24,7 @@ export default withRouter(function({ history }) {
   const [myId, setMyId] = useState()
   const [roleOwner, setRoleOwner] = useState(undefined)
   const [credits, setCredits] = useState()
+  const [name, setName] = useState()
 
   const { token } = sessionStorage
 
@@ -42,6 +43,7 @@ export default withRouter(function({ history }) {
           const { user: { name, surname, role } } = result
           const nameSurname = name.concat(' ').concat(surname)
           setMyId(id)
+          setName(name)
           setRoleOwner(role)
           setNameSurname(nameSurname)
           if(roleOwner === 'student') {
@@ -69,7 +71,7 @@ export default withRouter(function({ history }) {
       { token && roleOwner && <Navbar /> }
 
       {/*Home*/}
-      { token && <Route path='/home' render={() => <Home />} />}
+      { token && <Route path='/home' render={() => <Home name={name} />} />}
 
       {/*Register*/}
       { token && roleOwner === 'admin' && <Route path = '/register' render={() => <Register onBack={handleGoBack} /> }/> }
