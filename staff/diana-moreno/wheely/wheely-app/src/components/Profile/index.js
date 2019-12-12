@@ -194,7 +194,6 @@ export default function({ id, onBack }) {
         }
 
         {/*dni*/}
-        {roleOwner === 'admin' && role === 'student' &&
           <div>
             <EditButton elem={'dni'} permission={'admin'} onEditMode={enableEditMode} />
             <LabelOrInput
@@ -212,7 +211,7 @@ export default function({ id, onBack }) {
               />
             </LabelOrInput>
           </div>
-        }
+
 
         {/*role*/}
         {!isEditMode &&
@@ -238,7 +237,7 @@ export default function({ id, onBack }) {
 
         {/*cancel and submit buttons*/}
         {isEditMode &&
-          <div class='detail-user__buttons'>
+          <div className='detail-user__buttons'>
             <button
               type='button'
               className='detail-user__button detail-user__button--cancel'

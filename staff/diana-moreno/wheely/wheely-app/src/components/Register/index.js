@@ -7,10 +7,12 @@ export default function({ error, onBack }) {
   const { token } = sessionStorage
   const [notification, setNotification] = useState(null)
 
+
   const handleSubmit = event => {
     event.preventDefault()
     const { name: { value: name }, surname: { value: surname }, email: { value: email }, dni: { value: dni }, password: { value: password }, role: { value: role } } = event.target
     handleRegister(name, surname, email, dni, password, role)
+    event.target.reset()
   }
 
   const handleRegister = async (name, surname, email, dni, password, role) => {

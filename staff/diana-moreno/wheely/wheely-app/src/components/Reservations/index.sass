@@ -18,11 +18,10 @@
     font-size: 1rem
     padding: 0.4rem
     border: 1px solid #a0a0a0
-    border-top-left-radius: 7px
-    border-bottom-left-radius: 7px
+    border-radius: 7px
     font-family: Comfortaa
     background: white
-    width: 15rem
+    width: 22rem
     color: #585555
 
   &__container
@@ -34,6 +33,9 @@
       padding: 0
       margin: 0
 
+  &__empty
+    text-align: center
+
 .reservation
   display: flex
   padding: 0.5rem 0
@@ -43,17 +45,27 @@
 
   &--pending
     background-color: white
+    border: 2px solid #498882
+
+    p
+      color: #498882
 
   &--finished
     background-color: #dedbdb
 
+    p
+     color: #3a3a3a
+
   &--feedback
     border: 2px solid #ff9700
+
+    p
+      color: #ff9700
 
   &__icon
     width: 22%
     font-size: 2rem
-    color: #FF9800
+    color: #498882
     display: flex
     justify-content: center
     align-items: center

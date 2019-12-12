@@ -69,12 +69,14 @@ export default function({ id, onBack }) {
       </form>
     <div className = 'reservations__container' >
       <ul>
-        { practices && practices
+        { practices ? practices
           .filter(filterByActiveFilter)
           .sort((a, b) =>  moment(b.date).diff(moment(a.date)))
           .map((practice, i) =>
             <ReservationCard key={i} practice={practice} role={role} /> )
+          : <p className='reservations__empty'>No reservations yet</p>
         }
+
       </ul>
     </div>
     {notification && <Feedback {...notification} />}

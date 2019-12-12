@@ -9,6 +9,7 @@ import { retrieveUser } from '../../logic'
 export default function({ id, history, onBack }) {
   const [role, setRole] = useState()
   const [notification, setNotification] = useState(null)
+  const [name, setName] = useState(null)
   const { token } = sessionStorage
 
   useEffect(() => {
@@ -16,8 +17,9 @@ export default function({ id, history, onBack }) {
       try {
         // retrieve the user which we want information
         const user = await retrieveUser(token, id)
-        const { user: { role } } = user
+        const { user: { role, name } } = user
         setRole(role)
+        setName(name)
       } catch ({ message }) {
         setNotification({ error: true, message })
       }
@@ -27,7 +29,7 @@ export default function({ id, history, onBack }) {
   return <>
     <div className='title'>
       <i onClick={() => onBack()} className='material-icons'>undo</i>
-      <h3 className='title'>Your account</h3>
+      <h3 className='title'>{name}'s account</h3>
     </div>
     <section className='account'>
       <Link to={`/profile/${id}`}>

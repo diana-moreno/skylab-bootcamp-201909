@@ -68,11 +68,14 @@ export default function({ onBack, id }) {
         />
       </form>
       <ul>
-      { usersList && usersList.filter(filterByActiveFilter).map((currentUser, i) =>
+      { usersList && usersList
+        .filter(filterByActiveFilter)
+        .sort((a, b) => (a.name > b.name) ? 1 : -1)
+        .map((currentUser, i) =>
         <UsersItem key={i} currentUser={currentUser} /> )
       }
       </ul>
-      {notification && <Feedback {...notification} />}
+      { notification && <Feedback {...notification} />}
     </section>
     </>
 }
