@@ -45,7 +45,7 @@ module.exports = function(instructorId, studentId, practiceId, feedback, valorat
     }
 
     //update practice with new feedback and valoration and update status
-    await Practice.updateOne({ _id: practiceId }, { $set: { 'feedback': feedback, 'valoration': valoration, 'status': 'done' } }, { multi: true })
+    await Practice.updateOne({ _id: practiceId }, { $set: { 'feedback': feedback, 'valoration': valoration } }, { multi: true })
 
   })()
 }

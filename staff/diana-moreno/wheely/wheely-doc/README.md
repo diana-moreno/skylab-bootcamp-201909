@@ -1,3 +1,6 @@
+
+![Landing](./img/landing.png)
+
 # Wheely
 
 ## Introduction
@@ -5,8 +8,6 @@
 Wheely is an application born from a real need in driving schools. This tool pretends to make easier the daily job of booking a practice.
 
 This application allows the student to book a practice with any instructor in any available time thanks to a system of online reservations, notifications and reviews in real time that can be consulted by both teachers and students.
-
-![Bart Simpson driving bad](https://media.giphy.com/media/TPNCyo8VmT3mo/giphy.gif#center)
 
 
 ## Functional Description
