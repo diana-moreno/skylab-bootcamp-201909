@@ -1,9 +1,7 @@
 module.exports = function(req) {
-    const { headers: { authorization } } = req
-    
-    let token
+  const { headers: { authorization } } = req
+  let token
+  authorization && ([, token] = authorization.split(' '))
 
-    authorization && ([, token] = authorization.split(' '))
-
-    return token
+  return token
 }

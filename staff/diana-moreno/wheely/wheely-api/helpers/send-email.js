@@ -1,8 +1,8 @@
 const { env: { userEmail, passwordEmail } } = process
-var nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer');
 
 module.exports = async function(toStudent, toInstructor, dateEmail, time, instructorName, studentName) {
-  var transporter = nodemailer.createTransport({
+  const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: userEmail,
@@ -10,7 +10,7 @@ module.exports = async function(toStudent, toInstructor, dateEmail, time, instru
     }
   });
 
-  var emailStudent = {
+  const emailStudent = {
     from: userEmail,
     to: toStudent,
     subject: 'Your reservation is confirmed',
@@ -36,7 +36,7 @@ module.exports = async function(toStudent, toInstructor, dateEmail, time, instru
   })
 
 
-  var emailInstructor = {
+  const emailInstructor = {
     from: userEmail,
     to: toInstructor,
     subject: 'You have a new reservation!',

@@ -5,11 +5,12 @@ const cancelPractice = require('.')
 const { random } = Math
 const { database, models: { User, Practice, Student, Instructor } } = require('wheely-data')
 const { validate, errors: { ContentError } } = require('wheely-utils')
+const moment = require('moment')
 
 describe('logic - cancel practice', () => {
   before(() => database.connect(TEST_DB_URL))
 
-  let studentId, instructorId, name, surname, email, password, role, status, date, credits, practiceId, unexistingId = '012345678901234567890123',
+  let studentId, instructorId, name, surname, email, password, role, date, credits, practiceId, unexistingId = '012345678901234567890123',
     fakeId = '123456'
 
   beforeEach(async () => {
@@ -18,11 +19,12 @@ describe('logic - cancel practice', () => {
     surname = `surname-${random()}`
     email = `email-${random()}@mail.com`
     password = `password-${random()}`
+    dni = `dni-${random()}`
     role = 'student'
 
     await Promise.all([User.deleteMany(), Practice.deleteMany()])
 
-    let student = await User.create({ name, surname, email, password, role })
+    let student = await User.create({ name, surname, email, dni, password, role })
     student.profile = new Student()
     student.profile.credits = 3
     await student.save()
@@ -33,15 +35,16 @@ describe('logic - cancel practice', () => {
     surname = `surname-${random()}`
     email = `email-${random()}@mail.com`
     password = `password-${random()}`
+    dni = `dni-${random()}`
     role = 'instructor'
 
-    let instructor = await User.create({ name, surname, email, password, role })
+    let instructor = await User.create({ name, surname, email, dni, password, role })
     instructor.profile = new Instructor()
     await instructor.save()
     instructorId = instructor.id
 
     // create practice
-    date = new Date("Wed, 27 July 2030 13:30:00")
+    date = moment().add(5, 'day')
     let practice = await Practice.create({ date, instructorId, studentId })
     practiceId = practice.id
 
@@ -104,36 +107,6 @@ describe('logic - cancel practice', () => {
     }
   })
 
-  it('should fail on incorrect student id and practice done', async () => {
-    try {
-      await cancelPractice(instructorId, fakeId, practiceId)
-      throw Error('should not reach this point')
-
-    } catch (error) {
-      expect(error).to.exist
-      expect(error.message).to.exist
-      expect(typeof error.message).to.equal('string')
-      expect(error.message.length).to.be.greaterThan(0)
-      expect(error).to.be.an.instanceOf(ContentError)
-      expect(error.message).to.equal(`${fakeId} is not a valid id`)
-    }
-  })
-
-  it('should fail on incorrect instructor id and practice done', async () => {
-    try {
-      await cancelPractice(fakeId, studentId, practiceId)
-      throw Error('should not reach this point')
-
-    } catch (error) {
-      expect(error).to.exist
-      expect(error.message).to.exist
-      expect(typeof error.message).to.equal('string')
-      expect(error.message.length).to.be.greaterThan(0)
-      expect(error).to.be.an.instanceOf(ContentError)
-      expect(error.message).to.equal(`${fakeId} is not a valid id`)
-    }
-  })
-
   describe('when practice is done', () => {
     beforeEach(async () => {
       // create an student
@@ -141,11 +114,12 @@ describe('logic - cancel practice', () => {
       surname = `surname-${random()}`
       email = `email-${random()}@mail.com`
       password = `password-${random()}`
+      dni = `dni-${random()}`
       role = 'student'
 
       await Promise.all([User.deleteMany(), Practice.deleteMany()])
 
-      let student = await User.create({ name, surname, email, password, role })
+      let student = await User.create({ name, surname, email, dni, password, role })
       student.profile = new Student()
       await student.save()
       studentId = student.id
@@ -155,17 +129,17 @@ describe('logic - cancel practice', () => {
       surname = `surname-${random()}`
       email = `email-${random()}@mail.com`
       password = `password-${random()}`
+      dni = `dni-${random()}`
       role = 'instructor'
 
-      let instructor = await User.create({ name, surname, email, password, role })
+      let instructor = await User.create({ name, surname, email, dni, password, role })
       instructor.profile = new Instructor()
       await instructor.save()
       instructorId = instructor.id
 
       // create practice
-      status = 'done'
-      date = new Date("Wed, 27 July 2025 13:30:00")
-      let practice = await Practice.create({ date, instructorId, studentId, status })
+      date = moment().subtract(5, "days")
+      let practice = await Practice.create({ date, instructorId, studentId })
       practiceId = practice.id
     })
 
@@ -220,11 +194,12 @@ describe('logic - cancel practice', () => {
       surname = `surname-${random()}`
       email = `email-${random()}@mail.com`
       password = `password-${random()}`
+      dni = `dni-${random()}`
       role = 'student'
 
       await Promise.all([User.deleteMany(), Practice.deleteMany()])
 
-      let student = await User.create({ name, surname, email, password, role })
+      let student = await User.create({ name, surname, email, dni, password, role })
       student.profile = new Student()
       await student.save()
       studentId = student.id
@@ -234,17 +209,17 @@ describe('logic - cancel practice', () => {
       surname = `surname-${random()}`
       email = `email-${random()}@mail.com`
       password = `password-${random()}`
+      dni = `dni-${random()}`
       role = 'instructor'
 
-      let instructor = await User.create({ name, surname, email, password, role })
+      let instructor = await User.create({ name, surname, email, dni, password, role })
       instructor.profile = new Instructor()
       await instructor.save()
       instructorId = instructor.id
 
       // create practice
-      status = 'pending'
-      date = new Date("Wed, 27 July 2016 13:30:00")
-      let practice = await Practice.create({ date, instructorId, studentId, status })
+      date = moment()
+      let practice = await Practice.create({ date, instructorId, studentId })
       practiceId = practice.id
     })
 

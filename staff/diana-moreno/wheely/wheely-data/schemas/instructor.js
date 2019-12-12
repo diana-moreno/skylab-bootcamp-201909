@@ -4,16 +4,6 @@ const Week = require('./week')
 
 module.exports = new Schema({
   schedule: {
-    type: Week
+    type: Array
   }
-  /*
-  statistics: {
-    type: Array
-  },
-  practices: {
-    type: Array
-  },
-  students: {
-    type: Array
-  }*/
 })

@@ -5,7 +5,4 @@ module.exports = {
   practice: require('./practice'),
   day: require('./day'),
   week: require('./week')
-  /*,
-  reservation: require('./reservation'),
-  feedback: require('./feedback')*/
 }

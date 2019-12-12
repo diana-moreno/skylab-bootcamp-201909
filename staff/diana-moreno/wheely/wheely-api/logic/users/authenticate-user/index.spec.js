@@ -1,7 +1,7 @@
 require('dotenv').config()
 const { env: { TEST_DB_URL } } = process
-const { expect } = require('chai')
 const authenticateUser = require('.')
+const { expect } = require('chai')
 const { random, floor } = Math
 const { errors: { ContentError, CredentialsError } } = require('wheely-utils')
 const { database, models: { User } } = require('wheely-data')
@@ -10,18 +10,19 @@ describe('logic - authenticate user', () => {
   before(() => database.connect(TEST_DB_URL))
 
   let roles = ['student', 'admin', 'instructor']
-  let id, name, surname, email, password
+  let id, name, surname, email, password, dni, role
 
   beforeEach(async () => {
     name = `name-${random()}`
     surname = `surname-${random()}`
     email = `email-${random()}@mail.com`
     password = `password-${random()}`
+    dni = `dni-${random()}`
     role = roles[floor(random() * roles.length)]
 
     await User.deleteMany()
 
-    const user = await User.create({ name, surname, email, password, role })
+    const user = await User.create({ name, surname, email, password, dni, role })
     id = user.id
   })
 

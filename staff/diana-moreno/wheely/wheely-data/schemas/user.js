@@ -19,6 +19,10 @@ module.exports = new Schema({
     type: String,
     required: true
   },
+  dni: {
+    type: String,
+    required: true
+  },
   lastAccess: {
     type: Date
   },

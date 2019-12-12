@@ -10,7 +10,7 @@ describe('logic - delete user', () => {
   before(() => database.connect(TEST_DB_URL))
 
   let roles = ['admin', 'student', 'instructor']
-  let name, surname, email, password, role, names, surnames, emails, passwords, ids, adminId
+  let name, surname, email, password, role, names, surnames, emails, passwords, ids, adminId, dnis
 
   beforeEach(async () => {
     await Promise.all([User.deleteMany()])
@@ -20,6 +20,8 @@ describe('logic - delete user', () => {
     surnames = []
     emails = []
     passwords = []
+    emails = []
+    dnis = []
     const insertions = []
 
     for (let i = 0; i < 10; i++) {
@@ -28,6 +30,7 @@ describe('logic - delete user', () => {
         surname: `surname-${random()}`,
         email: `email-${random()}@mail.com`,
         password: `password-${random()}`,
+        dni: `dni-${random()}`,
         role: roles[floor(random() * 3)]
       }
       let currentUser = await User.create(user)
@@ -36,6 +39,7 @@ describe('logic - delete user', () => {
       surnames.push(currentUser.surname)
       emails.push(currentUser.email)
       passwords.push(currentUser.password)
+      dnis.push(currentUser.dni)
       ids.push(currentUser._id.toString())
     }
     await Promise.all(insertions)
@@ -46,22 +50,25 @@ describe('logic - delete user', () => {
       surname: `surname-${random()}`,
       email: `email-${random()}@mail.com`,
       password: `password-${random()}`,
+      dni: `dni-${random()}`,
       role: 'admin'
     })
     adminId = admin.id
   })
 
   it('should succeed on correct user admin deleting other users', async () => {
-    ids.forEach(async (id) => {
+    let newArr = ids.map(async (id) => {
       await deleteUser(adminId, id)
     })
 
-    let id = ids[0]
-    let user0 = await User.findOne({ id })
-    expect(user0).to.equal(null)
-    id = ids[6]
-    let user6 = await User.findOne({ id })
-    expect(user6).to.equal(null)
+    await Promise.all(newArr)
+
+    let noIds = ids.map(async (id) => {
+      let user = await User.findOne({ id })
+      expect(user).to.equal(null)
+    })
+
+    await Promise.all(noIds)
   })
 
   it('should fail on wrong user id', async () => {
@@ -128,28 +135,3 @@ describe('logic - delete user', () => {
 
   after(() => User.deleteMany().then(database.disconnect))
 })
-
-  /*  let roles = ['student', 'admin', 'instructor']
-    let id, name, surname, email, password, role, user, adminId
-
-    beforeEach(async () => {
-      //create random user
-      name = `name-${random()}`
-      surname = `surname-${random()}`
-      email = `email-${random()}@mail.com`
-      password = `password-${random()}`
-      role = roles[floor(random() * roles.length)]
-
-      await User.deleteMany()
-
-      const user = await User.create({ name, surname, email, password, role })
-      if (role === 'student') user.profile = new Student()
-      if (role === 'instructor') user.profile = new Instructor()
-      await user.save()
-      id = user.id
-
-      // create an admin
-      role = 'admin'
-      let admin = await User.create({ name, surname, email, password, role })
-      adminId = admin.id
-    })*/

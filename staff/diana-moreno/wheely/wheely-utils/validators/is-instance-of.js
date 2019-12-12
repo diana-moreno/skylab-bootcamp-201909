@@ -1,3 +1,3 @@
-module.exports = function (target, type) {
-    return target instanceof type
+module.exports = function(target, type) {
+  return target instanceof type
 }
