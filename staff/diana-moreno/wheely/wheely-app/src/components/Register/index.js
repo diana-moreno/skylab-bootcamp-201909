@@ -3,7 +3,7 @@ import './index.sass'
 import registerUser from '../../logic/register-user'
 import Feedback from '../Feedback'
 
-export default function({ error, onBack }) {
+export default function({ onBack }) {
   const { token } = sessionStorage
   const [notification, setNotification] = useState(null)
 

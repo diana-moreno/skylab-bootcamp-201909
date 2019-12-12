@@ -5,7 +5,7 @@ import Feedback from '../Feedback'
 import { authenticateUser, retrieveUser } from '../../logic'
 import Context from '../CreateContext'
 
-export default withRouter(function({ error, history }) {
+export default withRouter(function({ history }) {
   const [notification, setNotification] = useState(null)
   const { setRoleOwner, setNameSurname, setMyId } = useContext(Context)
 
