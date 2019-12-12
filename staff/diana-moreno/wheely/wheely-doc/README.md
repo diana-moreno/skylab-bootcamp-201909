@@ -4,43 +4,33 @@
 
 Wheely is an application born from a real need in driving schools. This tool pretends to make easier the daily job of booking a practice.
 
-This application allows the student to book a practice with any instructor in any available time thanks to a system of online reservations and reviews in real time that can be consulted by both teachers and students.
+This application allows the student to book a practice with any instructor in any available time thanks to a system of online reservations, notifications and reviews in real time that can be consulted by both teachers and students.
 
-![Bart Simpson driving bad](https://media.giphy.com/media/TPNCyo8VmT3mo/giphy.gif)
+![Bart Simpson driving bad](https://media.giphy.com/media/TPNCyo8VmT3mo/giphy.gif#center)
+
 
 ## Functional Description
 
 ### Use Cases
 
-![Use cases](use-cases.jpg)
+![Use cases](./img/use-cases.png)
 
-### Flow Diagram
-
-<!-- ![Alt text](FLOW.jpg) -->
 
 ## Technical Description
 
 ### Data model
 
-![Data model](data-model.jpg)
-
-### Block Diagram
-
-<!-- ![Alt text](Blocks.jpg) -->
-
+![Data model](./img/data-model.png)
 
 ## Components
 
-<!-- ![Alt text](components.jpg) -->
+![Components diagram](./img/components.png)
 
-### Components-React
-
-<!-- ![Alt text](react-compos.jpg) -->
-
-### Flow Components-React
-
-<!-- ![Alt text](Flow-compos.jpg) -->
 
 ## Code Coverage
 
-<!-- ![Alt text](test-jasmine.png) -->
+Frontend coverage
+![Frontend coverage](./img/test-coverage-app.png)
+
+Backend coverage
+![Backend coverage](./img/test-coverage-api.png)

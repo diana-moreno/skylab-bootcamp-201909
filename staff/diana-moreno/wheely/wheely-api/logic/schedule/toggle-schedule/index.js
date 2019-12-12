@@ -25,16 +25,7 @@ module.exports = function(adminId, instructorId, indexDay, hour) {
     let instructor = await User.findOne({ _id: instructorId, role: 'instructor' })
     if (!instructor) throw new NotFoundError(`user with id ${instructorId} not found`)
 
-    // the first time, creates the schedule with all days of the week empty
-    if (!instructor.profile.schedule) {
-      instructor.profile.schedule = new Week()
-      for (let i = 0; i < 7; i++) {
-        instructor.profile.schedule.days.push(new Day({ index: i, hours: [] }))
-      }
-      await instructor.save()
-    }
-
-    // then searchs if the day exists to add in, and then checks if the hour in this day exists, if not, create it, if yes, delete it (make a toggle)
+    //  searchs if the day exists to add in, and then checks if the hour in this day exists, if not, create it, if yes, delete it (make a toggle)
     if(0 <= indexDay && indexDay < 7) {
       let day = instructor.profile.schedule.days[indexDay]
       let indexFound = day.hours.indexOf(hour)
@@ -52,12 +43,3 @@ module.exports = function(adminId, instructorId, indexDay, hour) {
   })()
 }
 
-  /*
-    instructor.profile.schedule.days.forEach(async (day) => {
-      if (day.index === indexDay) {
-        let indexFound = day.hours.indexOf(hour)
-        indexFound < 0 ? day.hours.push(hour) : day.hours.splice(indexFound, 1)
-      }
-      await User.updateOne({ _id: instructorId }, { $set: { 'profile.schedule': instructor.profile.schedule } }, { multi: true })
-    })
-*/

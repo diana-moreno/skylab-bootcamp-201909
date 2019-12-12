@@ -7,14 +7,13 @@ const bodyParser = require('body-parser')
 const { errors: { NotFoundError, ConflictError, CredentialsError } } = require('wheely-utils')
 
 const jsonBodyParser = bodyParser.json()
-
 const router = Router()
 
 router.post('/', tokenVerifier, jsonBodyParser, (req, res) => {
-  const { id, body: { name, surname, email, password, role } } = req
+  const { id, body: { name, surname, email, dni, password, role } } = req
 
   try {
-    registerUser(id, name, surname, email, password, role)
+    registerUser(id, name, surname, email, dni, password, role)
       .then(() => res.status(201).end())
       .catch(error => {
         const { message } = error
@@ -29,24 +28,6 @@ router.post('/', tokenVerifier, jsonBodyParser, (req, res) => {
   }
 })
 
-/*
-router.post('/users', jsonBodyParser, async (req, res) => {
-  const { body: { name, surname, email, password, role } } = req
-
-  try {
-    await registerUser(name, surname, email, password, role)
-    res.status(201).end()
-  } catch (error) {
-    const { message } = error
-
-    if (error instanceof ConflictError)
-      return res.status(409).json({ message })
-    res.status(400).json({ message })
-  }
-})
-*/
-
-
 router.post('/auth', jsonBodyParser, (req, res) => {
   const { body: { email, password } } = req
 
@@ -54,7 +35,6 @@ router.post('/auth', jsonBodyParser, (req, res) => {
     authenticateUser(email, password)
       .then(id => {
         const token = jwt.sign({ sub: id }, SECRET, { expiresIn: '1d' })
-        //revisar como se convierte id en token!
         res.json({ token })
       })
       .catch(error => {
@@ -71,10 +51,8 @@ router.post('/auth', jsonBodyParser, (req, res) => {
 })
 
 router.get('/:id', tokenVerifier, (req, res) => {
-  //tokenVerifier añade el id que reciben del token en header en req?
   try {
-    const { id } = req
-
+    const { params: { id } } = req
     retrieveUser(id)
       .then(user => res.json({ user }))
       .catch(error => {
@@ -92,10 +70,45 @@ router.get('/:id', tokenVerifier, (req, res) => {
   }
 })
 
-router.delete('/', tokenVerifier, (req, res) => {
+router.get('/:id/users', tokenVerifier, (req, res) => {
+  // if is admin, can retrieve users of user 'id'
+  // if is not admin, only can retrieve user with id 'id'
+  const { params: { id }, id: ownerId } = req
   try {
-    const { id, body: { userId } } = req
+    retrieveUser(ownerId)
+      .then(checkIfAdminAndContinue)
+      .catch(catchError)
+  } catch ({ message }) {
+    res.status(400).json({ message })
+  }
 
+  function catchError({ message }) {
+    if (error instanceof NotFoundError)
+      return res.status(404).json({ message })
+    return res.status(500).json({ message })
+  }
+
+  function checkIfAdminAndContinue(user){
+    if (user.role === 'admin') {
+      return retrieveUser(id)
+        .then(checkIfInstrAndContinue)
+        .catch(catchError)
+    } else res.status(403)
+  }
+
+  function checkIfInstrAndContinue(user){
+    if (user.role === 'instructor') {
+      return listUsers(id)
+        .then(users => res.json({ users }))
+        .catch(catchError)
+    } else res.status(403)
+  }
+})
+
+
+router.delete('/:userId', tokenVerifier, (req, res) => {
+  try {
+    const { id, params: { userId } } = req
     deleteUser(id, userId)
       .then(() => res.end())
       .catch(error => {
@@ -113,11 +126,10 @@ router.delete('/', tokenVerifier, (req, res) => {
   }
 })
 
-router.patch('/', jsonBodyParser, tokenVerifier, (req, res) => {
+router.patch('/:userId', jsonBodyParser, tokenVerifier, (req, res) => {
   try {
-    const { id, body: { name, surname, email } } = req
-
-    editUser(id, name, surname, email)
+    const { id, params: { userId }, body: { name, surname, email, dni, credits, password } } = req
+    editUser(id, userId, name, surname, email, dni, credits, password)
       .then(() => res.end() )
       .catch(error => {
         const { message } = error

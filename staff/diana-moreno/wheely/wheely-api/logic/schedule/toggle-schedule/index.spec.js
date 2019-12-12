@@ -3,7 +3,7 @@ const { env: { TEST_DB_URL } } = process
 const { expect } = require('chai')
 const toggleSchedule = require('.')
 const { random } = Math
-const { database, models: { User, Practice, Student, Instructor } } = require('wheely-data')
+const { ObjectId, database, models: { User, Practice, Student, Instructor, Week, Day } } = require('wheely-data')
 const { validate, errors: { ContentError } } = require('wheely-utils')
 
 describe('logic - toogle schedule instructor', () => {
@@ -16,23 +16,36 @@ describe('logic - toogle schedule instructor', () => {
     name = `name-${random()}`
     surname = `surname-${random()}`
     email = `email-${random()}@mail.com`
+    dni = `dni-${random()}`
     password = `password-${random()}`
     role = 'instructor'
 
     await User.deleteMany()
-    let instructor = await User.create({ name, surname, email, password, role })
+
+    let instructor = await User.create({ name, surname, email, dni, password, role })
+
+    // create a schedule for an instructor, he works every day 11-13h
+    instructor = await User.findOne({ _id: ObjectId(instructor.id), role: 'instructor' })
+
     instructor.profile = new Instructor()
-    await instructor.save()
+    instructor = await User.findOneAndUpdate({ _id: ObjectId(instructor.id) }, { $set: instructor })
+    instructor.profile.schedule = new Week()
+
+    for (let i = 0; i < 7; i++) {
+      instructor.profile.schedule.days.push(new Day({ index: i, hours: [] }))
+    }
+    await User.updateOne({ _id: ObjectId(instructor.id) }, { $set: instructor })
     instructorId = instructor.id
 
     // create an admin
     name = `name-${random()}`
     surname = `surname-${random()}`
     email = `email-${random()}@mail.com`
+    dni = `dni-${random()}`
     password = `password-${random()}`
     role = 'admin'
 
-    let admin = await User.create({ name, surname, email, password, role })
+    let admin = await User.create({ name, surname, email, dni, password, role })
     adminId = admin.id
   })
 
@@ -55,6 +68,10 @@ describe('logic - toogle schedule instructor', () => {
     expect(instructor).to.exist
     expect(instructor.profile).to.exist
     expect(instructor.profile.schedule).to.exist
+    expect(instructor.profile.schedule.days[1].hours).to.include(hour1)
+    expect(instructor.profile.schedule.days[1].hours).to.include(hour2)
+    expect(instructor.profile.schedule.days[2].hours).not.to.include(hour3)
+    expect(instructor.profile.schedule.days[2].hours).not.to.include(hour4)
   })
 
   it('should fail on unexisting instructor', async () => {

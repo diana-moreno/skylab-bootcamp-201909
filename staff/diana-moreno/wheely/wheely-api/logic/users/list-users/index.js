@@ -11,7 +11,6 @@ module.exports = function(id) {
     let instructor = await User.findOne({ _id: id, role: 'instructor' })
     let admin = await User.findOne({ _id: id, role: 'admin' })
 
-    if (student) throw new ConflictError(`user with id ${id} has no permision`)
     if (!student && !instructor && !admin) {
       throw new NotFoundError(`user with id ${id} not found`)
     }
@@ -21,15 +20,27 @@ module.exports = function(id) {
     // the result returned depends on the user who is demanding (permission control)
     if (admin) {
       users = await User
-        .find()
+        .find({ "role": { $in: ['student', 'instructor'] } })
         .lean()
     } else if (instructor) {
-      users = await Practice
-        .find({ "instructorId": ObjectId(id), "status": 'pending' }, { "studentId": 1 })
+      const practices = await Practice
+        .find({ "instructorId": ObjectId(id), "feedback": undefined }, { "studentId": 1 })
         .populate('studentId')
         .lean()
-    }
 
+      users = practices.reduce((users, practice) => {
+        const user = practice.studentId
+        if (!users.find(({ _id }) => _id === user._id)) {
+          users.push(user)
+        }
+        return users
+      }, [])
+
+    } else if(student) {
+      users = await User
+        .find({ "role": 'instructor' })
+        .lean()
+    }
     return users
   })()
 }

@@ -8,6 +8,7 @@ module.exports = function(email, password) {
   validate.string.notVoid('password', password)
 
   return (async () => {
+    debugger
     // checks if user exists
     const user = await User.findOne({ email, password })
     if (!user) throw new CredentialsError('wrong credentials')
