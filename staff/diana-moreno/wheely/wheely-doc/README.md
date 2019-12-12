@@ -1,7 +1,6 @@
-
-![Landing](./img/landing.png)
-
 # Wheely
+
+![Bart driving](https://media.giphy.com/media/TPNCyo8VmT3mo/giphy.gif)
 
 ## Introduction
 
@@ -35,3 +34,7 @@ Frontend coverage
 
 Backend coverage
 ![Backend coverage](./img/test-coverage-api.png)
+
+## Sample
+
+![Landing](./img/landing.png)
