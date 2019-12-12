@@ -13,13 +13,11 @@ module.exports = function(instructorId, studentId, date) {
   validate.string.notVoid('studentId', studentId)
   if (!ObjectId.isValid(studentId)) throw new ContentError(`${studentId} is not a valid id`)
 
-  moment.isMoment(date)
 
   return (async () => {
 
     // check if student exists
     let student = await User.findOne({ _id: ObjectId(studentId), role: 'student' })
-    debugger
     if (!student) throw new NotFoundError(`user with id ${studentId} not found`)
 
     // check if the student has credits available

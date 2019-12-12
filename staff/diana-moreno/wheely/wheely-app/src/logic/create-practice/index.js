@@ -10,8 +10,6 @@ module.exports = function(token, instructorId, dateTime) {
   validate.string(instructorId)
   validate.string.notVoid('instructorId', instructorId)
 
-  moment.isMoment(dateTime)
-
   return (async () => {
     const res = await call(`${API_URL}/practices`, {
       method: 'POST',
