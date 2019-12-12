@@ -31,7 +31,7 @@ module.exports = function(instructorId, studentId, date) {
 
       // check if a practice with the same instructor, date and time exists
       let existingDate = await Practice.findOne({ instructorId: instructorId, date: date })
-      if (existingDate) throw new ConflictError(`practice with date ${date} already exists`)
+      if (existingDate) throw new ConflictError(`practice with date ${moment(date).format('DD-MM-YYYY')} already exists`)
 
 
       // check if the practice has expired
