@@ -18,7 +18,6 @@
   &__title
     font-size: 4rem
     text-shadow: 2px 2px 8px #030303
-    _margin-top: 1rem
     margin-top: 4rem
 
   &__subtitle
@@ -50,3 +49,25 @@
     border: none
     border-radius: 6px
     width: 17.1rem
+
+// Small tablets (portrait view)
+@media only screen and (min-width:768px)
+  .login
+
+    &__title
+      font-size: 5rem
+      letter-spacing: 0.5rem
+
+// Tablets and small desktops
+@media only screen and (min-width:992px)
+  .login
+
+    &__title
+      font-size: 6rem
+      letter-spacing: 0.5rem
+
+    &__form-item
+      width: 26rem
+
+    &__button
+      width: 27.1rem

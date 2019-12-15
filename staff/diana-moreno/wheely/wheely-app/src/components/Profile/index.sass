@@ -3,13 +3,20 @@
   display: flex
   flex-direction: column
   justify-content: space-between
-  height: 64%
+  height: 60%
 
-  div
-    display: flex
-    align-items: center
-    p
-      word-break: break-all
+  &__container
+    height: 100%
+
+  form
+    height: 100%
+
+    div
+      display: flex
+      align-items: center
+      p
+        word-break: break-all
+
   &__icon
     margin-right: 1rem
     color: orange
@@ -72,3 +79,20 @@
       padding: 0.3rem
       font-size: 1rem
       margin: 0 auto
+
+
+// Small tablets and large smartphones (landscape view)
+@media only screen and (min-width:576px)
+  .detail-user
+
+    &__container
+      width: 20rem
+      height: 77%
+      margin: 0 auto
+      display: flex
+      flex-direction: column
+      justify-content: space-evenly
+      padding-top: 3rem
+
+    &__buttons
+      position: unset

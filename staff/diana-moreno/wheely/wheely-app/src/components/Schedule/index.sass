@@ -7,8 +7,12 @@
     grid-template-areas: ". week" "time content"
     grid-template-columns: 64px
     grid-template-rows: 45px
-    width: 94vw
+    max-width: 40rem
+    min-width: 20rem
     text-align: center
+    margin: 0 auto
+    margin-bottom: 2rem
+    padding: 1rem
 
     ul
       margin: 0
@@ -53,3 +57,14 @@
     grid-template-columns: repeat(7, 1fr)
     border: 1px solid #cecece
 
+// Small tablets (portrait view)
+@media only screen and (min-width:768px)
+  .schedule
+    &__timetable
+      width: 30rem
+
+// Tablets and small desktops
+@media only screen and (min-width:992px)
+  .schedule
+    &__timetable
+      width: 40rem

@@ -7,8 +7,8 @@ export default function ({ day, hour, handleClick, isChecked }) {
       className={isChecked
         ? 'schedule__item schedule__item--checked'
         : 'schedule__item'}
+      onClick={() => handleClick()}
     >
-      <span onClick={() => handleClick()}> &nbsp; </span>
     </li>
   </>
 }

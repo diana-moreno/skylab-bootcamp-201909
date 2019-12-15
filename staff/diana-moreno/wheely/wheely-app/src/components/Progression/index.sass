@@ -5,6 +5,8 @@
     margin: 0
     list-style: none
     position: relative
+    margin: 0 auto
+    max-width: 50rem
 
     &::before
       content: " "
@@ -21,8 +23,9 @@
     vertical-align: top
 
   &__date
-    width: 26%
+    width: 6rem
     font-size: 1rem
+    text-align: center
 
   &__feedback
     width: 56%
@@ -58,3 +61,13 @@
     &--orange
       border: 2px solid #FF9800
       background: orange
+
+// Small tablets and large smartphones (landscape view)
+@media only screen and (min-width:576px)
+  .timeline
+
+    &__date
+      width: 9rem
+
+    &__feedback
+      width: 70%

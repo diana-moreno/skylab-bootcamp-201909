@@ -1,9 +1,12 @@
 .booking
-  margin: 1.5rem
   display: flex
   justify-content: center
   align-items: center
   flex-direction: column
+  max-width: 40rem
+  margin: 0 auto
+  text-align: center
+  padding: 1.5rem
 
   form
     display: flex
@@ -34,3 +37,8 @@
       background: #17b0a2
       color: white
       font-family: Comfortaa
+
+// Small tablets and large smartphones (landscape view)
+@media only screen and (min-width:576px)
+  .booking
+    margin-top: 5rem

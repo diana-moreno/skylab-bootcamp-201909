@@ -1,7 +1,6 @@
 const call = require('../../utils/call')
 const { validate, errors: { NotFoundError, CredentialsError } } = require('wheely-utils')
 const API_URL = process.env.REACT_APP_API_URL
-const moment = require('moment')
 
 module.exports = function(token, instructorId, dateTime) {
   validate.string(token)

@@ -3,6 +3,7 @@
   justify-content: center
   align-items: center
   flex-direction: column
+  height: 77%
 
   &__form
     display: flex
@@ -45,3 +46,18 @@
       width: 17rem
       font-family: Comfortaa
       margin-bottom: 0
+
+// Tablets and small desktops
+@media only screen and (min-width:992px)
+  .register
+
+    &__form
+
+      input
+        width: 26rem
+
+      select
+        width: 27rem
+
+      button
+        width: 27rem

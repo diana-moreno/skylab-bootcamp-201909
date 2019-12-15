@@ -13,12 +13,14 @@ export default function({ name }) {
     </div>
     <section className='home'>
       <p className='home__greeting'>Welcome, {name}!</p>
-      <p>This is your personal area in Wheely. From here you can:</p>
-      <ul>
-        { roleOwner === 'student' && <OptionsStudent />}
-        { roleOwner === 'instructor' && <OptionsInstructor />}
-        { roleOwner === 'admin' && <OptionsAdmin />}
-      </ul>
+      <div className='home__description'>
+        <p>This is your personal area in Wheely. From here you can:</p>
+        <ul>
+          { roleOwner === 'student' && <OptionsStudent />}
+          { roleOwner === 'instructor' && <OptionsInstructor />}
+          { roleOwner === 'admin' && <OptionsAdmin />}
+        </ul>
+      </div>
     </section>
   </>
 }

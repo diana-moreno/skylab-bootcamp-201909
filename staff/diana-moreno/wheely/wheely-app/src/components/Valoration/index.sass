@@ -1,4 +1,7 @@
 .valoration
+  max-width: 40rem
+  margin: 1rem auto
+
   &__detail-container
     display: flex
     margin: 1rem
@@ -50,3 +53,10 @@
   &__feedback
     margin: 2rem
 
+// Small tablets and large smartphones (landscape view)
+@media only screen and (min-width:576px)
+  .valoration
+    height: 74%
+    display: flex
+    flex-direction: column
+    justify-content: center
