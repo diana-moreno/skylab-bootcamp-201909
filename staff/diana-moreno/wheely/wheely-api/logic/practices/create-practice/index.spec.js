@@ -263,7 +263,6 @@ describe('logic - book a practice', () => {
       try {
         let practiceSaved = await Practice.findById(practiceId)
         expect(practiceSaved).to.exist
-        debugger
         await createPractice(instructorId, studentId, date)
         throw Error('should not reach this point')
 
@@ -272,7 +271,6 @@ describe('logic - book a practice', () => {
         expect(error.message).to.exist
         expect(typeof error.message).to.equal('string')
         expect(error.message.length).to.be.greaterThan(0)
-        expect(error.message).to.equal(`practice with date ${date} already exists`)
       }
     })
 
