@@ -19,7 +19,6 @@ module.exports =  new Schema({
         required: true,
         enum: ['TODO', 'DOING', 'REVIEW', 'DONE'],
         default: 'TODO'
-        
     },
     date: {
         type: Date,

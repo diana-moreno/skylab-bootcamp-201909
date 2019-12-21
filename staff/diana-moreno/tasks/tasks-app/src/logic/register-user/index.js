@@ -1,6 +1,5 @@
 const call = require('../../utils/call')
 const { validate, errors: { ConflictError } } = require('tasks-util')
-// const { env: { REACT_APP_API_URL: API_URL } } = process
 const API_URL = process.env.REACT_APP_API_URL
 
 module.exports = function (name, surname, email, username, password) {
@@ -24,7 +23,7 @@ module.exports = function (name, surname, email, username, password) {
         })
 
         if (res.status === 201) return
-        
+
         if (res.status === 409) throw new ConflictError(JSON.parse(res.body).message)
 
         throw new Error(JSON.parse(res.body).message)
