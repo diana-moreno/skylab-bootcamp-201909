@@ -11,14 +11,12 @@ module.exports =  new Schema({
         required: true
     },
     description: {
-        type: String,
-        required: true
+        type: String
     },
     status: {
         type: String,
         required: true,
-        enum: ['TODO', 'DOING', 'REVIEW', 'DONE'],
-        default: 'TODO'
+        enum: ['TODO', 'DOING', 'REVIEW', 'DONE']
     },
     date: {
         type: Date,

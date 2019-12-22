@@ -1,28 +1,38 @@
 require('dotenv').config()
 
 const express = require('express')
-const bodyParser = require('body-parser')
 const { name, version } = require('./package.json')
-const { registerUser, authenticateUser, retrieveUser, createTask, listTasks, modifyTask, removeTask } = require('./logic')
 const jwt = require('jsonwebtoken')
-const { argv: [, , port], env: { SECRET, PORT = port || 8080, DB_URL } } = process
-const tokenVerifier = require('./helpers/token-verifier')(SECRET)
-const cors = require('./utils/cors')
-const { errors: { NotFoundError, ConflictError, CredentialsError } } = require('tasks-util')
+const { argv: [, , port], env: { PORT = port || 8080, DB_URL } } = process
+const cors = require('cors')
 const { database } = require('tasks-data')
-
+const { users, tasks } = require('./routes')
 
 const api = express()
 
-const jsonBodyParser = bodyParser.json()
+
+api.use(cors())
+api.use('/users', users)
+api.use('/tasks', tasks)
+
+database
+    .connect(DB_URL)
+    .then(() => api.listen(PORT, () => console.log(`${name} ${version} up and running on port ${PORT}`)))
+
+
+
+
+/*const jsonBodyParser = bodyParser.json()
 
 api.use(cors)
 
 api.options('*', cors, (req, res) => {
     res.end()
-})
+})*/
 
-api.post('/users', jsonBodyParser, (req, res) => {
+
+
+/*api.post('/users', jsonBodyParser, (req, res) => {
     const { body: { name, surname, email, username, password } } = req
 
     try {
@@ -167,9 +177,5 @@ api.delete('/tasks/:taskId', tokenVerifier, (req, res) => {
     } catch ({ message }) {
         res.status(400).json({ message })
     }
-})
-
-database
-    .connect(DB_URL)
-    .then(() => api.listen(PORT, () => console.log(`${name} ${version} up and running on port ${PORT}`)))
+})*/
 
