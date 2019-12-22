@@ -1,20 +1,29 @@
 import React from 'react'
+import { DragDropContext } from 'react-beautiful-dnd'
 import './index.sass'
-import ColumnTasks from '../ColumnTasks'
+import Column from '../Column'
+
 
 export default function ({ user, onLogout }) {
-  const statuses = ['TODO', 'DOING', 'REVIEW', 'DONE']
+  const columns = ['TODO', 'DOING', 'REVIEW', 'DONE']
 
+
+  function onDragEnd(result) {
+    // TODO reorder
+
+  }
     return <>
       <header>
         <h1>Tasksboard</h1>
       </header>
       <main>
-        <ul className='tasks'>
-          {statuses.map((status, i) =>
-            <ColumnTasks status={status} />
-          )}
-        </ul>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <ul className='tasks'>
+            {columns.map((status, i) =>
+              <Column key={status} status={status} index={i} />
+            )}
+          </ul>
+        </DragDropContext>
       </main>
     </>
 }

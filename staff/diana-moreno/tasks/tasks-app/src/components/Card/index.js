@@ -1,10 +1,19 @@
 import React from 'react'
-/*import './index.sass'*/
+import { Draggable } from 'react-beautiful-dnd'
 
-export default function({ title, modifier }) {
+export default function({ title, modifier, index }) {
   return <>
-    <li className='task task--doing'>
-      <h3 className={`task__title task__title--${modifier}`}>{title}</h3>
-    </li>
+    <Draggable draggableId={title} index={index} >
+      {provided => (
+        <li className='task task--doing'
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
+        >
+          <h3 className={`task__title task__title--${modifier}`}>{title}</h3>
+        </li>
+
+      )}
+    </Draggable>
   </>
 }

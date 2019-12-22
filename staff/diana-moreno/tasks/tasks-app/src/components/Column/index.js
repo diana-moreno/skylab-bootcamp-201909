@@ -1,10 +1,10 @@
 import React, {useState, useEffect, useRef} from 'react'
+import { Droppable } from 'react-beautiful-dnd';
 import Card from '../Card'
 import createTask from '../../logic/create-task'
 import listTasks from '../../logic/list-tasks'
 
-export default function ({status}) {
-  const cards = [{title: 'card1', status:'TODO'}, {title: 'card1', status:'DONE'}]
+export default function ({status, index}) {
   const modifier = status.toLowerCase()
   const { token } = sessionStorage
   const [tasks, setTasks] = useState([])
@@ -40,6 +40,7 @@ export default function ({status}) {
         !title && setNewCard(false)
         title && await createTask(token, status, title)
         setNewCard(false)
+        setTitle(null)
       }
     }
 
@@ -56,21 +57,34 @@ export default function ({status}) {
   const wrapperRef = useRef(null);
   useOutsideAlerter(wrapperRef);
 
+
   return <>
-    <li className={`tasks__column tasks__column-${modifier}`}>
-      <h2 className='tasks__title'>{status}</h2>
-      <ul className='tasks__task'>
-        <li className={`task task__add task__add--${modifier}`} onClick={handleCreateCard}>
-          <h3 className='task__title'>+ Add new card</h3>
-        </li>
-        {newCard && <li className={`task task--${modifier}`}>
-          <input type='text' className={`task__title task__title--${modifier} task__new`} placeholder='Enter a title for this card' onChange={handleCreateTask} ref={wrapperRef}/>
-        </li>}
-        {tasks
-          .filter(task => task.status === status)
-          .map(task => <Card title={task.title} modifier={modifier}/>)
-        }
-      </ul>
-    </li>
+
+      <li className={`tasks__column tasks__column-${modifier}`}>
+        <h2 className='tasks__title'>{status}</h2>
+        <ul className='tasks__task'>
+          <li className={`task task__add task__add--${modifier}`} onClick={handleCreateCard}>
+            <h3 className='task__title'>+ Add new card</h3>
+          </li>
+          {newCard && <li className={`task task--${modifier}`}>
+            <input type='text' className={`task__title task__title--${modifier} task__new`} placeholder='Enter a title for this card' onChange={handleCreateTask} ref={wrapperRef}/>
+          </li>}
+
+        <Droppable droppableId={status} index={index} >
+
+          {provided => (
+              <div ref={provided.innerRef} {...provided.droppableProps}>
+                {tasks
+                  .filter(task => task.status === status)
+                  .map((task, i) => <Card key={task._id} title={task.title} modifier={modifier} index={i} />)
+                }
+                {provided.placeholder}
+              </div>
+            )}
+
+        </Droppable>
+        </ul>
+      </li>
+
   </>
 }
